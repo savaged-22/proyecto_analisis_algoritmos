@@ -1,0 +1,4987 @@
+{
+  "metrics": {
+    "total_classes": 25,
+    "scheduled_classes": 25,
+    "unscheduled_classes": 0,
+    "class_scheduling_rate_percent": 100.0,
+    "total_students": 80,
+    "total_requests": 280,
+    "satisfied_requests": 280,
+    "unsatisfied_requests": 0,
+    "global_student_satisfaction_percent": 100.0,
+    "total_rooms": 8,
+    "avg_room_utilization_percent": 10.25,
+    "total_professors": 14,
+    "avg_professor_workload_percent": 14.67,
+    "hard_conflicts_count": 0,
+    "student_clashes_count": 0,
+    "timings_ms": {
+      "conflict_graph_ms": 1.738,
+      "phase1_dsatur_ms": 5.061,
+      "phase2_mcmf_ms": 191.039,
+      "total_ms": 198.084
+    }
+  },
+  "class_schedule": {
+    "INF101-1": {
+      "class_id": "INF101-1",
+      "course_id": "INF101",
+      "course_name": "Algoritmos y Complejidad",
+      "professor_id": "PROF-01",
+      "professor_name": "Dr. Alan Turing",
+      "room_id": "AULA-01",
+      "room_name": "Salón 01",
+      "slot_index": 2,
+      "day": "Lunes",
+      "start_hour": 10,
+      "end_hour": 12,
+      "duration_hours": 2,
+      "time_str": "Lunes 10:00-12:00",
+      "capacity": 40,
+      "enrolled_count": 28,
+      "enrolled_students": [
+        "EST-011",
+        "EST-069",
+        "EST-061",
+        "EST-004",
+        "EST-072",
+        "EST-054",
+        "EST-012",
+        "EST-028",
+        "EST-062",
+        "EST-042",
+        "EST-018",
+        "EST-048",
+        "EST-067",
+        "EST-074",
+        "EST-070",
+        "EST-026",
+        "EST-033",
+        "EST-056",
+        "EST-077",
+        "EST-052",
+        "EST-037",
+        "EST-079",
+        "EST-040",
+        "EST-047",
+        "EST-053",
+        "EST-005",
+        "EST-034",
+        "EST-015"
+      ],
+      "occupancy_rate_percent": 70.0,
+      "is_scheduled": true
+    },
+    "INF101-2": {
+      "class_id": "INF101-2",
+      "course_id": "INF101",
+      "course_name": "Algoritmos y Complejidad",
+      "professor_id": "PROF-02",
+      "professor_name": "Dra. Ada Lovelace",
+      "room_id": "AULA-02",
+      "room_name": "Salón 02",
+      "slot_index": 0,
+      "day": "Lunes",
+      "start_hour": 8,
+      "end_hour": 10,
+      "duration_hours": 2,
+      "time_str": "Lunes 08:00-10:00",
+      "capacity": 50,
+      "enrolled_count": 0,
+      "enrolled_students": [],
+      "occupancy_rate_percent": 0.0,
+      "is_scheduled": true
+    },
+    "INF102-1": {
+      "class_id": "INF102-1",
+      "course_id": "INF102",
+      "course_name": "Estructuras de Datos Avanzadas",
+      "professor_id": "PROF-03",
+      "professor_name": "Dr. John von Neumann",
+      "room_id": "AULA-02",
+      "room_name": "Salón 02",
+      "slot_index": 4,
+      "day": "Lunes",
+      "start_hour": 12,
+      "end_hour": 14,
+      "duration_hours": 2,
+      "time_str": "Lunes 12:00-14:00",
+      "capacity": 60,
+      "enrolled_count": 23,
+      "enrolled_students": [
+        "EST-033",
+        "EST-049",
+        "EST-048",
+        "EST-063",
+        "EST-025",
+        "EST-031",
+        "EST-047",
+        "EST-029",
+        "EST-075",
+        "EST-022",
+        "EST-068",
+        "EST-007",
+        "EST-064",
+        "EST-016",
+        "EST-053",
+        "EST-013",
+        "EST-004",
+        "EST-009",
+        "EST-030",
+        "EST-055",
+        "EST-042",
+        "EST-018",
+        "EST-037"
+      ],
+      "occupancy_rate_percent": 38.33,
+      "is_scheduled": true
+    },
+    "INF102-2": {
+      "class_id": "INF102-2",
+      "course_id": "INF102",
+      "course_name": "Estructuras de Datos Avanzadas",
+      "professor_id": "PROF-04",
+      "professor_name": "Dra. Grace Hopper",
+      "room_id": "AULA-02",
+      "room_name": "Salón 02",
+      "slot_index": 6,
+      "day": "Lunes",
+      "start_hour": 14,
+      "end_hour": 16,
+      "duration_hours": 2,
+      "time_str": "Lunes 14:00-16:00",
+      "capacity": 50,
+      "enrolled_count": 0,
+      "enrolled_students": [],
+      "occupancy_rate_percent": 0.0,
+      "is_scheduled": true
+    },
+    "INF103-1": {
+      "class_id": "INF103-1",
+      "course_id": "INF103",
+      "course_name": "Bases de Datos Relacionales",
+      "professor_id": "PROF-05",
+      "professor_name": "Dr. Claude Shannon",
+      "room_id": "AULA-02",
+      "room_name": "Salón 02",
+      "slot_index": 9,
+      "day": "Lunes",
+      "start_hour": 17,
+      "end_hour": 18,
+      "duration_hours": 1,
+      "time_str": "Lunes 17:00-18:00",
+      "capacity": 50,
+      "enrolled_count": 23,
+      "enrolled_students": [
+        "EST-045",
+        "EST-067",
+        "EST-030",
+        "EST-058",
+        "EST-015",
+        "EST-038",
+        "EST-012",
+        "EST-002",
+        "EST-006",
+        "EST-071",
+        "EST-020",
+        "EST-080",
+        "EST-027",
+        "EST-042",
+        "EST-048",
+        "EST-005",
+        "EST-034",
+        "EST-051",
+        "EST-007",
+        "EST-003",
+        "EST-046",
+        "EST-066",
+        "EST-047"
+      ],
+      "occupancy_rate_percent": 46.0,
+      "is_scheduled": true
+    },
+    "INF103-2": {
+      "class_id": "INF103-2",
+      "course_id": "INF103",
+      "course_name": "Bases de Datos Relacionales",
+      "professor_id": "PROF-06",
+      "professor_name": "Dra. Margaret Hamilton",
+      "room_id": "AULA-02",
+      "room_name": "Salón 02",
+      "slot_index": 8,
+      "day": "Lunes",
+      "start_hour": 16,
+      "end_hour": 17,
+      "duration_hours": 1,
+      "time_str": "Lunes 16:00-17:00",
+      "capacity": 60,
+      "enrolled_count": 0,
+      "enrolled_students": [],
+      "occupancy_rate_percent": 0.0,
+      "is_scheduled": true
+    },
+    "INF104-1": {
+      "class_id": "INF104-1",
+      "course_id": "INF104",
+      "course_name": "Laboratorio de Redes y Seguridad",
+      "professor_id": "PROF-07",
+      "professor_name": "Dr. Donald Knuth",
+      "room_id": "LAB-04",
+      "room_name": "Laboratorio 04",
+      "slot_index": 26,
+      "day": "Miércoles",
+      "start_hour": 14,
+      "end_hour": 16,
+      "duration_hours": 2,
+      "time_str": "Miércoles 14:00-16:00",
+      "capacity": 35,
+      "enrolled_count": 13,
+      "enrolled_students": [
+        "EST-002",
+        "EST-057",
+        "EST-059",
+        "EST-077",
+        "EST-050",
+        "EST-028",
+        "EST-021",
+        "EST-035",
+        "EST-017",
+        "EST-010",
+        "EST-073",
+        "EST-029",
+        "EST-075"
+      ],
+      "occupancy_rate_percent": 37.14,
+      "is_scheduled": true
+    },
+    "INF104-2": {
+      "class_id": "INF104-2",
+      "course_id": "INF104",
+      "course_name": "Laboratorio de Redes y Seguridad",
+      "professor_id": "PROF-08",
+      "professor_name": "Dra. Barbara Liskov",
+      "room_id": "LAB-08",
+      "room_name": "Laboratorio 08",
+      "slot_index": 28,
+      "day": "Miércoles",
+      "start_hour": 16,
+      "end_hour": 18,
+      "duration_hours": 2,
+      "time_str": "Miércoles 16:00-18:00",
+      "capacity": 30,
+      "enrolled_count": 0,
+      "enrolled_students": [],
+      "occupancy_rate_percent": 0.0,
+      "is_scheduled": true
+    },
+    "INF105-1": {
+      "class_id": "INF105-1",
+      "course_id": "INF105",
+      "course_name": "Sistemas Operativos Distribuidos",
+      "professor_id": "PROF-09",
+      "professor_name": "Dr. Edsger Dijkstra",
+      "room_id": "AULA-02",
+      "room_name": "Salón 02",
+      "slot_index": 17,
+      "day": "Martes",
+      "start_hour": 15,
+      "end_hour": 17,
+      "duration_hours": 2,
+      "time_str": "Martes 15:00-17:00",
+      "capacity": 50,
+      "enrolled_count": 18,
+      "enrolled_students": [
+        "EST-043",
+        "EST-018",
+        "EST-024",
+        "EST-060",
+        "EST-070",
+        "EST-068",
+        "EST-021",
+        "EST-032",
+        "EST-036",
+        "EST-069",
+        "EST-046",
+        "EST-051",
+        "EST-010",
+        "EST-040",
+        "EST-075",
+        "EST-022",
+        "EST-009",
+        "EST-054"
+      ],
+      "occupancy_rate_percent": 36.0,
+      "is_scheduled": true
+    },
+    "INF105-2": {
+      "class_id": "INF105-2",
+      "course_id": "INF105",
+      "course_name": "Sistemas Operativos Distribuidos",
+      "professor_id": "PROF-10",
+      "professor_name": "Dra. Katherine Johnson",
+      "room_id": "AULA-01",
+      "room_name": "Salón 01",
+      "slot_index": 20,
+      "day": "Miércoles",
+      "start_hour": 8,
+      "end_hour": 10,
+      "duration_hours": 2,
+      "time_str": "Miércoles 08:00-10:00",
+      "capacity": 40,
+      "enrolled_count": 0,
+      "enrolled_students": [],
+      "occupancy_rate_percent": 0.0,
+      "is_scheduled": true
+    },
+    "INF106-1": {
+      "class_id": "INF106-1",
+      "course_id": "INF106",
+      "course_name": "Inteligencia Artificial y Grafos",
+      "professor_id": "PROF-11",
+      "professor_name": "Dr. Ken Thompson",
+      "room_id": "AULA-02",
+      "room_name": "Salón 02",
+      "slot_index": 19,
+      "day": "Martes",
+      "start_hour": 17,
+      "end_hour": 18,
+      "duration_hours": 1,
+      "time_str": "Martes 17:00-18:00",
+      "capacity": 60,
+      "enrolled_count": 15,
+      "enrolled_students": [
+        "EST-020",
+        "EST-003",
+        "EST-079",
+        "EST-022",
+        "EST-040",
+        "EST-007",
+        "EST-023",
+        "EST-041",
+        "EST-080",
+        "EST-019",
+        "EST-054",
+        "EST-062",
+        "EST-017",
+        "EST-030",
+        "EST-021"
+      ],
+      "occupancy_rate_percent": 25.0,
+      "is_scheduled": true
+    },
+    "INF106-2": {
+      "class_id": "INF106-2",
+      "course_id": "INF106",
+      "course_name": "Inteligencia Artificial y Grafos",
+      "professor_id": "PROF-12",
+      "professor_name": "Dra. Radia Perlman",
+      "room_id": "AULA-01",
+      "room_name": "Salón 01",
+      "slot_index": 35,
+      "day": "Jueves",
+      "start_hour": 13,
+      "end_hour": 15,
+      "duration_hours": 2,
+      "time_str": "Jueves 13:00-15:00",
+      "capacity": 40,
+      "enrolled_count": 0,
+      "enrolled_students": [],
+      "occupancy_rate_percent": 0.0,
+      "is_scheduled": true
+    },
+    "INF107-1": {
+      "class_id": "INF107-1",
+      "course_id": "INF107",
+      "course_name": "Optimización Combinatoria",
+      "professor_id": "PROF-13",
+      "professor_name": "Dr. Dennis Ritchie",
+      "room_id": "AULA-02",
+      "room_name": "Salón 02",
+      "slot_index": 33,
+      "day": "Jueves",
+      "start_hour": 11,
+      "end_hour": 12,
+      "duration_hours": 1,
+      "time_str": "Jueves 11:00-12:00",
+      "capacity": 50,
+      "enrolled_count": 20,
+      "enrolled_students": [
+        "EST-036",
+        "EST-027",
+        "EST-046",
+        "EST-074",
+        "EST-073",
+        "EST-006",
+        "EST-001",
+        "EST-039",
+        "EST-004",
+        "EST-066",
+        "EST-076",
+        "EST-032",
+        "EST-041",
+        "EST-057",
+        "EST-078",
+        "EST-061",
+        "EST-028",
+        "EST-044",
+        "EST-008",
+        "EST-019"
+      ],
+      "occupancy_rate_percent": 40.0,
+      "is_scheduled": true
+    },
+    "INF107-2": {
+      "class_id": "INF107-2",
+      "course_id": "INF107",
+      "course_name": "Optimización Combinatoria",
+      "professor_id": "PROF-14",
+      "professor_name": "Dra. Frances Allen",
+      "room_id": "AULA-02",
+      "room_name": "Salón 02",
+      "slot_index": 34,
+      "day": "Jueves",
+      "start_hour": 12,
+      "end_hour": 13,
+      "duration_hours": 1,
+      "time_str": "Jueves 12:00-13:00",
+      "capacity": 50,
+      "enrolled_count": 0,
+      "enrolled_students": [],
+      "occupancy_rate_percent": 0.0,
+      "is_scheduled": true
+    },
+    "INF108-1": {
+      "class_id": "INF108-1",
+      "course_id": "INF108",
+      "course_name": "Taller de Desarrollo de Software",
+      "professor_id": "PROF-01",
+      "professor_name": "Dr. Alan Turing",
+      "room_id": "LAB-08",
+      "room_name": "Laboratorio 08",
+      "slot_index": 12,
+      "day": "Martes",
+      "start_hour": 10,
+      "end_hour": 12,
+      "duration_hours": 2,
+      "time_str": "Martes 10:00-12:00",
+      "capacity": 30,
+      "enrolled_count": 21,
+      "enrolled_students": [
+        "EST-057",
+        "EST-042",
+        "EST-077",
+        "EST-065",
+        "EST-014",
+        "EST-010",
+        "EST-066",
+        "EST-016",
+        "EST-071",
+        "EST-035",
+        "EST-063",
+        "EST-024",
+        "EST-043",
+        "EST-003",
+        "EST-060",
+        "EST-015",
+        "EST-038",
+        "EST-031",
+        "EST-064",
+        "EST-036",
+        "EST-052"
+      ],
+      "occupancy_rate_percent": 70.0,
+      "is_scheduled": true
+    },
+    "INF108-2": {
+      "class_id": "INF108-2",
+      "course_id": "INF108",
+      "course_name": "Taller de Desarrollo de Software",
+      "professor_id": "PROF-02",
+      "professor_name": "Dra. Ada Lovelace",
+      "room_id": "LAB-08",
+      "room_name": "Laboratorio 08",
+      "slot_index": 10,
+      "day": "Martes",
+      "start_hour": 8,
+      "end_hour": 10,
+      "duration_hours": 2,
+      "time_str": "Martes 08:00-10:00",
+      "capacity": 30,
+      "enrolled_count": 0,
+      "enrolled_students": [],
+      "occupancy_rate_percent": 0.0,
+      "is_scheduled": true
+    },
+    "MAT201-1": {
+      "class_id": "MAT201-1",
+      "course_id": "MAT201",
+      "course_name": "Cálculo en Varias Variables",
+      "professor_id": "PROF-03",
+      "professor_name": "Dr. John von Neumann",
+      "room_id": "AULA-02",
+      "room_name": "Salón 02",
+      "slot_index": 22,
+      "day": "Miércoles",
+      "start_hour": 10,
+      "end_hour": 12,
+      "duration_hours": 2,
+      "time_str": "Miércoles 10:00-12:00",
+      "capacity": 50,
+      "enrolled_count": 17,
+      "enrolled_students": [
+        "EST-078",
+        "EST-037",
+        "EST-013",
+        "EST-061",
+        "EST-072",
+        "EST-014",
+        "EST-030",
+        "EST-031",
+        "EST-011",
+        "EST-069",
+        "EST-029",
+        "EST-067",
+        "EST-058",
+        "EST-006",
+        "EST-068",
+        "EST-004",
+        "EST-074"
+      ],
+      "occupancy_rate_percent": 34.0,
+      "is_scheduled": true
+    },
+    "MAT201-2": {
+      "class_id": "MAT201-2",
+      "course_id": "MAT201",
+      "course_name": "Cálculo en Varias Variables",
+      "professor_id": "PROF-04",
+      "professor_name": "Dra. Grace Hopper",
+      "room_id": "AULA-02",
+      "room_name": "Salón 02",
+      "slot_index": 24,
+      "day": "Miércoles",
+      "start_hour": 12,
+      "end_hour": 14,
+      "duration_hours": 2,
+      "time_str": "Miércoles 12:00-14:00",
+      "capacity": 50,
+      "enrolled_count": 0,
+      "enrolled_students": [],
+      "occupancy_rate_percent": 0.0,
+      "is_scheduled": true
+    },
+    "MAT202-1": {
+      "class_id": "MAT202-1",
+      "course_id": "MAT202",
+      "course_name": "Álgebra Lineal Computacional",
+      "professor_id": "PROF-05",
+      "professor_name": "Dr. Claude Shannon",
+      "room_id": "AULA-01",
+      "room_name": "Salón 01",
+      "slot_index": 17,
+      "day": "Martes",
+      "start_hour": 15,
+      "end_hour": 17,
+      "duration_hours": 2,
+      "time_str": "Martes 15:00-17:00",
+      "capacity": 40,
+      "enrolled_count": 16,
+      "enrolled_students": [
+        "EST-064",
+        "EST-053",
+        "EST-076",
+        "EST-058",
+        "EST-073",
+        "EST-008",
+        "EST-001",
+        "EST-050",
+        "EST-065",
+        "EST-026",
+        "EST-013",
+        "EST-049",
+        "EST-063",
+        "EST-079",
+        "EST-028",
+        "EST-044"
+      ],
+      "occupancy_rate_percent": 40.0,
+      "is_scheduled": true
+    },
+    "MAT202-2": {
+      "class_id": "MAT202-2",
+      "course_id": "MAT202",
+      "course_name": "Álgebra Lineal Computacional",
+      "professor_id": "PROF-06",
+      "professor_name": "Dra. Margaret Hamilton",
+      "room_id": "AULA-05",
+      "room_name": "Salón 05",
+      "slot_index": 20,
+      "day": "Miércoles",
+      "start_hour": 8,
+      "end_hour": 9,
+      "duration_hours": 1,
+      "time_str": "Miércoles 08:00-09:00",
+      "capacity": 40,
+      "enrolled_count": 0,
+      "enrolled_students": [],
+      "occupancy_rate_percent": 0.0,
+      "is_scheduled": true
+    },
+    "MAT203-1": {
+      "class_id": "MAT203-1",
+      "course_id": "MAT203",
+      "course_name": "Probabilidad y Procesos Estocásticos",
+      "professor_id": "PROF-07",
+      "professor_name": "Dr. Donald Knuth",
+      "room_id": "AULA-01",
+      "room_name": "Salón 01",
+      "slot_index": 14,
+      "day": "Martes",
+      "start_hour": 12,
+      "end_hour": 14,
+      "duration_hours": 2,
+      "time_str": "Martes 12:00-14:00",
+      "capacity": 40,
+      "enrolled_count": 18,
+      "enrolled_students": [
+        "EST-041",
+        "EST-008",
+        "EST-056",
+        "EST-019",
+        "EST-050",
+        "EST-005",
+        "EST-045",
+        "EST-009",
+        "EST-037",
+        "EST-034",
+        "EST-036",
+        "EST-059",
+        "EST-039",
+        "EST-024",
+        "EST-027",
+        "EST-014",
+        "EST-055",
+        "EST-026"
+      ],
+      "occupancy_rate_percent": 45.0,
+      "is_scheduled": true
+    },
+    "MAT203-2": {
+      "class_id": "MAT203-2",
+      "course_id": "MAT203",
+      "course_name": "Probabilidad y Procesos Estocásticos",
+      "professor_id": "PROF-08",
+      "professor_name": "Dra. Barbara Liskov",
+      "room_id": "AULA-02",
+      "room_name": "Salón 02",
+      "slot_index": 16,
+      "day": "Martes",
+      "start_hour": 14,
+      "end_hour": 15,
+      "duration_hours": 1,
+      "time_str": "Martes 14:00-15:00",
+      "capacity": 60,
+      "enrolled_count": 0,
+      "enrolled_students": [],
+      "occupancy_rate_percent": 0.0,
+      "is_scheduled": true
+    },
+    "MAT204-1": {
+      "class_id": "MAT204-1",
+      "course_id": "MAT204",
+      "course_name": "Matemática Discreta",
+      "professor_id": "PROF-09",
+      "professor_name": "Dr. Edsger Dijkstra",
+      "room_id": "AULA-01",
+      "room_name": "Salón 01",
+      "slot_index": 31,
+      "day": "Jueves",
+      "start_hour": 9,
+      "end_hour": 10,
+      "duration_hours": 1,
+      "time_str": "Jueves 09:00-10:00",
+      "capacity": 40,
+      "enrolled_count": 17,
+      "enrolled_students": [
+        "EST-035",
+        "EST-075",
+        "EST-051",
+        "EST-026",
+        "EST-011",
+        "EST-027",
+        "EST-049",
+        "EST-005",
+        "EST-015",
+        "EST-047",
+        "EST-045",
+        "EST-019",
+        "EST-012",
+        "EST-014",
+        "EST-002",
+        "EST-023",
+        "EST-065"
+      ],
+      "occupancy_rate_percent": 42.5,
+      "is_scheduled": true
+    },
+    "FIS301-1": {
+      "class_id": "FIS301-1",
+      "course_id": "FIS301",
+      "course_name": "Física para Computación",
+      "professor_id": "PROF-10",
+      "professor_name": "Dra. Katherine Johnson",
+      "room_id": "AULA-02",
+      "room_name": "Salón 02",
+      "slot_index": 31,
+      "day": "Jueves",
+      "start_hour": 9,
+      "end_hour": 11,
+      "duration_hours": 2,
+      "time_str": "Jueves 09:00-11:00",
+      "capacity": 50,
+      "enrolled_count": 20,
+      "enrolled_students": [
+        "EST-076",
+        "EST-032",
+        "EST-059",
+        "EST-052",
+        "EST-029",
+        "EST-044",
+        "EST-033",
+        "EST-078",
+        "EST-008",
+        "EST-017",
+        "EST-079",
+        "EST-060",
+        "EST-025",
+        "EST-055",
+        "EST-038",
+        "EST-046",
+        "EST-070",
+        "EST-066",
+        "EST-016",
+        "EST-043"
+      ],
+      "occupancy_rate_percent": 40.0,
+      "is_scheduled": true
+    },
+    "FIS302-1": {
+      "class_id": "FIS302-1",
+      "course_id": "FIS302",
+      "course_name": "Laboratorio de Física Experimental",
+      "professor_id": "PROF-11",
+      "professor_name": "Dr. Ken Thompson",
+      "room_id": "LAB-04",
+      "room_name": "Laboratorio 04",
+      "slot_index": 30,
+      "day": "Jueves",
+      "start_hour": 8,
+      "end_hour": 9,
+      "duration_hours": 1,
+      "time_str": "Jueves 08:00-09:00",
+      "capacity": 40,
+      "enrolled_count": 31,
+      "enrolled_students": [
+        "EST-062",
+        "EST-071",
+        "EST-013",
+        "EST-080",
+        "EST-001",
+        "EST-039",
+        "EST-009",
+        "EST-017",
+        "EST-034",
+        "EST-055",
+        "EST-020",
+        "EST-043",
+        "EST-056",
+        "EST-052",
+        "EST-065",
+        "EST-003",
+        "EST-044",
+        "EST-023",
+        "EST-018",
+        "EST-049",
+        "EST-072",
+        "EST-063",
+        "EST-054",
+        "EST-074",
+        "EST-025",
+        "EST-021",
+        "EST-076",
+        "EST-041",
+        "EST-050",
+        "EST-073",
+        "EST-053"
+      ],
+      "occupancy_rate_percent": 77.5,
+      "is_scheduled": true
+    }
+  },
+  "room_schedule": {
+    "AULA-01": {
+      "room_id": "AULA-01",
+      "room_name": "Salón 01",
+      "capacity": 45,
+      "room_type": "teoria",
+      "hours_used": 11,
+      "total_available_slots": 50,
+      "utilization_rate_percent": 22.0,
+      "timeline": [
+        {
+          "class_id": "INF101-1",
+          "course_name": "Algoritmos y Complejidad",
+          "slot_index": 2,
+          "time_str": "Lunes 10:00-12:00",
+          "duration_hours": 2,
+          "enrolled_count": 28
+        },
+        {
+          "class_id": "MAT203-1",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "slot_index": 14,
+          "time_str": "Martes 12:00-14:00",
+          "duration_hours": 2,
+          "enrolled_count": 18
+        },
+        {
+          "class_id": "MAT202-1",
+          "course_name": "Álgebra Lineal Computacional",
+          "slot_index": 17,
+          "time_str": "Martes 15:00-17:00",
+          "duration_hours": 2,
+          "enrolled_count": 16
+        },
+        {
+          "class_id": "INF105-2",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "slot_index": 20,
+          "time_str": "Miércoles 08:00-10:00",
+          "duration_hours": 2,
+          "enrolled_count": 0
+        },
+        {
+          "class_id": "MAT204-1",
+          "course_name": "Matemática Discreta",
+          "slot_index": 31,
+          "time_str": "Jueves 09:00-10:00",
+          "duration_hours": 1,
+          "enrolled_count": 17
+        },
+        {
+          "class_id": "INF106-2",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "slot_index": 35,
+          "time_str": "Jueves 13:00-15:00",
+          "duration_hours": 2,
+          "enrolled_count": 0
+        }
+      ]
+    },
+    "AULA-02": {
+      "room_id": "AULA-02",
+      "room_name": "Salón 02",
+      "capacity": 60,
+      "room_type": "teoria",
+      "hours_used": 20,
+      "total_available_slots": 50,
+      "utilization_rate_percent": 40.0,
+      "timeline": [
+        {
+          "class_id": "INF101-2",
+          "course_name": "Algoritmos y Complejidad",
+          "slot_index": 0,
+          "time_str": "Lunes 08:00-10:00",
+          "duration_hours": 2,
+          "enrolled_count": 0
+        },
+        {
+          "class_id": "INF102-1",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "slot_index": 4,
+          "time_str": "Lunes 12:00-14:00",
+          "duration_hours": 2,
+          "enrolled_count": 23
+        },
+        {
+          "class_id": "INF102-2",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "slot_index": 6,
+          "time_str": "Lunes 14:00-16:00",
+          "duration_hours": 2,
+          "enrolled_count": 0
+        },
+        {
+          "class_id": "INF103-2",
+          "course_name": "Bases de Datos Relacionales",
+          "slot_index": 8,
+          "time_str": "Lunes 16:00-17:00",
+          "duration_hours": 1,
+          "enrolled_count": 0
+        },
+        {
+          "class_id": "INF103-1",
+          "course_name": "Bases de Datos Relacionales",
+          "slot_index": 9,
+          "time_str": "Lunes 17:00-18:00",
+          "duration_hours": 1,
+          "enrolled_count": 23
+        },
+        {
+          "class_id": "MAT203-2",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "slot_index": 16,
+          "time_str": "Martes 14:00-15:00",
+          "duration_hours": 1,
+          "enrolled_count": 0
+        },
+        {
+          "class_id": "INF105-1",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "slot_index": 17,
+          "time_str": "Martes 15:00-17:00",
+          "duration_hours": 2,
+          "enrolled_count": 18
+        },
+        {
+          "class_id": "INF106-1",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "slot_index": 19,
+          "time_str": "Martes 17:00-18:00",
+          "duration_hours": 1,
+          "enrolled_count": 15
+        },
+        {
+          "class_id": "MAT201-1",
+          "course_name": "Cálculo en Varias Variables",
+          "slot_index": 22,
+          "time_str": "Miércoles 10:00-12:00",
+          "duration_hours": 2,
+          "enrolled_count": 17
+        },
+        {
+          "class_id": "MAT201-2",
+          "course_name": "Cálculo en Varias Variables",
+          "slot_index": 24,
+          "time_str": "Miércoles 12:00-14:00",
+          "duration_hours": 2,
+          "enrolled_count": 0
+        },
+        {
+          "class_id": "FIS301-1",
+          "course_name": "Física para Computación",
+          "slot_index": 31,
+          "time_str": "Jueves 09:00-11:00",
+          "duration_hours": 2,
+          "enrolled_count": 20
+        },
+        {
+          "class_id": "INF107-1",
+          "course_name": "Optimización Combinatoria",
+          "slot_index": 33,
+          "time_str": "Jueves 11:00-12:00",
+          "duration_hours": 1,
+          "enrolled_count": 20
+        },
+        {
+          "class_id": "INF107-2",
+          "course_name": "Optimización Combinatoria",
+          "slot_index": 34,
+          "time_str": "Jueves 12:00-13:00",
+          "duration_hours": 1,
+          "enrolled_count": 0
+        }
+      ]
+    },
+    "AULA-03": {
+      "room_id": "AULA-03",
+      "room_name": "Salón 03",
+      "capacity": 35,
+      "room_type": "teoria",
+      "hours_used": 0,
+      "total_available_slots": 50,
+      "utilization_rate_percent": 0.0,
+      "timeline": []
+    },
+    "LAB-04": {
+      "room_id": "LAB-04",
+      "room_name": "Laboratorio 04",
+      "capacity": 40,
+      "room_type": "laboratorio",
+      "hours_used": 3,
+      "total_available_slots": 50,
+      "utilization_rate_percent": 6.0,
+      "timeline": [
+        {
+          "class_id": "INF104-1",
+          "course_name": "Laboratorio de Redes y Seguridad",
+          "slot_index": 26,
+          "time_str": "Miércoles 14:00-16:00",
+          "duration_hours": 2,
+          "enrolled_count": 13
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_name": "Laboratorio de Física Experimental",
+          "slot_index": 30,
+          "time_str": "Jueves 08:00-09:00",
+          "duration_hours": 1,
+          "enrolled_count": 31
+        }
+      ]
+    },
+    "AULA-05": {
+      "room_id": "AULA-05",
+      "room_name": "Salón 05",
+      "capacity": 45,
+      "room_type": "teoria",
+      "hours_used": 1,
+      "total_available_slots": 50,
+      "utilization_rate_percent": 2.0,
+      "timeline": [
+        {
+          "class_id": "MAT202-2",
+          "course_name": "Álgebra Lineal Computacional",
+          "slot_index": 20,
+          "time_str": "Miércoles 08:00-09:00",
+          "duration_hours": 1,
+          "enrolled_count": 0
+        }
+      ]
+    },
+    "AULA-06": {
+      "room_id": "AULA-06",
+      "room_name": "Salón 06",
+      "capacity": 80,
+      "room_type": "teoria",
+      "hours_used": 0,
+      "total_available_slots": 50,
+      "utilization_rate_percent": 0.0,
+      "timeline": []
+    },
+    "AULA-07": {
+      "room_id": "AULA-07",
+      "room_name": "Salón 07",
+      "capacity": 45,
+      "room_type": "teoria",
+      "hours_used": 0,
+      "total_available_slots": 50,
+      "utilization_rate_percent": 0.0,
+      "timeline": []
+    },
+    "LAB-08": {
+      "room_id": "LAB-08",
+      "room_name": "Laboratorio 08",
+      "capacity": 30,
+      "room_type": "laboratorio",
+      "hours_used": 6,
+      "total_available_slots": 50,
+      "utilization_rate_percent": 12.0,
+      "timeline": [
+        {
+          "class_id": "INF108-2",
+          "course_name": "Taller de Desarrollo de Software",
+          "slot_index": 10,
+          "time_str": "Martes 08:00-10:00",
+          "duration_hours": 2,
+          "enrolled_count": 0
+        },
+        {
+          "class_id": "INF108-1",
+          "course_name": "Taller de Desarrollo de Software",
+          "slot_index": 12,
+          "time_str": "Martes 10:00-12:00",
+          "duration_hours": 2,
+          "enrolled_count": 21
+        },
+        {
+          "class_id": "INF104-2",
+          "course_name": "Laboratorio de Redes y Seguridad",
+          "slot_index": 28,
+          "time_str": "Miércoles 16:00-18:00",
+          "duration_hours": 2,
+          "enrolled_count": 0
+        }
+      ]
+    }
+  },
+  "professor_schedule": {
+    "PROF-01": {
+      "professor_id": "PROF-01",
+      "professor_name": "Dr. Alan Turing",
+      "assigned_hours": 4,
+      "max_hours": 20,
+      "workload_percent": 20.0,
+      "classes": [
+        {
+          "class_id": "INF101-1",
+          "course_name": "Algoritmos y Complejidad",
+          "room_id": "AULA-01",
+          "time_str": "Lunes 10:00-12:00",
+          "duration_hours": 2
+        },
+        {
+          "class_id": "INF108-1",
+          "course_name": "Taller de Desarrollo de Software",
+          "room_id": "LAB-08",
+          "time_str": "Martes 10:00-12:00",
+          "duration_hours": 2
+        }
+      ]
+    },
+    "PROF-02": {
+      "professor_id": "PROF-02",
+      "professor_name": "Dra. Ada Lovelace",
+      "assigned_hours": 4,
+      "max_hours": 20,
+      "workload_percent": 20.0,
+      "classes": [
+        {
+          "class_id": "INF101-2",
+          "course_name": "Algoritmos y Complejidad",
+          "room_id": "AULA-02",
+          "time_str": "Lunes 08:00-10:00",
+          "duration_hours": 2
+        },
+        {
+          "class_id": "INF108-2",
+          "course_name": "Taller de Desarrollo de Software",
+          "room_id": "LAB-08",
+          "time_str": "Martes 08:00-10:00",
+          "duration_hours": 2
+        }
+      ]
+    },
+    "PROF-03": {
+      "professor_id": "PROF-03",
+      "professor_name": "Dr. John von Neumann",
+      "assigned_hours": 4,
+      "max_hours": 24,
+      "workload_percent": 16.67,
+      "classes": [
+        {
+          "class_id": "INF102-1",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "room_id": "AULA-02",
+          "time_str": "Lunes 12:00-14:00",
+          "duration_hours": 2
+        },
+        {
+          "class_id": "MAT201-1",
+          "course_name": "Cálculo en Varias Variables",
+          "room_id": "AULA-02",
+          "time_str": "Miércoles 10:00-12:00",
+          "duration_hours": 2
+        }
+      ]
+    },
+    "PROF-04": {
+      "professor_id": "PROF-04",
+      "professor_name": "Dra. Grace Hopper",
+      "assigned_hours": 4,
+      "max_hours": 16,
+      "workload_percent": 25.0,
+      "classes": [
+        {
+          "class_id": "INF102-2",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "room_id": "AULA-02",
+          "time_str": "Lunes 14:00-16:00",
+          "duration_hours": 2
+        },
+        {
+          "class_id": "MAT201-2",
+          "course_name": "Cálculo en Varias Variables",
+          "room_id": "AULA-02",
+          "time_str": "Miércoles 12:00-14:00",
+          "duration_hours": 2
+        }
+      ]
+    },
+    "PROF-05": {
+      "professor_id": "PROF-05",
+      "professor_name": "Dr. Claude Shannon",
+      "assigned_hours": 3,
+      "max_hours": 24,
+      "workload_percent": 12.5,
+      "classes": [
+        {
+          "class_id": "INF103-1",
+          "course_name": "Bases de Datos Relacionales",
+          "room_id": "AULA-02",
+          "time_str": "Lunes 17:00-18:00",
+          "duration_hours": 1
+        },
+        {
+          "class_id": "MAT202-1",
+          "course_name": "Álgebra Lineal Computacional",
+          "room_id": "AULA-01",
+          "time_str": "Martes 15:00-17:00",
+          "duration_hours": 2
+        }
+      ]
+    },
+    "PROF-06": {
+      "professor_id": "PROF-06",
+      "professor_name": "Dra. Margaret Hamilton",
+      "assigned_hours": 2,
+      "max_hours": 20,
+      "workload_percent": 10.0,
+      "classes": [
+        {
+          "class_id": "INF103-2",
+          "course_name": "Bases de Datos Relacionales",
+          "room_id": "AULA-02",
+          "time_str": "Lunes 16:00-17:00",
+          "duration_hours": 1
+        },
+        {
+          "class_id": "MAT202-2",
+          "course_name": "Álgebra Lineal Computacional",
+          "room_id": "AULA-05",
+          "time_str": "Miércoles 08:00-09:00",
+          "duration_hours": 1
+        }
+      ]
+    },
+    "PROF-07": {
+      "professor_id": "PROF-07",
+      "professor_name": "Dr. Donald Knuth",
+      "assigned_hours": 4,
+      "max_hours": 20,
+      "workload_percent": 20.0,
+      "classes": [
+        {
+          "class_id": "INF104-1",
+          "course_name": "Laboratorio de Redes y Seguridad",
+          "room_id": "LAB-04",
+          "time_str": "Miércoles 14:00-16:00",
+          "duration_hours": 2
+        },
+        {
+          "class_id": "MAT203-1",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "room_id": "AULA-01",
+          "time_str": "Martes 12:00-14:00",
+          "duration_hours": 2
+        }
+      ]
+    },
+    "PROF-08": {
+      "professor_id": "PROF-08",
+      "professor_name": "Dra. Barbara Liskov",
+      "assigned_hours": 3,
+      "max_hours": 24,
+      "workload_percent": 12.5,
+      "classes": [
+        {
+          "class_id": "INF104-2",
+          "course_name": "Laboratorio de Redes y Seguridad",
+          "room_id": "LAB-08",
+          "time_str": "Miércoles 16:00-18:00",
+          "duration_hours": 2
+        },
+        {
+          "class_id": "MAT203-2",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "room_id": "AULA-02",
+          "time_str": "Martes 14:00-15:00",
+          "duration_hours": 1
+        }
+      ]
+    },
+    "PROF-09": {
+      "professor_id": "PROF-09",
+      "professor_name": "Dr. Edsger Dijkstra",
+      "assigned_hours": 3,
+      "max_hours": 24,
+      "workload_percent": 12.5,
+      "classes": [
+        {
+          "class_id": "INF105-1",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "room_id": "AULA-02",
+          "time_str": "Martes 15:00-17:00",
+          "duration_hours": 2
+        },
+        {
+          "class_id": "MAT204-1",
+          "course_name": "Matemática Discreta",
+          "room_id": "AULA-01",
+          "time_str": "Jueves 09:00-10:00",
+          "duration_hours": 1
+        }
+      ]
+    },
+    "PROF-10": {
+      "professor_id": "PROF-10",
+      "professor_name": "Dra. Katherine Johnson",
+      "assigned_hours": 4,
+      "max_hours": 16,
+      "workload_percent": 25.0,
+      "classes": [
+        {
+          "class_id": "INF105-2",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "room_id": "AULA-01",
+          "time_str": "Miércoles 08:00-10:00",
+          "duration_hours": 2
+        },
+        {
+          "class_id": "FIS301-1",
+          "course_name": "Física para Computación",
+          "room_id": "AULA-02",
+          "time_str": "Jueves 09:00-11:00",
+          "duration_hours": 2
+        }
+      ]
+    },
+    "PROF-11": {
+      "professor_id": "PROF-11",
+      "professor_name": "Dr. Ken Thompson",
+      "assigned_hours": 2,
+      "max_hours": 20,
+      "workload_percent": 10.0,
+      "classes": [
+        {
+          "class_id": "INF106-1",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "room_id": "AULA-02",
+          "time_str": "Martes 17:00-18:00",
+          "duration_hours": 1
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_name": "Laboratorio de Física Experimental",
+          "room_id": "LAB-04",
+          "time_str": "Jueves 08:00-09:00",
+          "duration_hours": 1
+        }
+      ]
+    },
+    "PROF-12": {
+      "professor_id": "PROF-12",
+      "professor_name": "Dra. Radia Perlman",
+      "assigned_hours": 2,
+      "max_hours": 20,
+      "workload_percent": 10.0,
+      "classes": [
+        {
+          "class_id": "INF106-2",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "room_id": "AULA-01",
+          "time_str": "Jueves 13:00-15:00",
+          "duration_hours": 2
+        }
+      ]
+    },
+    "PROF-13": {
+      "professor_id": "PROF-13",
+      "professor_name": "Dr. Dennis Ritchie",
+      "assigned_hours": 1,
+      "max_hours": 20,
+      "workload_percent": 5.0,
+      "classes": [
+        {
+          "class_id": "INF107-1",
+          "course_name": "Optimización Combinatoria",
+          "room_id": "AULA-02",
+          "time_str": "Jueves 11:00-12:00",
+          "duration_hours": 1
+        }
+      ]
+    },
+    "PROF-14": {
+      "professor_id": "PROF-14",
+      "professor_name": "Dra. Frances Allen",
+      "assigned_hours": 1,
+      "max_hours": 16,
+      "workload_percent": 6.25,
+      "classes": [
+        {
+          "class_id": "INF107-2",
+          "course_name": "Optimización Combinatoria",
+          "room_id": "AULA-02",
+          "time_str": "Jueves 12:00-13:00",
+          "duration_hours": 1
+        }
+      ]
+    }
+  },
+  "student_schedule": {
+    "EST-001": {
+      "student_id": "EST-001",
+      "student_name": "Estudiante 001",
+      "priority_score": 4.54,
+      "requested_courses": [
+        "FIS302",
+        "INF107",
+        "MAT202"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        },
+        {
+          "class_id": "MAT202-1",
+          "course_id": "MAT202",
+          "course_name": "Álgebra Lineal Computacional",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Claude Shannon"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 4,
+      "has_schedule_clashes": false
+    },
+    "EST-002": {
+      "student_id": "EST-002",
+      "student_name": "Estudiante 002",
+      "priority_score": 3.51,
+      "requested_courses": [
+        "INF104",
+        "INF103",
+        "MAT204"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF104-1",
+          "course_id": "INF104",
+          "course_name": "Laboratorio de Redes y Seguridad",
+          "time_str": "Miércoles 14:00-16:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "MAT204-1",
+          "course_id": "MAT204",
+          "course_name": "Matemática Discreta",
+          "time_str": "Jueves 09:00-10:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Edsger Dijkstra"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 4,
+      "has_schedule_clashes": false
+    },
+    "EST-003": {
+      "student_id": "EST-003",
+      "student_name": "Estudiante 003",
+      "priority_score": 3.88,
+      "requested_courses": [
+        "INF106",
+        "FIS302",
+        "INF108",
+        "INF103"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF106-1",
+          "course_id": "INF106",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "time_str": "Martes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-004": {
+      "student_id": "EST-004",
+      "student_name": "Estudiante 004",
+      "priority_score": 4.16,
+      "requested_courses": [
+        "INF101",
+        "INF107",
+        "INF102",
+        "MAT201"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        },
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "MAT201-1",
+          "course_id": "MAT201",
+          "course_name": "Cálculo en Varias Variables",
+          "time_str": "Miércoles 10:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 7,
+      "has_schedule_clashes": false
+    },
+    "EST-005": {
+      "student_id": "EST-005",
+      "student_name": "Estudiante 005",
+      "priority_score": 4.03,
+      "requested_courses": [
+        "MAT203",
+        "MAT204",
+        "INF103",
+        "INF101"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "MAT203-1",
+          "course_id": "MAT203",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "time_str": "Martes 12:00-14:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "MAT204-1",
+          "course_id": "MAT204",
+          "course_name": "Matemática Discreta",
+          "time_str": "Jueves 09:00-10:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-006": {
+      "student_id": "EST-006",
+      "student_name": "Estudiante 006",
+      "priority_score": 3.45,
+      "requested_courses": [
+        "INF107",
+        "INF103",
+        "MAT201"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        },
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "MAT201-1",
+          "course_id": "MAT201",
+          "course_name": "Cálculo en Varias Variables",
+          "time_str": "Miércoles 10:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 4,
+      "has_schedule_clashes": false
+    },
+    "EST-007": {
+      "student_id": "EST-007",
+      "student_name": "Estudiante 007",
+      "priority_score": 3.27,
+      "requested_courses": [
+        "INF106",
+        "INF102",
+        "INF103"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF106-1",
+          "course_id": "INF106",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "time_str": "Martes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 4,
+      "has_schedule_clashes": false
+    },
+    "EST-008": {
+      "student_id": "EST-008",
+      "student_name": "Estudiante 008",
+      "priority_score": 4.61,
+      "requested_courses": [
+        "MAT203",
+        "FIS301",
+        "MAT202",
+        "INF107"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "MAT203-1",
+          "course_id": "MAT203",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "time_str": "Martes 12:00-14:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        },
+        {
+          "class_id": "MAT202-1",
+          "course_id": "MAT202",
+          "course_name": "Álgebra Lineal Computacional",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 7,
+      "has_schedule_clashes": false
+    },
+    "EST-009": {
+      "student_id": "EST-009",
+      "student_name": "Estudiante 009",
+      "priority_score": 4.09,
+      "requested_courses": [
+        "FIS302",
+        "MAT203",
+        "INF102",
+        "INF105"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "MAT203-1",
+          "course_id": "MAT203",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "time_str": "Martes 12:00-14:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "INF105-1",
+          "course_id": "INF105",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Edsger Dijkstra"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 7,
+      "has_schedule_clashes": false
+    },
+    "EST-010": {
+      "student_id": "EST-010",
+      "student_name": "Estudiante 010",
+      "priority_score": 3.58,
+      "requested_courses": [
+        "INF108",
+        "INF105",
+        "INF104"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF105-1",
+          "course_id": "INF105",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF104-1",
+          "course_id": "INF104",
+          "course_name": "Laboratorio de Redes y Seguridad",
+          "time_str": "Miércoles 14:00-16:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Donald Knuth"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-011": {
+      "student_id": "EST-011",
+      "student_name": "Estudiante 011",
+      "priority_score": 4.86,
+      "requested_courses": [
+        "INF101",
+        "MAT204",
+        "MAT201"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "MAT204-1",
+          "course_id": "MAT204",
+          "course_name": "Matemática Discreta",
+          "time_str": "Jueves 09:00-10:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "MAT201-1",
+          "course_id": "MAT201",
+          "course_name": "Cálculo en Varias Variables",
+          "time_str": "Miércoles 10:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-012": {
+      "student_id": "EST-012",
+      "student_name": "Estudiante 012",
+      "priority_score": 3.68,
+      "requested_courses": [
+        "INF101",
+        "INF103",
+        "MAT204"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "MAT204-1",
+          "course_id": "MAT204",
+          "course_name": "Matemática Discreta",
+          "time_str": "Jueves 09:00-10:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Edsger Dijkstra"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 4,
+      "has_schedule_clashes": false
+    },
+    "EST-013": {
+      "student_id": "EST-013",
+      "student_name": "Estudiante 013",
+      "priority_score": 4.78,
+      "requested_courses": [
+        "FIS302",
+        "MAT201",
+        "INF102",
+        "MAT202"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "MAT201-1",
+          "course_id": "MAT201",
+          "course_name": "Cálculo en Varias Variables",
+          "time_str": "Miércoles 10:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "MAT202-1",
+          "course_id": "MAT202",
+          "course_name": "Álgebra Lineal Computacional",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Claude Shannon"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 7,
+      "has_schedule_clashes": false
+    },
+    "EST-014": {
+      "student_id": "EST-014",
+      "student_name": "Estudiante 014",
+      "priority_score": 3.7,
+      "requested_courses": [
+        "INF108",
+        "MAT201",
+        "MAT204",
+        "MAT203"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "MAT201-1",
+          "course_id": "MAT201",
+          "course_name": "Cálculo en Varias Variables",
+          "time_str": "Miércoles 10:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "MAT204-1",
+          "course_id": "MAT204",
+          "course_name": "Matemática Discreta",
+          "time_str": "Jueves 09:00-10:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "MAT203-1",
+          "course_id": "MAT203",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "time_str": "Martes 12:00-14:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Donald Knuth"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 7,
+      "has_schedule_clashes": false
+    },
+    "EST-015": {
+      "student_id": "EST-015",
+      "student_name": "Estudiante 015",
+      "priority_score": 3.56,
+      "requested_courses": [
+        "INF103",
+        "MAT204",
+        "INF108",
+        "INF101"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "MAT204-1",
+          "course_id": "MAT204",
+          "course_name": "Matemática Discreta",
+          "time_str": "Jueves 09:00-10:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-016": {
+      "student_id": "EST-016",
+      "student_name": "Estudiante 016",
+      "priority_score": 3.24,
+      "requested_courses": [
+        "INF108",
+        "INF102",
+        "FIS301"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-017": {
+      "student_id": "EST-017",
+      "student_name": "Estudiante 017",
+      "priority_score": 3.88,
+      "requested_courses": [
+        "FIS302",
+        "FIS301",
+        "INF104",
+        "INF106"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        },
+        {
+          "class_id": "INF104-1",
+          "course_id": "INF104",
+          "course_name": "Laboratorio de Redes y Seguridad",
+          "time_str": "Miércoles 14:00-16:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "INF106-1",
+          "course_id": "INF106",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "time_str": "Martes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Ken Thompson"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-018": {
+      "student_id": "EST-018",
+      "student_name": "Estudiante 018",
+      "priority_score": 4.33,
+      "requested_courses": [
+        "INF105",
+        "INF101",
+        "FIS302",
+        "INF102"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF105-1",
+          "course_id": "INF105",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 7,
+      "has_schedule_clashes": false
+    },
+    "EST-019": {
+      "student_id": "EST-019",
+      "student_name": "Estudiante 019",
+      "priority_score": 4.32,
+      "requested_courses": [
+        "MAT203",
+        "INF106",
+        "MAT204",
+        "INF107"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "MAT203-1",
+          "course_id": "MAT203",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "time_str": "Martes 12:00-14:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "INF106-1",
+          "course_id": "INF106",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "time_str": "Martes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "MAT204-1",
+          "course_id": "MAT204",
+          "course_name": "Matemática Discreta",
+          "time_str": "Jueves 09:00-10:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-020": {
+      "student_id": "EST-020",
+      "student_name": "Estudiante 020",
+      "priority_score": 4.73,
+      "requested_courses": [
+        "INF106",
+        "FIS302",
+        "INF103"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF106-1",
+          "course_id": "INF106",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "time_str": "Martes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 3,
+      "has_schedule_clashes": false
+    },
+    "EST-021": {
+      "student_id": "EST-021",
+      "student_name": "Estudiante 021",
+      "priority_score": 3.23,
+      "requested_courses": [
+        "INF105",
+        "INF104",
+        "FIS302",
+        "INF106"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF105-1",
+          "course_id": "INF105",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF104-1",
+          "course_id": "INF104",
+          "course_name": "Laboratorio de Redes y Seguridad",
+          "time_str": "Miércoles 14:00-16:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF106-1",
+          "course_id": "INF106",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "time_str": "Martes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Ken Thompson"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-022": {
+      "student_id": "EST-022",
+      "student_name": "Estudiante 022",
+      "priority_score": 3.58,
+      "requested_courses": [
+        "INF106",
+        "INF102",
+        "INF105"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF106-1",
+          "course_id": "INF106",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "time_str": "Martes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "INF105-1",
+          "course_id": "INF105",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Edsger Dijkstra"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-023": {
+      "student_id": "EST-023",
+      "student_name": "Estudiante 023",
+      "priority_score": 3.24,
+      "requested_courses": [
+        "INF106",
+        "FIS302",
+        "MAT204"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF106-1",
+          "course_id": "INF106",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "time_str": "Martes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "MAT204-1",
+          "course_id": "MAT204",
+          "course_name": "Matemática Discreta",
+          "time_str": "Jueves 09:00-10:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Edsger Dijkstra"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 3,
+      "has_schedule_clashes": false
+    },
+    "EST-024": {
+      "student_id": "EST-024",
+      "student_name": "Estudiante 024",
+      "priority_score": 3.79,
+      "requested_courses": [
+        "INF105",
+        "INF108",
+        "MAT203"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF105-1",
+          "course_id": "INF105",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "MAT203-1",
+          "course_id": "MAT203",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "time_str": "Martes 12:00-14:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Donald Knuth"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-025": {
+      "student_id": "EST-025",
+      "student_name": "Estudiante 025",
+      "priority_score": 3.61,
+      "requested_courses": [
+        "INF102",
+        "FIS301",
+        "FIS302"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-026": {
+      "student_id": "EST-026",
+      "student_name": "Estudiante 026",
+      "priority_score": 3.21,
+      "requested_courses": [
+        "MAT204",
+        "INF101",
+        "MAT202",
+        "MAT203"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "MAT204-1",
+          "course_id": "MAT204",
+          "course_name": "Matemática Discreta",
+          "time_str": "Jueves 09:00-10:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "MAT202-1",
+          "course_id": "MAT202",
+          "course_name": "Álgebra Lineal Computacional",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "MAT203-1",
+          "course_id": "MAT203",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "time_str": "Martes 12:00-14:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Donald Knuth"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 7,
+      "has_schedule_clashes": false
+    },
+    "EST-027": {
+      "student_id": "EST-027",
+      "student_name": "Estudiante 027",
+      "priority_score": 4.57,
+      "requested_courses": [
+        "INF107",
+        "MAT204",
+        "INF103",
+        "MAT203"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        },
+        {
+          "class_id": "MAT204-1",
+          "course_id": "MAT204",
+          "course_name": "Matemática Discreta",
+          "time_str": "Jueves 09:00-10:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "MAT203-1",
+          "course_id": "MAT203",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "time_str": "Martes 12:00-14:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Donald Knuth"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-028": {
+      "student_id": "EST-028",
+      "student_name": "Estudiante 028",
+      "priority_score": 3.62,
+      "requested_courses": [
+        "INF101",
+        "INF104",
+        "INF107",
+        "MAT202"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF104-1",
+          "course_id": "INF104",
+          "course_name": "Laboratorio de Redes y Seguridad",
+          "time_str": "Miércoles 14:00-16:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        },
+        {
+          "class_id": "MAT202-1",
+          "course_id": "MAT202",
+          "course_name": "Álgebra Lineal Computacional",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Claude Shannon"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 7,
+      "has_schedule_clashes": false
+    },
+    "EST-029": {
+      "student_id": "EST-029",
+      "student_name": "Estudiante 029",
+      "priority_score": 4.25,
+      "requested_courses": [
+        "FIS301",
+        "INF102",
+        "MAT201",
+        "INF104"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        },
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "MAT201-1",
+          "course_id": "MAT201",
+          "course_name": "Cálculo en Varias Variables",
+          "time_str": "Miércoles 10:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "INF104-1",
+          "course_id": "INF104",
+          "course_name": "Laboratorio de Redes y Seguridad",
+          "time_str": "Miércoles 14:00-16:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Donald Knuth"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 8,
+      "has_schedule_clashes": false
+    },
+    "EST-030": {
+      "student_id": "EST-030",
+      "student_name": "Estudiante 030",
+      "priority_score": 3.73,
+      "requested_courses": [
+        "INF103",
+        "MAT201",
+        "INF102",
+        "INF106"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "MAT201-1",
+          "course_id": "MAT201",
+          "course_name": "Cálculo en Varias Variables",
+          "time_str": "Miércoles 10:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "INF106-1",
+          "course_id": "INF106",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "time_str": "Martes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Ken Thompson"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-031": {
+      "student_id": "EST-031",
+      "student_name": "Estudiante 031",
+      "priority_score": 3.3,
+      "requested_courses": [
+        "INF102",
+        "MAT201",
+        "INF108"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "MAT201-1",
+          "course_id": "MAT201",
+          "course_name": "Cálculo en Varias Variables",
+          "time_str": "Miércoles 10:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-032": {
+      "student_id": "EST-032",
+      "student_name": "Estudiante 032",
+      "priority_score": 4.86,
+      "requested_courses": [
+        "FIS301",
+        "INF105",
+        "INF107"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        },
+        {
+          "class_id": "INF105-1",
+          "course_id": "INF105",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-033": {
+      "student_id": "EST-033",
+      "student_name": "Estudiante 033",
+      "priority_score": 4.8,
+      "requested_courses": [
+        "INF102",
+        "FIS301",
+        "INF101"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-034": {
+      "student_id": "EST-034",
+      "student_name": "Estudiante 034",
+      "priority_score": 3.72,
+      "requested_courses": [
+        "FIS302",
+        "MAT203",
+        "INF103",
+        "INF101"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "MAT203-1",
+          "course_id": "MAT203",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "time_str": "Martes 12:00-14:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-035": {
+      "student_id": "EST-035",
+      "student_name": "Estudiante 035",
+      "priority_score": 4.35,
+      "requested_courses": [
+        "MAT204",
+        "INF108",
+        "INF104"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "MAT204-1",
+          "course_id": "MAT204",
+          "course_name": "Matemática Discreta",
+          "time_str": "Jueves 09:00-10:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF104-1",
+          "course_id": "INF104",
+          "course_name": "Laboratorio de Redes y Seguridad",
+          "time_str": "Miércoles 14:00-16:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Donald Knuth"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-036": {
+      "student_id": "EST-036",
+      "student_name": "Estudiante 036",
+      "priority_score": 4.66,
+      "requested_courses": [
+        "INF107",
+        "INF105",
+        "MAT203",
+        "INF108"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        },
+        {
+          "class_id": "INF105-1",
+          "course_id": "INF105",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "MAT203-1",
+          "course_id": "MAT203",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "time_str": "Martes 12:00-14:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 7,
+      "has_schedule_clashes": false
+    },
+    "EST-037": {
+      "student_id": "EST-037",
+      "student_name": "Estudiante 037",
+      "priority_score": 4.01,
+      "requested_courses": [
+        "MAT201",
+        "MAT203",
+        "INF101",
+        "INF102"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "MAT201-1",
+          "course_id": "MAT201",
+          "course_name": "Cálculo en Varias Variables",
+          "time_str": "Miércoles 10:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "MAT203-1",
+          "course_id": "MAT203",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "time_str": "Martes 12:00-14:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 8,
+      "has_schedule_clashes": false
+    },
+    "EST-038": {
+      "student_id": "EST-038",
+      "student_name": "Estudiante 038",
+      "priority_score": 3.38,
+      "requested_courses": [
+        "INF103",
+        "FIS301",
+        "INF108"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        },
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-039": {
+      "student_id": "EST-039",
+      "student_name": "Estudiante 039",
+      "priority_score": 4.22,
+      "requested_courses": [
+        "FIS302",
+        "INF107",
+        "MAT203"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        },
+        {
+          "class_id": "MAT203-1",
+          "course_id": "MAT203",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "time_str": "Martes 12:00-14:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Donald Knuth"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 4,
+      "has_schedule_clashes": false
+    },
+    "EST-040": {
+      "student_id": "EST-040",
+      "student_name": "Estudiante 040",
+      "priority_score": 3.43,
+      "requested_courses": [
+        "INF106",
+        "INF105",
+        "INF101"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF106-1",
+          "course_id": "INF106",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "time_str": "Martes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF105-1",
+          "course_id": "INF105",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-041": {
+      "student_id": "EST-041",
+      "student_name": "Estudiante 041",
+      "priority_score": 4.81,
+      "requested_courses": [
+        "MAT203",
+        "INF106",
+        "INF107",
+        "FIS302"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "MAT203-1",
+          "course_id": "MAT203",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "time_str": "Martes 12:00-14:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "INF106-1",
+          "course_id": "INF106",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "time_str": "Martes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-042": {
+      "student_id": "EST-042",
+      "student_name": "Estudiante 042",
+      "priority_score": 4.44,
+      "requested_courses": [
+        "INF108",
+        "INF101",
+        "INF103",
+        "INF102"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 7,
+      "has_schedule_clashes": false
+    },
+    "EST-043": {
+      "student_id": "EST-043",
+      "student_name": "Estudiante 043",
+      "priority_score": 4.59,
+      "requested_courses": [
+        "INF105",
+        "FIS302",
+        "INF108",
+        "FIS301"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF105-1",
+          "course_id": "INF105",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 7,
+      "has_schedule_clashes": false
+    },
+    "EST-044": {
+      "student_id": "EST-044",
+      "student_name": "Estudiante 044",
+      "priority_score": 3.57,
+      "requested_courses": [
+        "FIS301",
+        "FIS302",
+        "INF107",
+        "MAT202"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        },
+        {
+          "class_id": "MAT202-1",
+          "course_id": "MAT202",
+          "course_name": "Álgebra Lineal Computacional",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Claude Shannon"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-045": {
+      "student_id": "EST-045",
+      "student_name": "Estudiante 045",
+      "priority_score": 4.45,
+      "requested_courses": [
+        "INF103",
+        "MAT203",
+        "MAT204"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "MAT203-1",
+          "course_id": "MAT203",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "time_str": "Martes 12:00-14:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "MAT204-1",
+          "course_id": "MAT204",
+          "course_name": "Matemática Discreta",
+          "time_str": "Jueves 09:00-10:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Edsger Dijkstra"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 4,
+      "has_schedule_clashes": false
+    },
+    "EST-046": {
+      "student_id": "EST-046",
+      "student_name": "Estudiante 046",
+      "priority_score": 3.69,
+      "requested_courses": [
+        "INF107",
+        "INF105",
+        "FIS301",
+        "INF103"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        },
+        {
+          "class_id": "INF105-1",
+          "course_id": "INF105",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        },
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-047": {
+      "student_id": "EST-047",
+      "student_name": "Estudiante 047",
+      "priority_score": 3.32,
+      "requested_courses": [
+        "INF102",
+        "MAT204",
+        "INF101",
+        "INF103"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "MAT204-1",
+          "course_id": "MAT204",
+          "course_name": "Matemática Discreta",
+          "time_str": "Jueves 09:00-10:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-048": {
+      "student_id": "EST-048",
+      "student_name": "Estudiante 048",
+      "priority_score": 4.22,
+      "requested_courses": [
+        "INF102",
+        "INF101",
+        "INF103"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-049": {
+      "student_id": "EST-049",
+      "student_name": "Estudiante 049",
+      "priority_score": 4.3,
+      "requested_courses": [
+        "INF102",
+        "MAT204",
+        "FIS302",
+        "MAT202"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "MAT204-1",
+          "course_id": "MAT204",
+          "course_name": "Matemática Discreta",
+          "time_str": "Jueves 09:00-10:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "MAT202-1",
+          "course_id": "MAT202",
+          "course_name": "Álgebra Lineal Computacional",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Claude Shannon"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-050": {
+      "student_id": "EST-050",
+      "student_name": "Estudiante 050",
+      "priority_score": 4.26,
+      "requested_courses": [
+        "MAT203",
+        "INF104",
+        "MAT202",
+        "FIS302"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "MAT203-1",
+          "course_id": "MAT203",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "time_str": "Martes 12:00-14:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "INF104-1",
+          "course_id": "INF104",
+          "course_name": "Laboratorio de Redes y Seguridad",
+          "time_str": "Miércoles 14:00-16:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "MAT202-1",
+          "course_id": "MAT202",
+          "course_name": "Álgebra Lineal Computacional",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 7,
+      "has_schedule_clashes": false
+    },
+    "EST-051": {
+      "student_id": "EST-051",
+      "student_name": "Estudiante 051",
+      "priority_score": 3.72,
+      "requested_courses": [
+        "MAT204",
+        "INF105",
+        "INF103"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "MAT204-1",
+          "course_id": "MAT204",
+          "course_name": "Matemática Discreta",
+          "time_str": "Jueves 09:00-10:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF105-1",
+          "course_id": "INF105",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 4,
+      "has_schedule_clashes": false
+    },
+    "EST-052": {
+      "student_id": "EST-052",
+      "student_name": "Estudiante 052",
+      "priority_score": 4.36,
+      "requested_courses": [
+        "FIS301",
+        "FIS302",
+        "INF101",
+        "INF108"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 7,
+      "has_schedule_clashes": false
+    },
+    "EST-053": {
+      "student_id": "EST-053",
+      "student_name": "Estudiante 053",
+      "priority_score": 3.2,
+      "requested_courses": [
+        "MAT202",
+        "INF102",
+        "INF101",
+        "FIS302"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "MAT202-1",
+          "course_id": "MAT202",
+          "course_name": "Álgebra Lineal Computacional",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 7,
+      "has_schedule_clashes": false
+    },
+    "EST-054": {
+      "student_id": "EST-054",
+      "student_name": "Estudiante 054",
+      "priority_score": 3.9,
+      "requested_courses": [
+        "INF101",
+        "INF106",
+        "FIS302",
+        "INF105"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF106-1",
+          "course_id": "INF106",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "time_str": "Martes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF105-1",
+          "course_id": "INF105",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Edsger Dijkstra"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-055": {
+      "student_id": "EST-055",
+      "student_name": "Estudiante 055",
+      "priority_score": 3.4,
+      "requested_courses": [
+        "FIS302",
+        "FIS301",
+        "INF102",
+        "MAT203"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        },
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "MAT203-1",
+          "course_id": "MAT203",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "time_str": "Martes 12:00-14:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Donald Knuth"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 7,
+      "has_schedule_clashes": false
+    },
+    "EST-056": {
+      "student_id": "EST-056",
+      "student_name": "Estudiante 056",
+      "priority_score": 4.42,
+      "requested_courses": [
+        "MAT203",
+        "FIS302",
+        "INF101"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "MAT203-1",
+          "course_id": "MAT203",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "time_str": "Martes 12:00-14:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-057": {
+      "student_id": "EST-057",
+      "student_name": "Estudiante 057",
+      "priority_score": 4.78,
+      "requested_courses": [
+        "INF108",
+        "INF104",
+        "INF107"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF104-1",
+          "course_id": "INF104",
+          "course_name": "Laboratorio de Redes y Seguridad",
+          "time_str": "Miércoles 14:00-16:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-058": {
+      "student_id": "EST-058",
+      "student_name": "Estudiante 058",
+      "priority_score": 3.72,
+      "requested_courses": [
+        "INF103",
+        "MAT202",
+        "MAT201"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "MAT202-1",
+          "course_id": "MAT202",
+          "course_name": "Álgebra Lineal Computacional",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "MAT201-1",
+          "course_id": "MAT201",
+          "course_name": "Cálculo en Varias Variables",
+          "time_str": "Miércoles 10:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-059": {
+      "student_id": "EST-059",
+      "student_name": "Estudiante 059",
+      "priority_score": 4.54,
+      "requested_courses": [
+        "FIS301",
+        "INF104",
+        "MAT203"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        },
+        {
+          "class_id": "INF104-1",
+          "course_id": "INF104",
+          "course_name": "Laboratorio de Redes y Seguridad",
+          "time_str": "Miércoles 14:00-16:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "MAT203-1",
+          "course_id": "MAT203",
+          "course_name": "Probabilidad y Procesos Estocásticos",
+          "time_str": "Martes 12:00-14:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Donald Knuth"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-060": {
+      "student_id": "EST-060",
+      "student_name": "Estudiante 060",
+      "priority_score": 3.72,
+      "requested_courses": [
+        "INF105",
+        "FIS301",
+        "INF108"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF105-1",
+          "course_id": "INF105",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        },
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-061": {
+      "student_id": "EST-061",
+      "student_name": "Estudiante 061",
+      "priority_score": 4.27,
+      "requested_courses": [
+        "INF101",
+        "MAT201",
+        "INF107"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "MAT201-1",
+          "course_id": "MAT201",
+          "course_name": "Cálculo en Varias Variables",
+          "time_str": "Miércoles 10:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-062": {
+      "student_id": "EST-062",
+      "student_name": "Estudiante 062",
+      "priority_score": 4.9,
+      "requested_courses": [
+        "FIS302",
+        "INF101",
+        "INF106"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF106-1",
+          "course_id": "INF106",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "time_str": "Martes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Ken Thompson"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 4,
+      "has_schedule_clashes": false
+    },
+    "EST-063": {
+      "student_id": "EST-063",
+      "student_name": "Estudiante 063",
+      "priority_score": 3.95,
+      "requested_courses": [
+        "INF102",
+        "INF108",
+        "FIS302",
+        "MAT202"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "MAT202-1",
+          "course_id": "MAT202",
+          "course_name": "Álgebra Lineal Computacional",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Claude Shannon"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 7,
+      "has_schedule_clashes": false
+    },
+    "EST-064": {
+      "student_id": "EST-064",
+      "student_name": "Estudiante 064",
+      "priority_score": 3.3,
+      "requested_courses": [
+        "MAT202",
+        "INF102",
+        "INF108"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "MAT202-1",
+          "course_id": "MAT202",
+          "course_name": "Álgebra Lineal Computacional",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-065": {
+      "student_id": "EST-065",
+      "student_name": "Estudiante 065",
+      "priority_score": 4.03,
+      "requested_courses": [
+        "INF108",
+        "FIS302",
+        "MAT202",
+        "MAT204"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "MAT202-1",
+          "course_id": "MAT202",
+          "course_name": "Álgebra Lineal Computacional",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "MAT204-1",
+          "course_id": "MAT204",
+          "course_name": "Matemática Discreta",
+          "time_str": "Jueves 09:00-10:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Edsger Dijkstra"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-066": {
+      "student_id": "EST-066",
+      "student_name": "Estudiante 066",
+      "priority_score": 3.4,
+      "requested_courses": [
+        "INF108",
+        "INF107",
+        "FIS301",
+        "INF103"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        },
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        },
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-067": {
+      "student_id": "EST-067",
+      "student_name": "Estudiante 067",
+      "priority_score": 3.99,
+      "requested_courses": [
+        "INF103",
+        "INF101",
+        "MAT201"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "MAT201-1",
+          "course_id": "MAT201",
+          "course_name": "Cálculo en Varias Variables",
+          "time_str": "Miércoles 10:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-068": {
+      "student_id": "EST-068",
+      "student_name": "Estudiante 068",
+      "priority_score": 3.45,
+      "requested_courses": [
+        "INF105",
+        "INF102",
+        "MAT201"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF105-1",
+          "course_id": "INF105",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "MAT201-1",
+          "course_id": "MAT201",
+          "course_name": "Cálculo en Varias Variables",
+          "time_str": "Miércoles 10:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-069": {
+      "student_id": "EST-069",
+      "student_name": "Estudiante 069",
+      "priority_score": 4.38,
+      "requested_courses": [
+        "INF101",
+        "INF105",
+        "MAT201"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF105-1",
+          "course_id": "INF105",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "MAT201-1",
+          "course_id": "MAT201",
+          "course_name": "Cálculo en Varias Variables",
+          "time_str": "Miércoles 10:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-070": {
+      "student_id": "EST-070",
+      "student_name": "Estudiante 070",
+      "priority_score": 3.61,
+      "requested_courses": [
+        "INF105",
+        "INF101",
+        "FIS301"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF105-1",
+          "course_id": "INF105",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-071": {
+      "student_id": "EST-071",
+      "student_name": "Estudiante 071",
+      "priority_score": 4.83,
+      "requested_courses": [
+        "FIS302",
+        "INF108",
+        "INF103"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 4,
+      "has_schedule_clashes": false
+    },
+    "EST-072": {
+      "student_id": "EST-072",
+      "student_name": "Estudiante 072",
+      "priority_score": 4.06,
+      "requested_courses": [
+        "INF101",
+        "MAT201",
+        "FIS302"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "MAT201-1",
+          "course_id": "MAT201",
+          "course_name": "Cálculo en Varias Variables",
+          "time_str": "Miércoles 10:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-073": {
+      "student_id": "EST-073",
+      "student_name": "Estudiante 073",
+      "priority_score": 3.51,
+      "requested_courses": [
+        "INF107",
+        "MAT202",
+        "INF104",
+        "FIS302"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        },
+        {
+          "class_id": "MAT202-1",
+          "course_id": "MAT202",
+          "course_name": "Álgebra Lineal Computacional",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "INF104-1",
+          "course_id": "INF104",
+          "course_name": "Laboratorio de Redes y Seguridad",
+          "time_str": "Miércoles 14:00-16:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-074": {
+      "student_id": "EST-074",
+      "student_name": "Estudiante 074",
+      "priority_score": 3.73,
+      "requested_courses": [
+        "INF107",
+        "INF101",
+        "FIS302",
+        "MAT201"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "MAT201-1",
+          "course_id": "MAT201",
+          "course_name": "Cálculo en Varias Variables",
+          "time_str": "Miércoles 10:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-075": {
+      "student_id": "EST-075",
+      "student_name": "Estudiante 075",
+      "priority_score": 4.25,
+      "requested_courses": [
+        "MAT204",
+        "INF102",
+        "INF105",
+        "INF104"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "MAT204-1",
+          "course_id": "MAT204",
+          "course_name": "Matemática Discreta",
+          "time_str": "Jueves 09:00-10:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF102-1",
+          "course_id": "INF102",
+          "course_name": "Estructuras de Datos Avanzadas",
+          "time_str": "Lunes 12:00-14:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "INF105-1",
+          "course_id": "INF105",
+          "course_name": "Sistemas Operativos Distribuidos",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Edsger Dijkstra"
+        },
+        {
+          "class_id": "INF104-1",
+          "course_id": "INF104",
+          "course_name": "Laboratorio de Redes y Seguridad",
+          "time_str": "Miércoles 14:00-16:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Donald Knuth"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 7,
+      "has_schedule_clashes": false
+    },
+    "EST-076": {
+      "student_id": "EST-076",
+      "student_name": "Estudiante 076",
+      "priority_score": 4.88,
+      "requested_courses": [
+        "FIS301",
+        "MAT202",
+        "INF107",
+        "FIS302"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        },
+        {
+          "class_id": "MAT202-1",
+          "course_id": "MAT202",
+          "course_name": "Álgebra Lineal Computacional",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Claude Shannon"
+        },
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        },
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-077": {
+      "student_id": "EST-077",
+      "student_name": "Estudiante 077",
+      "priority_score": 4.42,
+      "requested_courses": [
+        "INF108",
+        "INF104",
+        "INF101"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF108-1",
+          "course_id": "INF108",
+          "course_name": "Taller de Desarrollo de Software",
+          "time_str": "Martes 10:00-12:00",
+          "room_id": "LAB-08",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "INF104-1",
+          "course_id": "INF104",
+          "course_name": "Laboratorio de Redes y Seguridad",
+          "time_str": "Miércoles 14:00-16:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Donald Knuth"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 6,
+      "has_schedule_clashes": false
+    },
+    "EST-078": {
+      "student_id": "EST-078",
+      "student_name": "Estudiante 078",
+      "priority_score": 4.71,
+      "requested_courses": [
+        "MAT201",
+        "FIS301",
+        "INF107"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "MAT201-1",
+          "course_id": "MAT201",
+          "course_name": "Cálculo en Varias Variables",
+          "time_str": "Miércoles 10:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. John von Neumann"
+        },
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        },
+        {
+          "class_id": "INF107-1",
+          "course_id": "INF107",
+          "course_name": "Optimización Combinatoria",
+          "time_str": "Jueves 11:00-12:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Dennis Ritchie"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 5,
+      "has_schedule_clashes": false
+    },
+    "EST-079": {
+      "student_id": "EST-079",
+      "student_name": "Estudiante 079",
+      "priority_score": 3.88,
+      "requested_courses": [
+        "INF106",
+        "FIS301",
+        "INF101",
+        "MAT202"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "INF106-1",
+          "course_id": "INF106",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "time_str": "Martes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "FIS301-1",
+          "course_id": "FIS301",
+          "course_name": "Física para Computación",
+          "time_str": "Jueves 09:00-11:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dra. Katherine Johnson"
+        },
+        {
+          "class_id": "INF101-1",
+          "course_id": "INF101",
+          "course_name": "Algoritmos y Complejidad",
+          "time_str": "Lunes 10:00-12:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Alan Turing"
+        },
+        {
+          "class_id": "MAT202-1",
+          "course_id": "MAT202",
+          "course_name": "Álgebra Lineal Computacional",
+          "time_str": "Martes 15:00-17:00",
+          "room_id": "AULA-01",
+          "professor_name": "Dr. Claude Shannon"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 7,
+      "has_schedule_clashes": false
+    },
+    "EST-080": {
+      "student_id": "EST-080",
+      "student_name": "Estudiante 080",
+      "priority_score": 4.62,
+      "requested_courses": [
+        "FIS302",
+        "INF106",
+        "INF103"
+      ],
+      "enrolled_classes": [
+        {
+          "class_id": "FIS302-1",
+          "course_id": "FIS302",
+          "course_name": "Laboratorio de Física Experimental",
+          "time_str": "Jueves 08:00-09:00",
+          "room_id": "LAB-04",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF106-1",
+          "course_id": "INF106",
+          "course_name": "Inteligencia Artificial y Grafos",
+          "time_str": "Martes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Ken Thompson"
+        },
+        {
+          "class_id": "INF103-1",
+          "course_id": "INF103",
+          "course_name": "Bases de Datos Relacionales",
+          "time_str": "Lunes 17:00-18:00",
+          "room_id": "AULA-02",
+          "professor_name": "Dr. Claude Shannon"
+        }
+      ],
+      "unsatisfied_courses": [],
+      "satisfaction_rate_percent": 100.0,
+      "total_hours_per_week": 3,
+      "has_schedule_clashes": false
+    }
+  },
+  "phase1_details": {
+    "scheduled_count": 25,
+    "unscheduled_count": 0,
+    "unscheduled_ids": [],
+    "total_soft_penalty": 0.0,
+    "success": true
+  },
+  "phase2_details": {
+    "total_flow": 280,
+    "total_requests": 280,
+    "satisfaction_rate": 100.0,
+    "total_cost": 26282,
+    "unsatisfied_requests": 0
+  }
+}

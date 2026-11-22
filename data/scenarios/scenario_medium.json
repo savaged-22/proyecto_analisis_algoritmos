@@ -1,0 +1,2041 @@
+{
+  "metadata": {
+    "name": "scenario_medium",
+    "description": "Escenario sintético con 80 estudiantes, 25 clases y 8 salones.",
+    "total_students": 80,
+    "total_classes": 25,
+    "total_rooms": 8,
+    "total_professors": 14
+  },
+  "rooms": [
+    {
+      "id": "AULA-01",
+      "name": "Salón 01",
+      "capacity": 45,
+      "room_type": "teoria"
+    },
+    {
+      "id": "AULA-02",
+      "name": "Salón 02",
+      "capacity": 60,
+      "room_type": "teoria"
+    },
+    {
+      "id": "AULA-03",
+      "name": "Salón 03",
+      "capacity": 35,
+      "room_type": "teoria"
+    },
+    {
+      "id": "LAB-04",
+      "name": "Laboratorio 04",
+      "capacity": 40,
+      "room_type": "laboratorio"
+    },
+    {
+      "id": "AULA-05",
+      "name": "Salón 05",
+      "capacity": 45,
+      "room_type": "teoria"
+    },
+    {
+      "id": "AULA-06",
+      "name": "Salón 06",
+      "capacity": 80,
+      "room_type": "teoria"
+    },
+    {
+      "id": "AULA-07",
+      "name": "Salón 07",
+      "capacity": 45,
+      "room_type": "teoria"
+    },
+    {
+      "id": "LAB-08",
+      "name": "Laboratorio 08",
+      "capacity": 30,
+      "room_type": "laboratorio"
+    }
+  ],
+  "professors": [
+    {
+      "id": "PROF-01",
+      "name": "Dr. Alan Turing",
+      "max_hours": 20
+    },
+    {
+      "id": "PROF-02",
+      "name": "Dra. Ada Lovelace",
+      "max_hours": 20
+    },
+    {
+      "id": "PROF-03",
+      "name": "Dr. John von Neumann",
+      "max_hours": 24
+    },
+    {
+      "id": "PROF-04",
+      "name": "Dra. Grace Hopper",
+      "max_hours": 16
+    },
+    {
+      "id": "PROF-05",
+      "name": "Dr. Claude Shannon",
+      "max_hours": 24
+    },
+    {
+      "id": "PROF-06",
+      "name": "Dra. Margaret Hamilton",
+      "max_hours": 20
+    },
+    {
+      "id": "PROF-07",
+      "name": "Dr. Donald Knuth",
+      "max_hours": 20
+    },
+    {
+      "id": "PROF-08",
+      "name": "Dra. Barbara Liskov",
+      "max_hours": 24
+    },
+    {
+      "id": "PROF-09",
+      "name": "Dr. Edsger Dijkstra",
+      "max_hours": 24
+    },
+    {
+      "id": "PROF-10",
+      "name": "Dra. Katherine Johnson",
+      "max_hours": 16
+    },
+    {
+      "id": "PROF-11",
+      "name": "Dr. Ken Thompson",
+      "max_hours": 20
+    },
+    {
+      "id": "PROF-12",
+      "name": "Dra. Radia Perlman",
+      "max_hours": 20
+    },
+    {
+      "id": "PROF-13",
+      "name": "Dr. Dennis Ritchie",
+      "max_hours": 20
+    },
+    {
+      "id": "PROF-14",
+      "name": "Dra. Frances Allen",
+      "max_hours": 16
+    }
+  ],
+  "classes": [
+    {
+      "id": "INF101-1",
+      "course_id": "INF101",
+      "course_name": "Algoritmos y Complejidad",
+      "professor_id": "PROF-01",
+      "capacity": 40,
+      "duration_hours": 2,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "INF101-2",
+      "course_id": "INF101",
+      "course_name": "Algoritmos y Complejidad",
+      "professor_id": "PROF-02",
+      "capacity": 50,
+      "duration_hours": 2,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "INF102-1",
+      "course_id": "INF102",
+      "course_name": "Estructuras de Datos Avanzadas",
+      "professor_id": "PROF-03",
+      "capacity": 60,
+      "duration_hours": 2,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "INF102-2",
+      "course_id": "INF102",
+      "course_name": "Estructuras de Datos Avanzadas",
+      "professor_id": "PROF-04",
+      "capacity": 50,
+      "duration_hours": 2,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "INF103-1",
+      "course_id": "INF103",
+      "course_name": "Bases de Datos Relacionales",
+      "professor_id": "PROF-05",
+      "capacity": 50,
+      "duration_hours": 1,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "INF103-2",
+      "course_id": "INF103",
+      "course_name": "Bases de Datos Relacionales",
+      "professor_id": "PROF-06",
+      "capacity": 60,
+      "duration_hours": 1,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "INF104-1",
+      "course_id": "INF104",
+      "course_name": "Laboratorio de Redes y Seguridad",
+      "professor_id": "PROF-07",
+      "capacity": 35,
+      "duration_hours": 2,
+      "required_room_type": "laboratorio"
+    },
+    {
+      "id": "INF104-2",
+      "course_id": "INF104",
+      "course_name": "Laboratorio de Redes y Seguridad",
+      "professor_id": "PROF-08",
+      "capacity": 30,
+      "duration_hours": 2,
+      "required_room_type": "laboratorio"
+    },
+    {
+      "id": "INF105-1",
+      "course_id": "INF105",
+      "course_name": "Sistemas Operativos Distribuidos",
+      "professor_id": "PROF-09",
+      "capacity": 50,
+      "duration_hours": 2,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "INF105-2",
+      "course_id": "INF105",
+      "course_name": "Sistemas Operativos Distribuidos",
+      "professor_id": "PROF-10",
+      "capacity": 40,
+      "duration_hours": 2,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "INF106-1",
+      "course_id": "INF106",
+      "course_name": "Inteligencia Artificial y Grafos",
+      "professor_id": "PROF-11",
+      "capacity": 60,
+      "duration_hours": 1,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "INF106-2",
+      "course_id": "INF106",
+      "course_name": "Inteligencia Artificial y Grafos",
+      "professor_id": "PROF-12",
+      "capacity": 40,
+      "duration_hours": 2,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "INF107-1",
+      "course_id": "INF107",
+      "course_name": "Optimización Combinatoria",
+      "professor_id": "PROF-13",
+      "capacity": 50,
+      "duration_hours": 1,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "INF107-2",
+      "course_id": "INF107",
+      "course_name": "Optimización Combinatoria",
+      "professor_id": "PROF-14",
+      "capacity": 50,
+      "duration_hours": 1,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "INF108-1",
+      "course_id": "INF108",
+      "course_name": "Taller de Desarrollo de Software",
+      "professor_id": "PROF-01",
+      "capacity": 30,
+      "duration_hours": 2,
+      "required_room_type": "laboratorio"
+    },
+    {
+      "id": "INF108-2",
+      "course_id": "INF108",
+      "course_name": "Taller de Desarrollo de Software",
+      "professor_id": "PROF-02",
+      "capacity": 30,
+      "duration_hours": 2,
+      "required_room_type": "laboratorio"
+    },
+    {
+      "id": "MAT201-1",
+      "course_id": "MAT201",
+      "course_name": "Cálculo en Varias Variables",
+      "professor_id": "PROF-03",
+      "capacity": 50,
+      "duration_hours": 2,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "MAT201-2",
+      "course_id": "MAT201",
+      "course_name": "Cálculo en Varias Variables",
+      "professor_id": "PROF-04",
+      "capacity": 50,
+      "duration_hours": 2,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "MAT202-1",
+      "course_id": "MAT202",
+      "course_name": "Álgebra Lineal Computacional",
+      "professor_id": "PROF-05",
+      "capacity": 40,
+      "duration_hours": 2,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "MAT202-2",
+      "course_id": "MAT202",
+      "course_name": "Álgebra Lineal Computacional",
+      "professor_id": "PROF-06",
+      "capacity": 40,
+      "duration_hours": 1,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "MAT203-1",
+      "course_id": "MAT203",
+      "course_name": "Probabilidad y Procesos Estocásticos",
+      "professor_id": "PROF-07",
+      "capacity": 40,
+      "duration_hours": 2,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "MAT203-2",
+      "course_id": "MAT203",
+      "course_name": "Probabilidad y Procesos Estocásticos",
+      "professor_id": "PROF-08",
+      "capacity": 60,
+      "duration_hours": 1,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "MAT204-1",
+      "course_id": "MAT204",
+      "course_name": "Matemática Discreta",
+      "professor_id": "PROF-09",
+      "capacity": 40,
+      "duration_hours": 1,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "FIS301-1",
+      "course_id": "FIS301",
+      "course_name": "Física para Computación",
+      "professor_id": "PROF-10",
+      "capacity": 50,
+      "duration_hours": 2,
+      "required_room_type": "teoria"
+    },
+    {
+      "id": "FIS302-1",
+      "course_id": "FIS302",
+      "course_name": "Laboratorio de Física Experimental",
+      "professor_id": "PROF-11",
+      "capacity": 40,
+      "duration_hours": 1,
+      "required_room_type": "laboratorio"
+    }
+  ],
+  "students": [
+    {
+      "id": "EST-001",
+      "name": "Estudiante 001",
+      "priority_score": 4.54,
+      "requests": [
+        {
+          "course_id": "FIS302",
+          "priority": 1
+        },
+        {
+          "course_id": "INF107",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT202",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-002",
+      "name": "Estudiante 002",
+      "priority_score": 3.51,
+      "requests": [
+        {
+          "course_id": "INF104",
+          "priority": 1
+        },
+        {
+          "course_id": "INF103",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT204",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-003",
+      "name": "Estudiante 003",
+      "priority_score": 3.88,
+      "requests": [
+        {
+          "course_id": "INF106",
+          "priority": 1
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 2
+        },
+        {
+          "course_id": "INF108",
+          "priority": 3
+        },
+        {
+          "course_id": "INF103",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-004",
+      "name": "Estudiante 004",
+      "priority_score": 4.16,
+      "requests": [
+        {
+          "course_id": "INF101",
+          "priority": 1
+        },
+        {
+          "course_id": "INF107",
+          "priority": 2
+        },
+        {
+          "course_id": "INF102",
+          "priority": 3
+        },
+        {
+          "course_id": "MAT201",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-005",
+      "name": "Estudiante 005",
+      "priority_score": 4.03,
+      "requests": [
+        {
+          "course_id": "MAT203",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT204",
+          "priority": 2
+        },
+        {
+          "course_id": "INF103",
+          "priority": 3
+        },
+        {
+          "course_id": "INF101",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-006",
+      "name": "Estudiante 006",
+      "priority_score": 3.45,
+      "requests": [
+        {
+          "course_id": "INF107",
+          "priority": 1
+        },
+        {
+          "course_id": "INF103",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT201",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-007",
+      "name": "Estudiante 007",
+      "priority_score": 3.27,
+      "requests": [
+        {
+          "course_id": "INF106",
+          "priority": 1
+        },
+        {
+          "course_id": "INF102",
+          "priority": 2
+        },
+        {
+          "course_id": "INF103",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-008",
+      "name": "Estudiante 008",
+      "priority_score": 4.61,
+      "requests": [
+        {
+          "course_id": "MAT203",
+          "priority": 1
+        },
+        {
+          "course_id": "FIS301",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT202",
+          "priority": 3
+        },
+        {
+          "course_id": "INF107",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-009",
+      "name": "Estudiante 009",
+      "priority_score": 4.09,
+      "requests": [
+        {
+          "course_id": "FIS302",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT203",
+          "priority": 2
+        },
+        {
+          "course_id": "INF102",
+          "priority": 3
+        },
+        {
+          "course_id": "INF105",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-010",
+      "name": "Estudiante 010",
+      "priority_score": 3.58,
+      "requests": [
+        {
+          "course_id": "INF108",
+          "priority": 1
+        },
+        {
+          "course_id": "INF105",
+          "priority": 2
+        },
+        {
+          "course_id": "INF104",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-011",
+      "name": "Estudiante 011",
+      "priority_score": 4.86,
+      "requests": [
+        {
+          "course_id": "INF101",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT204",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT201",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-012",
+      "name": "Estudiante 012",
+      "priority_score": 3.68,
+      "requests": [
+        {
+          "course_id": "INF101",
+          "priority": 1
+        },
+        {
+          "course_id": "INF103",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT204",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-013",
+      "name": "Estudiante 013",
+      "priority_score": 4.78,
+      "requests": [
+        {
+          "course_id": "FIS302",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT201",
+          "priority": 2
+        },
+        {
+          "course_id": "INF102",
+          "priority": 3
+        },
+        {
+          "course_id": "MAT202",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-014",
+      "name": "Estudiante 014",
+      "priority_score": 3.7,
+      "requests": [
+        {
+          "course_id": "INF108",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT201",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT204",
+          "priority": 3
+        },
+        {
+          "course_id": "MAT203",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-015",
+      "name": "Estudiante 015",
+      "priority_score": 3.56,
+      "requests": [
+        {
+          "course_id": "INF103",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT204",
+          "priority": 2
+        },
+        {
+          "course_id": "INF108",
+          "priority": 3
+        },
+        {
+          "course_id": "INF101",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-016",
+      "name": "Estudiante 016",
+      "priority_score": 3.24,
+      "requests": [
+        {
+          "course_id": "INF108",
+          "priority": 1
+        },
+        {
+          "course_id": "INF102",
+          "priority": 2
+        },
+        {
+          "course_id": "FIS301",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-017",
+      "name": "Estudiante 017",
+      "priority_score": 3.88,
+      "requests": [
+        {
+          "course_id": "FIS302",
+          "priority": 1
+        },
+        {
+          "course_id": "FIS301",
+          "priority": 2
+        },
+        {
+          "course_id": "INF104",
+          "priority": 3
+        },
+        {
+          "course_id": "INF106",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-018",
+      "name": "Estudiante 018",
+      "priority_score": 4.33,
+      "requests": [
+        {
+          "course_id": "INF105",
+          "priority": 1
+        },
+        {
+          "course_id": "INF101",
+          "priority": 2
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 3
+        },
+        {
+          "course_id": "INF102",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-019",
+      "name": "Estudiante 019",
+      "priority_score": 4.32,
+      "requests": [
+        {
+          "course_id": "MAT203",
+          "priority": 1
+        },
+        {
+          "course_id": "INF106",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT204",
+          "priority": 3
+        },
+        {
+          "course_id": "INF107",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-020",
+      "name": "Estudiante 020",
+      "priority_score": 4.73,
+      "requests": [
+        {
+          "course_id": "INF106",
+          "priority": 1
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 2
+        },
+        {
+          "course_id": "INF103",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-021",
+      "name": "Estudiante 021",
+      "priority_score": 3.23,
+      "requests": [
+        {
+          "course_id": "INF105",
+          "priority": 1
+        },
+        {
+          "course_id": "INF104",
+          "priority": 2
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 3
+        },
+        {
+          "course_id": "INF106",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-022",
+      "name": "Estudiante 022",
+      "priority_score": 3.58,
+      "requests": [
+        {
+          "course_id": "INF106",
+          "priority": 1
+        },
+        {
+          "course_id": "INF102",
+          "priority": 2
+        },
+        {
+          "course_id": "INF105",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-023",
+      "name": "Estudiante 023",
+      "priority_score": 3.24,
+      "requests": [
+        {
+          "course_id": "INF106",
+          "priority": 1
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT204",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-024",
+      "name": "Estudiante 024",
+      "priority_score": 3.79,
+      "requests": [
+        {
+          "course_id": "INF105",
+          "priority": 1
+        },
+        {
+          "course_id": "INF108",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT203",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-025",
+      "name": "Estudiante 025",
+      "priority_score": 3.61,
+      "requests": [
+        {
+          "course_id": "INF102",
+          "priority": 1
+        },
+        {
+          "course_id": "FIS301",
+          "priority": 2
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-026",
+      "name": "Estudiante 026",
+      "priority_score": 3.21,
+      "requests": [
+        {
+          "course_id": "MAT204",
+          "priority": 1
+        },
+        {
+          "course_id": "INF101",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT202",
+          "priority": 3
+        },
+        {
+          "course_id": "MAT203",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-027",
+      "name": "Estudiante 027",
+      "priority_score": 4.57,
+      "requests": [
+        {
+          "course_id": "INF107",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT204",
+          "priority": 2
+        },
+        {
+          "course_id": "INF103",
+          "priority": 3
+        },
+        {
+          "course_id": "MAT203",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-028",
+      "name": "Estudiante 028",
+      "priority_score": 3.62,
+      "requests": [
+        {
+          "course_id": "INF101",
+          "priority": 1
+        },
+        {
+          "course_id": "INF104",
+          "priority": 2
+        },
+        {
+          "course_id": "INF107",
+          "priority": 3
+        },
+        {
+          "course_id": "MAT202",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-029",
+      "name": "Estudiante 029",
+      "priority_score": 4.25,
+      "requests": [
+        {
+          "course_id": "FIS301",
+          "priority": 1
+        },
+        {
+          "course_id": "INF102",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT201",
+          "priority": 3
+        },
+        {
+          "course_id": "INF104",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-030",
+      "name": "Estudiante 030",
+      "priority_score": 3.73,
+      "requests": [
+        {
+          "course_id": "INF103",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT201",
+          "priority": 2
+        },
+        {
+          "course_id": "INF102",
+          "priority": 3
+        },
+        {
+          "course_id": "INF106",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-031",
+      "name": "Estudiante 031",
+      "priority_score": 3.3,
+      "requests": [
+        {
+          "course_id": "INF102",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT201",
+          "priority": 2
+        },
+        {
+          "course_id": "INF108",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-032",
+      "name": "Estudiante 032",
+      "priority_score": 4.86,
+      "requests": [
+        {
+          "course_id": "FIS301",
+          "priority": 1
+        },
+        {
+          "course_id": "INF105",
+          "priority": 2
+        },
+        {
+          "course_id": "INF107",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-033",
+      "name": "Estudiante 033",
+      "priority_score": 4.8,
+      "requests": [
+        {
+          "course_id": "INF102",
+          "priority": 1
+        },
+        {
+          "course_id": "FIS301",
+          "priority": 2
+        },
+        {
+          "course_id": "INF101",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-034",
+      "name": "Estudiante 034",
+      "priority_score": 3.72,
+      "requests": [
+        {
+          "course_id": "FIS302",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT203",
+          "priority": 2
+        },
+        {
+          "course_id": "INF103",
+          "priority": 3
+        },
+        {
+          "course_id": "INF101",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-035",
+      "name": "Estudiante 035",
+      "priority_score": 4.35,
+      "requests": [
+        {
+          "course_id": "MAT204",
+          "priority": 1
+        },
+        {
+          "course_id": "INF108",
+          "priority": 2
+        },
+        {
+          "course_id": "INF104",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-036",
+      "name": "Estudiante 036",
+      "priority_score": 4.66,
+      "requests": [
+        {
+          "course_id": "INF107",
+          "priority": 1
+        },
+        {
+          "course_id": "INF105",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT203",
+          "priority": 3
+        },
+        {
+          "course_id": "INF108",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-037",
+      "name": "Estudiante 037",
+      "priority_score": 4.01,
+      "requests": [
+        {
+          "course_id": "MAT201",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT203",
+          "priority": 2
+        },
+        {
+          "course_id": "INF101",
+          "priority": 3
+        },
+        {
+          "course_id": "INF102",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-038",
+      "name": "Estudiante 038",
+      "priority_score": 3.38,
+      "requests": [
+        {
+          "course_id": "INF103",
+          "priority": 1
+        },
+        {
+          "course_id": "FIS301",
+          "priority": 2
+        },
+        {
+          "course_id": "INF108",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-039",
+      "name": "Estudiante 039",
+      "priority_score": 4.22,
+      "requests": [
+        {
+          "course_id": "FIS302",
+          "priority": 1
+        },
+        {
+          "course_id": "INF107",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT203",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-040",
+      "name": "Estudiante 040",
+      "priority_score": 3.43,
+      "requests": [
+        {
+          "course_id": "INF106",
+          "priority": 1
+        },
+        {
+          "course_id": "INF105",
+          "priority": 2
+        },
+        {
+          "course_id": "INF101",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-041",
+      "name": "Estudiante 041",
+      "priority_score": 4.81,
+      "requests": [
+        {
+          "course_id": "MAT203",
+          "priority": 1
+        },
+        {
+          "course_id": "INF106",
+          "priority": 2
+        },
+        {
+          "course_id": "INF107",
+          "priority": 3
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-042",
+      "name": "Estudiante 042",
+      "priority_score": 4.44,
+      "requests": [
+        {
+          "course_id": "INF108",
+          "priority": 1
+        },
+        {
+          "course_id": "INF101",
+          "priority": 2
+        },
+        {
+          "course_id": "INF103",
+          "priority": 3
+        },
+        {
+          "course_id": "INF102",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-043",
+      "name": "Estudiante 043",
+      "priority_score": 4.59,
+      "requests": [
+        {
+          "course_id": "INF105",
+          "priority": 1
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 2
+        },
+        {
+          "course_id": "INF108",
+          "priority": 3
+        },
+        {
+          "course_id": "FIS301",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-044",
+      "name": "Estudiante 044",
+      "priority_score": 3.57,
+      "requests": [
+        {
+          "course_id": "FIS301",
+          "priority": 1
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 2
+        },
+        {
+          "course_id": "INF107",
+          "priority": 3
+        },
+        {
+          "course_id": "MAT202",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-045",
+      "name": "Estudiante 045",
+      "priority_score": 4.45,
+      "requests": [
+        {
+          "course_id": "INF103",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT203",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT204",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-046",
+      "name": "Estudiante 046",
+      "priority_score": 3.69,
+      "requests": [
+        {
+          "course_id": "INF107",
+          "priority": 1
+        },
+        {
+          "course_id": "INF105",
+          "priority": 2
+        },
+        {
+          "course_id": "FIS301",
+          "priority": 3
+        },
+        {
+          "course_id": "INF103",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-047",
+      "name": "Estudiante 047",
+      "priority_score": 3.32,
+      "requests": [
+        {
+          "course_id": "INF102",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT204",
+          "priority": 2
+        },
+        {
+          "course_id": "INF101",
+          "priority": 3
+        },
+        {
+          "course_id": "INF103",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-048",
+      "name": "Estudiante 048",
+      "priority_score": 4.22,
+      "requests": [
+        {
+          "course_id": "INF102",
+          "priority": 1
+        },
+        {
+          "course_id": "INF101",
+          "priority": 2
+        },
+        {
+          "course_id": "INF103",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-049",
+      "name": "Estudiante 049",
+      "priority_score": 4.3,
+      "requests": [
+        {
+          "course_id": "INF102",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT204",
+          "priority": 2
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 3
+        },
+        {
+          "course_id": "MAT202",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-050",
+      "name": "Estudiante 050",
+      "priority_score": 4.26,
+      "requests": [
+        {
+          "course_id": "MAT203",
+          "priority": 1
+        },
+        {
+          "course_id": "INF104",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT202",
+          "priority": 3
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-051",
+      "name": "Estudiante 051",
+      "priority_score": 3.72,
+      "requests": [
+        {
+          "course_id": "MAT204",
+          "priority": 1
+        },
+        {
+          "course_id": "INF105",
+          "priority": 2
+        },
+        {
+          "course_id": "INF103",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-052",
+      "name": "Estudiante 052",
+      "priority_score": 4.36,
+      "requests": [
+        {
+          "course_id": "FIS301",
+          "priority": 1
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 2
+        },
+        {
+          "course_id": "INF101",
+          "priority": 3
+        },
+        {
+          "course_id": "INF108",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-053",
+      "name": "Estudiante 053",
+      "priority_score": 3.2,
+      "requests": [
+        {
+          "course_id": "MAT202",
+          "priority": 1
+        },
+        {
+          "course_id": "INF102",
+          "priority": 2
+        },
+        {
+          "course_id": "INF101",
+          "priority": 3
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-054",
+      "name": "Estudiante 054",
+      "priority_score": 3.9,
+      "requests": [
+        {
+          "course_id": "INF101",
+          "priority": 1
+        },
+        {
+          "course_id": "INF106",
+          "priority": 2
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 3
+        },
+        {
+          "course_id": "INF105",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-055",
+      "name": "Estudiante 055",
+      "priority_score": 3.4,
+      "requests": [
+        {
+          "course_id": "FIS302",
+          "priority": 1
+        },
+        {
+          "course_id": "FIS301",
+          "priority": 2
+        },
+        {
+          "course_id": "INF102",
+          "priority": 3
+        },
+        {
+          "course_id": "MAT203",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-056",
+      "name": "Estudiante 056",
+      "priority_score": 4.42,
+      "requests": [
+        {
+          "course_id": "MAT203",
+          "priority": 1
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 2
+        },
+        {
+          "course_id": "INF101",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-057",
+      "name": "Estudiante 057",
+      "priority_score": 4.78,
+      "requests": [
+        {
+          "course_id": "INF108",
+          "priority": 1
+        },
+        {
+          "course_id": "INF104",
+          "priority": 2
+        },
+        {
+          "course_id": "INF107",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-058",
+      "name": "Estudiante 058",
+      "priority_score": 3.72,
+      "requests": [
+        {
+          "course_id": "INF103",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT202",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT201",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-059",
+      "name": "Estudiante 059",
+      "priority_score": 4.54,
+      "requests": [
+        {
+          "course_id": "FIS301",
+          "priority": 1
+        },
+        {
+          "course_id": "INF104",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT203",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-060",
+      "name": "Estudiante 060",
+      "priority_score": 3.72,
+      "requests": [
+        {
+          "course_id": "INF105",
+          "priority": 1
+        },
+        {
+          "course_id": "FIS301",
+          "priority": 2
+        },
+        {
+          "course_id": "INF108",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-061",
+      "name": "Estudiante 061",
+      "priority_score": 4.27,
+      "requests": [
+        {
+          "course_id": "INF101",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT201",
+          "priority": 2
+        },
+        {
+          "course_id": "INF107",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-062",
+      "name": "Estudiante 062",
+      "priority_score": 4.9,
+      "requests": [
+        {
+          "course_id": "FIS302",
+          "priority": 1
+        },
+        {
+          "course_id": "INF101",
+          "priority": 2
+        },
+        {
+          "course_id": "INF106",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-063",
+      "name": "Estudiante 063",
+      "priority_score": 3.95,
+      "requests": [
+        {
+          "course_id": "INF102",
+          "priority": 1
+        },
+        {
+          "course_id": "INF108",
+          "priority": 2
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 3
+        },
+        {
+          "course_id": "MAT202",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-064",
+      "name": "Estudiante 064",
+      "priority_score": 3.3,
+      "requests": [
+        {
+          "course_id": "MAT202",
+          "priority": 1
+        },
+        {
+          "course_id": "INF102",
+          "priority": 2
+        },
+        {
+          "course_id": "INF108",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-065",
+      "name": "Estudiante 065",
+      "priority_score": 4.03,
+      "requests": [
+        {
+          "course_id": "INF108",
+          "priority": 1
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT202",
+          "priority": 3
+        },
+        {
+          "course_id": "MAT204",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-066",
+      "name": "Estudiante 066",
+      "priority_score": 3.4,
+      "requests": [
+        {
+          "course_id": "INF108",
+          "priority": 1
+        },
+        {
+          "course_id": "INF107",
+          "priority": 2
+        },
+        {
+          "course_id": "FIS301",
+          "priority": 3
+        },
+        {
+          "course_id": "INF103",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-067",
+      "name": "Estudiante 067",
+      "priority_score": 3.99,
+      "requests": [
+        {
+          "course_id": "INF103",
+          "priority": 1
+        },
+        {
+          "course_id": "INF101",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT201",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-068",
+      "name": "Estudiante 068",
+      "priority_score": 3.45,
+      "requests": [
+        {
+          "course_id": "INF105",
+          "priority": 1
+        },
+        {
+          "course_id": "INF102",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT201",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-069",
+      "name": "Estudiante 069",
+      "priority_score": 4.38,
+      "requests": [
+        {
+          "course_id": "INF101",
+          "priority": 1
+        },
+        {
+          "course_id": "INF105",
+          "priority": 2
+        },
+        {
+          "course_id": "MAT201",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-070",
+      "name": "Estudiante 070",
+      "priority_score": 3.61,
+      "requests": [
+        {
+          "course_id": "INF105",
+          "priority": 1
+        },
+        {
+          "course_id": "INF101",
+          "priority": 2
+        },
+        {
+          "course_id": "FIS301",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-071",
+      "name": "Estudiante 071",
+      "priority_score": 4.83,
+      "requests": [
+        {
+          "course_id": "FIS302",
+          "priority": 1
+        },
+        {
+          "course_id": "INF108",
+          "priority": 2
+        },
+        {
+          "course_id": "INF103",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-072",
+      "name": "Estudiante 072",
+      "priority_score": 4.06,
+      "requests": [
+        {
+          "course_id": "INF101",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT201",
+          "priority": 2
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-073",
+      "name": "Estudiante 073",
+      "priority_score": 3.51,
+      "requests": [
+        {
+          "course_id": "INF107",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT202",
+          "priority": 2
+        },
+        {
+          "course_id": "INF104",
+          "priority": 3
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-074",
+      "name": "Estudiante 074",
+      "priority_score": 3.73,
+      "requests": [
+        {
+          "course_id": "INF107",
+          "priority": 1
+        },
+        {
+          "course_id": "INF101",
+          "priority": 2
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 3
+        },
+        {
+          "course_id": "MAT201",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-075",
+      "name": "Estudiante 075",
+      "priority_score": 4.25,
+      "requests": [
+        {
+          "course_id": "MAT204",
+          "priority": 1
+        },
+        {
+          "course_id": "INF102",
+          "priority": 2
+        },
+        {
+          "course_id": "INF105",
+          "priority": 3
+        },
+        {
+          "course_id": "INF104",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-076",
+      "name": "Estudiante 076",
+      "priority_score": 4.88,
+      "requests": [
+        {
+          "course_id": "FIS301",
+          "priority": 1
+        },
+        {
+          "course_id": "MAT202",
+          "priority": 2
+        },
+        {
+          "course_id": "INF107",
+          "priority": 3
+        },
+        {
+          "course_id": "FIS302",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-077",
+      "name": "Estudiante 077",
+      "priority_score": 4.42,
+      "requests": [
+        {
+          "course_id": "INF108",
+          "priority": 1
+        },
+        {
+          "course_id": "INF104",
+          "priority": 2
+        },
+        {
+          "course_id": "INF101",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-078",
+      "name": "Estudiante 078",
+      "priority_score": 4.71,
+      "requests": [
+        {
+          "course_id": "MAT201",
+          "priority": 1
+        },
+        {
+          "course_id": "FIS301",
+          "priority": 2
+        },
+        {
+          "course_id": "INF107",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-079",
+      "name": "Estudiante 079",
+      "priority_score": 3.88,
+      "requests": [
+        {
+          "course_id": "INF106",
+          "priority": 1
+        },
+        {
+          "course_id": "FIS301",
+          "priority": 2
+        },
+        {
+          "course_id": "INF101",
+          "priority": 3
+        },
+        {
+          "course_id": "MAT202",
+          "priority": 4
+        }
+      ]
+    },
+    {
+      "id": "EST-080",
+      "name": "Estudiante 080",
+      "priority_score": 4.62,
+      "requests": [
+        {
+          "course_id": "FIS302",
+          "priority": 1
+        },
+        {
+          "course_id": "INF106",
+          "priority": 2
+        },
+        {
+          "course_id": "INF103",
+          "priority": 3
+        }
+      ]
+    }
+  ]
+}

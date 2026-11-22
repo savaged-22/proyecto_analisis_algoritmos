@@ -1,0 +1,3 @@
+# Sistema de Programación Académica Universitaria (UCTP)
+# Requiere únicamente la Biblioteca Estándar de Python 3.12+.
+# No se requieren paquetes externos de terceros (pip no requerido).
