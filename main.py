@@ -6,14 +6,18 @@ Uso:
     python main.py --generate [--seed 2026]          # escribe el conjunto base (A) y los escenarios B-F
     python main.py --scale 20 50 100 200 --seeds 1 2 3
     python main.py --benchmark
+    python main.py --verify data/scenarios/demo.json data/outputs/output_demo.json
 """
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
 from src.data.generator import DEFAULT_SEED, write_scale_scenarios, write_standard_scenarios
+from src.data.scenario import load_scenario_file
 from src.solver.orchestrator import TimetableOrchestrator
+from src.verify.verifier import RULES, verify_solution
 
 BASE_DIR = Path(__file__).resolve().parent
 SCENARIOS_DIR = BASE_DIR / "data" / "scenarios"
@@ -59,22 +63,37 @@ def run_benchmark() -> None:
         t = m["timings_ms"]
         rows.append([
             name,
-            str(m["total_students"]),
             f"{m['scheduled_classes']}/{m['total_classes']}",
-            f"{m['satisfied_requests']}/{m['total_requests']}",
-            str(m["hard_conflicts_count"]),
-            str(m["student_clashes_count"]),
+            f"{m['attended_requests']}/{m['total_requests']}",
+            f"{m['coverage_percent']}%",
+            f"{m['priority_satisfaction_percent']}%",
+            str(m["violations_total"]),
             f"{t.get('phase1_dsatur_ms', 0):.2f}",
             f"{t.get('phase2_mcmf_ms', 0):.2f}",
             f"{t.get('total_ms', 0):.2f}",
         ])
 
-    headers = ["Escenario", "Alumnos", "Clases", "Solicitudes", "Conf. duros", "Choques", "Fase 1 ms", "Fase 2 ms", "Total ms"]
-    widths = [14, 8, 8, 12, 11, 8, 10, 10, 9]
+    headers = ["Escenario", "Clases", "Solicitudes", "Cobertura", "Prioridad", "Incumpl.", "Fase 1 ms", "Fase 2 ms", "Total ms"]
+    widths = [14, 7, 12, 10, 10, 9, 10, 10, 9]
     print("\n" + " | ".join(h.ljust(w) for h, w in zip(headers, widths)))
     print("-+-".join("-" * w for w in widths))
     for row in rows:
         print(" | ".join(v.ljust(w) for v, w in zip(row, widths)))
+
+
+def run_verifier(scenario_path: Path, output_path: Path) -> None:
+    """Verifica con R1-R10 una solución exportada, sin ejecutar el algoritmo."""
+    scenario = load_scenario_file(scenario_path)
+    with open(output_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    result = verify_solution(scenario, data.get("solution", data))
+
+    print(f"Verificación de {output_path.name} contra {scenario_path.name}")
+    for rule, count in result.count_by_rule().items():
+        print(f"  {rule:<4} {RULES[rule]:<34} {count}")
+    print(f"  Total de incumplimientos: {result.total}")
+    for v in result.violations:
+        print(f"   - [{v.rule}] {v.message}")
 
 
 def main() -> None:
@@ -91,6 +110,8 @@ def main() -> None:
     parser.add_argument("--seeds", type=int, nargs="+", default=[1, 2, 3], help="Semillas para --scale.")
     parser.add_argument("-b", "--benchmark", action="store_true", help="Ejecuta los escenarios estándar.")
     parser.add_argument("-v", "--verbose", action="store_true", help="Muestra la programación de cada clase.")
+    parser.add_argument("--verify", nargs=2, metavar=("ESCENARIO", "SALIDA"),
+                        help="Verifica una solución exportada contra su escenario (R1-R10).")
     args = parser.parse_args()
 
     if args.generate:
@@ -105,6 +126,10 @@ def main() -> None:
 
     if args.benchmark:
         run_benchmark()
+        return
+
+    if args.verify:
+        run_verifier(Path(args.verify[0]), Path(args.verify[1]))
         return
 
     input_file = Path(args.input) if args.input else DEFAULT_SCENARIO

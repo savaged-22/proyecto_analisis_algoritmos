@@ -1,4 +1,4 @@
-"""Orquestador único que coordina la carga de datos, Fase 1 (DSATUR), Fase 2 (MCMF) y reportes."""
+"""Orquestador: carga el escenario y ejecuta fase 1, fase 2, verificación y reporte."""
 
 import json
 import time
@@ -6,11 +6,11 @@ from pathlib import Path
 from typing import Any
 
 from ..data.scenario import Scenario, load_scenario_dict, load_scenario_file
-from ..models.time_mask import masks_overlap
 from ..graph.conflict_graph import build_conflict_graph
 from ..graph.dsatur_coloring import DSATURColoringSolver
 from ..graph.min_cost_flow import StudentEnrollmentMCMF
-from ..graph.report import TimetableReport
+from ..report.report import TimetableReport
+from ..verify.verifier import verify_solution
 
 
 class TimetableOrchestrator:
@@ -58,7 +58,7 @@ class TimetableOrchestrator:
         self.scenario = load_scenario_file(file_path)
 
     def run(self) -> dict[str, Any]:
-        """Ejecuta secuencialmente la Fase 1, Fase 2 y la validación de integridad.
+        """Ejecuta la fase 1, la fase 2, el reporte y la verificación independiente.
 
         Returns:
             Diccionario estructurado con el resultado global y todas las asignaciones.
@@ -87,9 +87,6 @@ class TimetableOrchestrator:
         t1_p1 = time.perf_counter()
         self.timings["phase1_dsatur_ms"] = round((t1_p1 - t0_p1) * 1000.0, 3)
 
-        # Validación de invariantes de Fase 1
-        self._validate_phase1()
-
         # -------------------------------------------------------------
         # 3. Fase 2: Red de Flujo de Costo Mínimo (MCMF)
         # -------------------------------------------------------------
@@ -101,9 +98,6 @@ class TimetableOrchestrator:
         self.phase2_results = mcmf_solver.solve()
         t1_p2 = time.perf_counter()
         self.timings["phase2_mcmf_ms"] = round((t1_p2 - t0_p2) * 1000.0, 3)
-
-        # Validación de invariantes de Fase 2
-        self._validate_phase2()
 
         # -------------------------------------------------------------
         # 4. Generación de Reporte y Métricas
@@ -119,58 +113,16 @@ class TimetableOrchestrator:
             grid=self.grid,
             phase1_metrics=self.phase1_results,
             phase2_metrics=self.phase2_results,
-            timings=self.timings
+            timings=self.timings,
+            scenario_name=str(self.scenario.metadata.get("name", "")),
         )
 
+        # -------------------------------------------------------------
+        # 5. Verificación independiente de R1-R10 sobre la solución final
+        # -------------------------------------------------------------
+        self.report.verification = verify_solution(self.scenario, self.report.build_solution())
+
         return self.report.to_full_dict()
-
-    def _validate_phase1(self) -> None:
-        """Verifica que las asignaciones de Fase 1 cumplan estrictamente todas las restricciones duras."""
-        scheduled = [c for c in self.classes if c.is_scheduled]
-        n = len(scheduled)
-
-        for i in range(n):
-            c1 = scheduled[i]
-            for j in range(i + 1, n):
-                c2 = scheduled[j]
-                if masks_overlap(c1.time_mask, c2.time_mask):
-                    if c1.assigned_room_id == c2.assigned_room_id:
-                        raise ValueError(
-                            f"Violación de Salón: Las clases {c1.id} y {c2.id} "
-                            f"comparten el aula {c1.assigned_room_id} en el mismo horario."
-                        )
-                    if c1.professor_id == c2.professor_id:
-                        raise ValueError(
-                            f"Violación Docente: El profesor {c1.professor_id} tiene asignadas "
-                            f"simultáneamente las clases {c1.id} y {c2.id}."
-                        )
-
-    def _validate_phase2(self) -> None:
-        """Verifica que la asignación de estudiantes cumpla capacidades y no contenga traslapes."""
-        for c in self.classes:
-            if len(c.enrolled_students) > c.capacity:
-                raise ValueError(
-                    f"Violación de Capacidad: La clase {c.id} tiene {len(c.enrolled_students)} "
-                    f"estudiantes, superando su límite de {c.capacity}."
-                )
-
-        classes_by_id = {c.id: c for c in self.classes}
-        for s in self.students:
-            s_classes = [classes_by_id[c_id] for c_id in s.assigned_classes if c_id in classes_by_id]
-            # Validar que solo esté en clases que solicitó (R9)
-            requested = {r.class_id for r in s.requests}
-            for c in s_classes:
-                if c.id not in requested:
-                    raise ValueError(f"Violación Estudiante: {s.id} quedó en {c.id} sin haberla solicitado.")
-
-            # Validar que no haya solapamiento horario
-            for i in range(len(s_classes)):
-                for j in range(i + 1, len(s_classes)):
-                    if masks_overlap(s_classes[i].time_mask, s_classes[j].time_mask):
-                        raise ValueError(
-                            f"Violación Estudiante: El alumno {s.id} tiene choque de horario entre "
-                            f"{s_classes[i].id} y {s_classes[j].id}."
-                        )
 
     def export_solution(self, output_path: str | Path) -> None:
         """Guarda la solución completa en un archivo JSON."""

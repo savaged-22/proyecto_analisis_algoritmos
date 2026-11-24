@@ -25,9 +25,10 @@ src/
 ├── graph/
 │   ├── conflict_graph.py   grafo de conflictos entre clases
 │   ├── dsatur_coloring.py  fase 1: ubicar clases en (hora, salón) con DSATUR
-│   ├── min_cost_flow.py    fase 2: inscripción de estudiantes
-│   └── report.py           horarios por clase, salón, profesor y estudiante; métricas
-└── solver/orchestrator.py  coordina carga, fase 1, fase 2 y reporte
+│   └── min_cost_flow.py    fase 2: inscripción de estudiantes
+├── report/report.py        solución, horarios por clase/salón/profesor/estudiante, motivos y métricas
+├── verify/verifier.py      verificador independiente de R1-R10
+└── solver/orchestrator.py  coordina carga, fase 1, fase 2, reporte y verificación
 tests/                      pruebas unitarias (python -m unittest discover -s tests -t .)
 data/scenarios/             demo y escenarios A-F
 ```
@@ -85,6 +86,33 @@ Cada archivo trae en `expected` la descripción del caso y lo que debe cumplir l
 `python main.py --scale 20 50 100 200 --seeds 1 2 3` genera escenarios de escalabilidad (el conjunto
 base con estudiantes, clases, profesores y salones en proporción) en `data/scenarios/escala/`.
 
+## Salida e informe
+
+El JSON de salida tiene:
+
+- `solution`: la programación en un formato simple (clase, día, hora de inicio y fin, salón, estudiantes)
+  y la lista de clases sin programar. Es lo único que lee el verificador.
+- `student_schedule`: por estudiante, las clases que logró cursar y cada solicitud pendiente con su
+  motivo: `clase no programada`, `fuera de la disponibilidad del estudiante`, `cruce con X (prioridad p)`
+  o `cupo agotado`.
+- `metrics`: solicitudes recibidas, atendidas y pendientes, cobertura, satisfacción de prioridades
+  (suma atendida / suma recibida) global y por nivel, pendientes por motivo, incumplimientos de R1-R10,
+  uso de salones y profesores, y tiempos.
+- `verification`: el detalle de cada incumplimiento encontrado.
+
+## Verificador independiente
+
+[`src/verify/verifier.py`](src/verify/verifier.py) revisa R1-R10 leyendo solo el escenario y la sección
+`solution`: recalcula cada horario desde la hora de inicio y fin, sin usar nada del algoritmo. Sirve
+para revisar cualquier solución, incluso una escrita a mano:
+
+```bash
+python main.py --verify data/scenarios/demo.json data/outputs/output_demo.json
+```
+
+Revisar una solución cuesta O(M² + S·K²) (pares de clases y pares de clases de cada estudiante), es
+decir, tiempo polinomial.
+
 ## Uso
 
 ```bash
@@ -92,5 +120,6 @@ python main.py                                       # escenario de demostració
 python main.py -i data/scenarios/C_profesor.json -v  # un escenario, con la programación de cada clase
 python main.py --generate                            # escenarios A-F
 python main.py --benchmark                           # demo + A-F en una tabla
+python main.py --verify ESCENARIO SALIDA             # verifica una solución exportada
 python -m unittest discover -s tests -t .            # pruebas
 ```
