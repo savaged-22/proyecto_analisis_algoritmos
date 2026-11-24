@@ -8,7 +8,7 @@ from typing import Any
 from ..data.scenario import Scenario, load_scenario_dict, load_scenario_file
 from ..graph.conflict_graph import build_conflict_graph
 from ..graph.dsatur_coloring import DSATURColoringSolver
-from ..graph.min_cost_flow import StudentEnrollmentMCMF
+from ..phase2.enrollment import EnrollmentSolver
 from ..report.report import TimetableReport
 from ..verify.verifier import verify_solution
 
@@ -22,6 +22,7 @@ class TimetableOrchestrator:
         self.phase2_results: dict[str, Any] = {}
         self.timings: dict[str, float] = {}
         self.report: TimetableReport | None = None
+        self.enrollment_solver: EnrollmentSolver | None = None
 
     # Accesos directos a las entidades del escenario cargado
     @property
@@ -85,19 +86,21 @@ class TimetableOrchestrator:
         )
         self.phase1_results = dsatur_solver.solve()
         t1_p1 = time.perf_counter()
-        self.timings["phase1_dsatur_ms"] = round((t1_p1 - t0_p1) * 1000.0, 3)
+        self.timings["phase1_ms"] = round((t1_p1 - t0_p1) * 1000.0, 3)
 
         # -------------------------------------------------------------
-        # 3. Fase 2: Red de Flujo de Costo Mínimo (MCMF)
+        # 3. Fase 2: inscripción (DP por estudiante + reparto de cupos)
         # -------------------------------------------------------------
         t0_p2 = time.perf_counter()
-        mcmf_solver = StudentEnrollmentMCMF(
+        self.enrollment_solver = EnrollmentSolver(
             classes=self.classes,
-            students=self.students
+            students=self.students,
+            rooms=self.rooms,
+            total_requests=self.scenario.total_requests,
         )
-        self.phase2_results = mcmf_solver.solve()
+        self.phase2_results = self.enrollment_solver.solve()
         t1_p2 = time.perf_counter()
-        self.timings["phase2_mcmf_ms"] = round((t1_p2 - t0_p2) * 1000.0, 3)
+        self.timings["phase2_ms"] = round((t1_p2 - t0_p2) * 1000.0, 3)
 
         # -------------------------------------------------------------
         # 4. Generación de Reporte y Métricas

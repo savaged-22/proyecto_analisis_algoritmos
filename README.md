@@ -24,8 +24,10 @@ src/
 │   └── generator.py        generador con semilla: conjunto base, escenarios B-F, escalabilidad
 ├── graph/
 │   ├── conflict_graph.py   grafo de conflictos entre clases
-│   ├── dsatur_coloring.py  fase 1: ubicar clases en (hora, salón) con DSATUR
-│   └── min_cost_flow.py    fase 2: inscripción de estudiantes
+│   └── dsatur_coloring.py  fase 1: ubicar clases en (hora, salón) con DSATUR
+├── phase2/
+│   ├── interval_dp.py      programación dinámica por estudiante (intervalos ponderados)
+│   └── enrollment.py       fase 2: reparto de cupos entre estudiantes
 ├── report/report.py        solución, horarios por clase/salón/profesor/estudiante, motivos y métricas
 ├── verify/verifier.py      verificador independiente de R1-R10
 └── solver/orchestrator.py  coordina carga, fase 1, fase 2, reporte y verificación
@@ -45,6 +47,41 @@ cabe_en(disp, a) <=>  (disp & a) == a       O(1)
 
 Una clase que termina a las 10:00 y otra que inicia a las 10:00 no comparten bits, así que no se cruzan.
 El número de días es un parámetro del escenario (`parameters.num_days`).
+
+## El algoritmo
+
+El problema se resuelve en dos fases. El grafo de conflictos se usa en las dos, de forma distinta:
+
+```text
+Escenario ─► Grafo de conflictos ─► Fase 1: ubicar clases ─► Fase 2: inscribir estudiantes ─► Verificador ─► Informe
+             (clases = vértices)     (colorear el grafo:      (en el subgrafo de cada estudiante,
+                                      horas = colores)         DP sobre intervalos)
+```
+
+**Fase 1** decide la hora y el salón de cada clase. Ubicar las clases sin cruces equivale a colorear el
+grafo de conflictos usando las horas como colores; por eso esta fase es la parte difícil del problema.
+
+**Fase 2** inscribe a los estudiantes cuando las horas ya están fijas. Para un estudiante, sus clases
+pedidas son intervalos en la línea del tiempo; dos se cruzan si se solapan. Ese subgrafo del grafo de
+conflictos es un *grafo de intervalos*, y en él escoger el conjunto de clases sin cruces de mayor peso
+(conjunto independiente de peso máximo, NP-difícil en un grafo cualquiera) se resuelve exacto con
+programación dinámica:
+
+```text
+ordenar por hora de fin                      Θ(n log n)    T(n) = 2T(n/2) + Θ(n)
+p(j) = clases que terminan antes de que j empiece, por búsqueda binaria
+                                             Θ(log n) c/u  T(n) = T(n/2) + Θ(1)
+OPT[j] = max(OPT[j-1], w_j + OPT[p(j)])      Θ(n)
+```
+
+El peso de cada solicitud es `w = prioridad · (N + 1) + 1` (N = total de solicitudes), así que la DP
+maximiza la suma de prioridades y, a igual suma, el número de clases.
+
+Cuando una clase recibe más estudiantes que su cupo real `min(cupo, capacidad del salón)`, se queda con
+los de mayor prioridad (a igual prioridad, el primero de la entrada); los demás vuelven a correr su DP
+sin esa clase, hasta que nadie exceda cupos. Al final, los cupos que quedaron libres se ofrecen de nuevo
+a quien mejore con ellos. El horario de cada estudiante es óptimo para las clases que tuvo disponibles;
+el reparto de cupos entre estudiantes es una heurística.
 
 ## Formato de un escenario
 

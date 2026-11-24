@@ -68,8 +68,8 @@ def run_benchmark() -> None:
             f"{m['coverage_percent']}%",
             f"{m['priority_satisfaction_percent']}%",
             str(m["violations_total"]),
-            f"{t.get('phase1_dsatur_ms', 0):.2f}",
-            f"{t.get('phase2_mcmf_ms', 0):.2f}",
+            f"{t.get('phase1_ms', 0):.2f}",
+            f"{t.get('phase2_ms', 0):.2f}",
             f"{t.get('total_ms', 0):.2f}",
         ])
 

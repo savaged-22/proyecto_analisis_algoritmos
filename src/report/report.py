@@ -350,7 +350,7 @@ class TimetableReport:
             " [5] Recursos y tiempos",
             f"     Ocupación de salones:     {m['avg_room_utilization_percent']}% promedio",
             f"     Carga de profesores:      {m['avg_professor_workload_percent']}% de su disponibilidad",
-            f"     Fase 1: {t.get('phase1_dsatur_ms', 0):.2f} ms · Fase 2: {t.get('phase2_mcmf_ms', 0):.2f} ms"
+            f"     Fase 1: {t.get('phase1_ms', 0):.2f} ms · Fase 2: {t.get('phase2_ms', 0):.2f} ms"
             f" · Total: {t.get('total_ms', 0):.2f} ms",
             sep,
         ]
