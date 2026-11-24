@@ -7,7 +7,8 @@ from typing import Any
 
 from ..data.scenario import Scenario, load_scenario_dict, load_scenario_file
 from ..graph.conflict_graph import build_conflict_graph
-from ..graph.dsatur_coloring import DSATURColoringSolver
+from .. import config
+from ..phase1.scheduler import schedule_classes
 from ..phase2.enrollment import EnrollmentSolver
 from ..report.report import TimetableReport
 from ..verify.verifier import verify_solution
@@ -58,7 +59,7 @@ class TimetableOrchestrator:
         """Carga y valida un archivo de escenario JSON."""
         self.scenario = load_scenario_file(file_path)
 
-    def run(self) -> dict[str, Any]:
+    def run(self, phase1_mode: str = config.DEFAULT_PHASE1_MODE) -> dict[str, Any]:
         """Ejecuta la fase 1, la fase 2, el reporte y la verificación independiente.
 
         Returns:
@@ -75,16 +76,18 @@ class TimetableOrchestrator:
         self.timings["conflict_graph_ms"] = round((t1_graph - t0_graph) * 1000.0, 3)
 
         # -------------------------------------------------------------
-        # 2. Fase 1: Coloración DSATUR Ponderada con Listas (h, s)
+        # 2. Fase 1: ubicar clases en (hora, salón) con DSATUR y, si aplica, backtracking
         # -------------------------------------------------------------
         t0_p1 = time.perf_counter()
-        dsatur_solver = DSATURColoringSolver(
-            conflict_graph=conflict_graph,
+        self.phase1_results = schedule_classes(
+            classes=self.classes,
             rooms=self.rooms,
             professors=self.professors,
-            grid=self.grid
+            students=self.students,
+            grid=self.grid,
+            graph=conflict_graph,
+            mode=phase1_mode,
         )
-        self.phase1_results = dsatur_solver.solve()
         t1_p1 = time.perf_counter()
         self.timings["phase1_ms"] = round((t1_p1 - t0_p1) * 1000.0, 3)
 

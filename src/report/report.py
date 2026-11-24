@@ -321,6 +321,7 @@ class TimetableReport:
             f" INFORME DE RESULTADOS{' - ' + m['scenario'] if m['scenario'] else ''}",
             sep,
             " [1] Programación de clases",
+            f"     Estrategia:               {self._phase1_text()}",
             f"     Programadas:              {m['scheduled_classes']}/{m['total_classes']}",
             f"     Sin programar:            {unscheduled}",
             sub,
@@ -355,6 +356,27 @@ class TimetableReport:
             sep,
         ]
         return "\n".join(lines)
+
+
+    def _phase1_text(self) -> str:
+        p1 = self.phase1_metrics
+        if not p1:
+            return "-"
+        names = {"heuristica": "heurística DSATUR", "exacto": "ramificación y poda",
+                 "backtracking": "backtracking sin cota", "fuerza_bruta": "fuerza bruta"}
+        text = names.get(p1["mode"], p1["mode"])
+        if p1.get("requested_mode") == "auto":
+            text += " (automático)"
+        search = p1.get("search") or {}
+        if "nodes" in search:
+            text += f", {search['nodes']} nodos"
+        if "leaves" in search:
+            text += f", {search['leaves']} combinaciones"
+        if p1.get("optimal") is True:
+            text += ", óptimo"
+        elif p1.get("optimal") is False:
+            text += ", mejor hallado (límite de nodos)"
+        return text
 
 
 def _percent(part: float, total: float) -> float:

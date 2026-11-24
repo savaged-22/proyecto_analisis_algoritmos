@@ -22,9 +22,13 @@ src/
 ├── data/
 │   ├── scenario.py         lectura y validación de escenarios JSON
 │   └── generator.py        generador con semilla: conjunto base, escenarios B-F, escalabilidad
-├── graph/
-│   ├── conflict_graph.py   grafo de conflictos entre clases
-│   └── dsatur_coloring.py  fase 1: ubicar clases en (hora, salón) con DSATUR
+├── graph/conflict_graph.py  grafo de conflictos entre clases
+├── phase1/                 fase 1: ubicar clases en (hora, salón)
+│   ├── cost.py             costo de una programación (lo que se minimiza)
+│   ├── dsatur.py           heurística DSATUR
+│   ├── backtracking.py     búsqueda exacta: backtracking con ramificación y poda
+│   ├── brute_force.py      fuerza bruta (solo instancias diminutas)
+│   └── scheduler.py        elige la estrategia y aplica el resultado
 ├── phase2/
 │   ├── interval_dp.py      programación dinámica por estudiante (intervalos ponderados)
 │   └── enrollment.py       fase 2: reparto de cupos entre estudiantes
@@ -60,6 +64,36 @@ Escenario ─► Grafo de conflictos ─► Fase 1: ubicar clases ─► Fase 2:
 
 **Fase 1** decide la hora y el salón de cada clase. Ubicar las clases sin cruces equivale a colorear el
 grafo de conflictos usando las horas como colores; por eso esta fase es la parte difícil del problema.
+Se minimiza un costo que estima la prioridad que se perdería:
+
+```text
+costo = BASE · (clases sin programar) + prioridad de las no programadas + Σ cruces entre clases pedidas por un mismo estudiante
+```
+
+Hay cuatro estrategias (`--modo`):
+
+| Estrategia | Qué hace | Costo |
+|---|---|---|
+| `heuristica` | DSATUR: programa primero la clase con menos horas disponibles y le da la hora y el salón más baratos. No retrocede. | O(M²·H + M·H·(d + A)) |
+| `backtracking` | Recorre el árbol de decisiones (hora de cada clase, o sin programar) y descarta una rama apenas incumple una restricción. | O(Π (H_i + 1)) en el peor caso |
+| `exacto` | Lo anterior más ramificación y poda: cota inferior de lo que falta y la solución de DSATUR como mejor conocida. Da el óptimo. | igual en el peor caso, mucho menos en la práctica |
+| `fuerza_bruta` | Prueba todas las combinaciones (hora, salón) de todas las clases. Solo para instancias diminutas. | Π (H_i · A + 1) hojas |
+
+`auto` (por defecto) usa `exacto` hasta 12 clases y `heuristica` con más. Los salones no cambian el costo,
+solo si algo cabe: el árbol ramifica por horas y a cada clase se le da el salón más pequeño que le sirve;
+si ninguno queda libre, se reacomodan los salones de las clases ya ubicadas antes de descartar esa hora.
+
+```bash
+python main.py --comparar -i data/scenarios/demo.json
+```
+
+```text
+Estrategia    | Nodos/hojas  | Podas | Costo F1 | Clases | Solicitudes | Óptimo
+heuristica    | -            | -     | 75.0     | 5/6    | 14/21       | -
+backtracking  | 189          | 0     | 75.0     | 5/6    | 14/21       | sí
+exacto        | 3            | 2     | 75.0     | 5/6    | 14/21       | sí
+fuerza_bruta  | 17920        | -     | 75.0     | 5/6    | 14/21       | sí
+```
 
 **Fase 2** inscribe a los estudiantes cuando las horas ya están fijas. Para un estudiante, sus clases
 pedidas son intervalos en la línea del tiempo; dos se cruzan si se solapan. Ese subgrafo del grafo de
@@ -158,5 +192,7 @@ python main.py -i data/scenarios/C_profesor.json -v  # un escenario, con la prog
 python main.py --generate                            # escenarios A-F
 python main.py --benchmark                           # demo + A-F en una tabla
 python main.py --verify ESCENARIO SALIDA             # verifica una solución exportada
+python main.py -i ESCENARIO --modo exacto            # elige la estrategia de la fase 1
+python main.py --comparar -i ESCENARIO               # compara las estrategias de la fase 1
 python -m unittest discover -s tests -t .            # pruebas
 ```

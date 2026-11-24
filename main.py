@@ -7,6 +7,8 @@ Uso:
     python main.py --scale 20 50 100 200 --seeds 1 2 3
     python main.py --benchmark
     python main.py --verify data/scenarios/demo.json data/outputs/output_demo.json
+    python main.py -i data/scenarios/F_imposible.json --modo exacto
+    python main.py --comparar -i data/scenarios/demo.json   # heurística vs backtracking vs exacto vs fuerza bruta
 """
 
 import argparse
@@ -14,7 +16,9 @@ import json
 import sys
 from pathlib import Path
 
+from src import config
 from src.data.generator import DEFAULT_SEED, write_scale_scenarios, write_standard_scenarios
+from src.phase1.brute_force import InstanceTooLargeError
 from src.data.scenario import load_scenario_file
 from src.solver.orchestrator import TimetableOrchestrator
 from src.verify.verifier import RULES, verify_solution
@@ -27,12 +31,13 @@ DEFAULT_SCENARIO = SCENARIOS_DIR / "demo.json"
 STANDARD_SCENARIOS = ["demo", "A_factible", "B_salones", "C_profesor", "D_estudiantes", "E_capacidad", "F_imposible"]
 
 
-def run_single_scenario(input_path: Path, output_path: Path, verbose: bool = False) -> None:
+def run_single_scenario(input_path: Path, output_path: Path, verbose: bool = False,
+                        mode: str = config.DEFAULT_PHASE1_MODE) -> None:
     """Ejecuta el algoritmo sobre un escenario y exporta la solución."""
     print(f"\n>> Procesando escenario: {input_path}")
     orchestrator = TimetableOrchestrator()
     orchestrator.load_scenario_file(input_path)
-    orchestrator.run()
+    orchestrator.run(phase1_mode=mode)
 
     print(orchestrator.get_summary_text())
     orchestrator.export_solution(output_path)
@@ -81,6 +86,31 @@ def run_benchmark() -> None:
         print(" | ".join(v.ljust(w) for v, w in zip(row, widths)))
 
 
+def run_comparison(input_path: Path) -> None:
+    """Corre la fase 1 con cada estrategia sobre el mismo escenario y compara trabajo y resultado."""
+    print(f"\nComparación de estrategias de la fase 1 sobre {input_path.name}\n")
+    headers = ["Estrategia", "Nodos/hojas", "Podas", "Costo F1", "Clases", "Solicitudes", "Prioridad", "Óptimo", "ms F1"]
+    widths = [13, 12, 8, 9, 7, 12, 10, 11, 9]
+    print(" | ".join(h.ljust(w) for h, w in zip(headers, widths)))
+    print("-+-".join("-" * w for w in widths))
+    for mode in ["heuristica", "backtracking", "exacto", "fuerza_bruta"]:
+        orch = TimetableOrchestrator()
+        orch.load_scenario_file(input_path)
+        try:
+            result = orch.run(phase1_mode=mode)
+        except InstanceTooLargeError as exc:
+            print(f"{mode.ljust(widths[0])} | {exc}")
+            continue
+        m, p1 = result["metrics"], result["phase1_details"]
+        search = p1["search"] or {}
+        work = search.get("nodes", search.get("leaves", "-"))
+        optimal = {True: "sí", False: "no (límite)", None: "-"}[p1["optimal"]]
+        row = [mode, str(work), str(search.get("pruned_by_bound", "-")), str(p1["cost"]["total"]),
+               f"{m['scheduled_classes']}/{m['total_classes']}", f"{m['attended_requests']}/{m['total_requests']}",
+               f"{m['priority_satisfaction_percent']}%", optimal, f"{m['timings_ms']['phase1_ms']:.1f}"]
+        print(" | ".join(v.ljust(w) for v, w in zip(row, widths)))
+
+
 def run_verifier(scenario_path: Path, output_path: Path) -> None:
     """Verifica con R1-R10 una solución exportada, sin ejecutar el algoritmo."""
     scenario = load_scenario_file(scenario_path)
@@ -110,6 +140,10 @@ def main() -> None:
     parser.add_argument("--seeds", type=int, nargs="+", default=[1, 2, 3], help="Semillas para --scale.")
     parser.add_argument("-b", "--benchmark", action="store_true", help="Ejecuta los escenarios estándar.")
     parser.add_argument("-v", "--verbose", action="store_true", help="Muestra la programación de cada clase.")
+    parser.add_argument("--modo", choices=config.PHASE1_MODES, default=config.DEFAULT_PHASE1_MODE,
+                        help="Estrategia de la fase 1 (por defecto: auto).")
+    parser.add_argument("--comparar", action="store_true",
+                        help="Compara las estrategias de la fase 1 sobre el escenario de entrada.")
     parser.add_argument("--verify", nargs=2, metavar=("ESCENARIO", "SALIDA"),
                         help="Verifica una solución exportada contra su escenario (R1-R10).")
     args = parser.parse_args()
@@ -133,8 +167,11 @@ def main() -> None:
         return
 
     input_file = Path(args.input) if args.input else DEFAULT_SCENARIO
+    if args.comparar:
+        run_comparison(input_file)
+        return
     output_file = Path(args.output) if args.output else OUTPUTS_DIR / f"output_{input_file.stem}.json"
-    run_single_scenario(input_file, output_file, verbose=args.verbose)
+    run_single_scenario(input_file, output_file, verbose=args.verbose, mode=args.modo)
 
 
 if __name__ == "__main__":

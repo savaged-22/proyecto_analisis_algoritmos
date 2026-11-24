@@ -22,6 +22,21 @@ MAX_PRIORITY: Final[int] = 3
 PRIORITY_LEVELS: Final[tuple[int, ...]] = tuple(range(MIN_PRIORITY, MAX_PRIORITY + 1))
 
 
+# ----------------------------------------------------------------------
+# Fase 1: cómo ubicar las clases
+# ----------------------------------------------------------------------
+# auto:          exacto si hay pocas clases, heurística si no
+# heuristica:    DSATUR (rápido, sin garantía de óptimo)
+# backtracking:  búsqueda exhaustiva podando solo por restricciones
+# exacto:        backtracking con ramificación y poda (óptimo)
+# fuerza_bruta:  todas las combinaciones (solo instancias diminutas)
+PHASE1_MODES: Final[tuple[str, ...]] = ("auto", "heuristica", "backtracking", "exacto", "fuerza_bruta")
+DEFAULT_PHASE1_MODE: Final[str] = "auto"
+EXACT_MAX_CLASSES: Final[int] = 12           # en modo auto, hasta cuántas clases se usa el exacto
+EXACT_NODE_LIMIT: Final[int] = 1_000_000     # tope de nodos del backtracking (devuelve lo mejor hallado)
+BRUTE_FORCE_MAX_LEAVES: Final[int] = 2_000_000
+
+
 def request_weight(priority: int, total_requests: int) -> int:
     """Peso de una solicitud para el objetivo del problema.
 

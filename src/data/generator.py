@@ -203,48 +203,44 @@ def build_base_scenario(
 # Escenarios B a F, derivados del conjunto base
 # ======================================================================
 def scenario_b_rooms(base: dict[str, Any], seed: int = DEFAULT_SEED) -> dict[str, Any]:
-    """B: tres clases solo pueden iniciar a la misma hora y solo quedan dos salones libres a esa hora."""
+    """B: tres clases solo pueden iniciar a la misma hora y en esa franja solo quedan dos salones."""
     rng = random.Random(seed + 2)
     sc = _derive(base, "B_salones")
     grid = _grid(sc)
-    classes = sc["classes"]
     ref = _reference_masks(base, grid)
 
-    competitors, hour = _pick_classes_sharing_hour(rng, grid, classes, ref, count=3)
+    competitors, hour = _pick_classes_sharing_hour(rng, grid, sc["classes"], ref, count=3)
     window = 0
     for c in competitors:
         c["allowed_starts"] = [hour]
         window |= grid.create_slot_mask(grid.day_hour_to_slot(0, hour), c["duration_hours"])
         _make_professor_available(sc, c["professor_id"], grid, window)
 
-    # Salones ocupados en esa franja por las demás clases (según la referencia) se conservan;
-    # de los libres, solo dos quedan disponibles.
+    # A esa hora solo quedan habilitados los dos salones más grandes; los demás pierden esa franja.
     competitor_ids = {c["id"] for c in competitors}
-    rooms_by_id = {r["id"]: r for r in sc["rooms"]}
-    used_by_others = {ref[cid]["room_id"] for cid in ref
-                      if cid not in competitor_ids and ref[cid]["mask"] & window}
     need = max(_min_room_capacity(sc, c) for c in competitors)
-    free_rooms = sorted((r for r in sc["rooms"] if r["id"] not in used_by_others),
-                        key=lambda r: -r["capacity"])
-    kept = [r["id"] for r in free_rooms if r["capacity"] >= need][:2]
+    by_capacity = sorted(sc["rooms"], key=lambda r: (-r["capacity"], r["id"]))
+    kept = [r["id"] for r in by_capacity if r["capacity"] >= need][:2]
     if len(kept) < 2:
-        raise ValueError("El conjunto base no deja dos salones libres para el escenario B.")
+        raise ValueError("El conjunto base no tiene dos salones con capacidad suficiente para el escenario B.")
     window_hours = set(_mask_hours(grid, window))
-    for r in free_rooms:
+    for r in sc["rooms"]:
         if r["id"] not in kept:
-            rooms_by_id[r["id"]]["availability"] = [h for h in r["availability"] if h not in window_hours]
+            r["availability"] = [h for h in r["availability"] if h not in window_hours]
 
     ids = sorted(competitor_ids)
     sc["expected"] = {
         "description": (
-            f"Las clases {', '.join(ids)} solo pueden iniciar a las {hour}:00 y a esa hora solo hay "
-            f"dos salones disponibles ({', '.join(kept)}). Ningún salón puede tener dos clases a la vez, "
-            "así que a lo sumo dos de ellas se programan."
+            f"Las clases {', '.join(ids)} solo pueden iniciar a las {hour}:00 y en esa franja solo hay "
+            f"dos salones habilitados ({', '.join(kept)}). Ningún salón puede tener dos clases a la vez, "
+            "así que en esa franja caben a lo sumo dos clases y al menos una de las tres queda sin programar."
         ),
         "violations": 0,
         "competing_classes": ids,
+        "window_hours": sorted(window_hours),
+        "rooms_in_window": kept,
+        "max_classes_in_window": 2,
         "max_competing_scheduled": 2,
-        "best_scheduled_classes": len(classes) - 1,
     }
     return sc
 

@@ -34,8 +34,6 @@
         9,
         10,
         11,
-        12,
-        13,
         14,
         15,
         16,
@@ -130,8 +128,6 @@
         9,
         10,
         11,
-        12,
-        13,
         14,
         15,
         16,
@@ -708,14 +704,22 @@
     }
   ],
   "expected": {
-    "description": "Las clases INF103-1, INF105-1, INF107-1 solo pueden iniciar a las 12:00 y a esa hora solo hay dos salones disponibles (AULA-03, AULA-04). Ningún salón puede tener dos clases a la vez, así que a lo sumo dos de ellas se programan.",
+    "description": "Las clases INF103-1, INF105-1, INF107-1 solo pueden iniciar a las 12:00 y en esa franja solo hay dos salones habilitados (AULA-03, AULA-04). Ningún salón puede tener dos clases a la vez, así que en esa franja caben a lo sumo dos clases y al menos una de las tres queda sin programar.",
     "violations": 0,
     "competing_classes": [
       "INF103-1",
       "INF105-1",
       "INF107-1"
     ],
-    "max_competing_scheduled": 2,
-    "best_scheduled_classes": 7
+    "window_hours": [
+      12,
+      13
+    ],
+    "rooms_in_window": [
+      "AULA-03",
+      "AULA-04"
+    ],
+    "max_classes_in_window": 2,
+    "max_competing_scheduled": 2
   }
 }
