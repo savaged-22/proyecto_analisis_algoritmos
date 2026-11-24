@@ -413,6 +413,37 @@ def build_scale_scenario(n_students: int, seed: int) -> dict[str, Any]:
     )
 
 
+def build_conflict_scenario(n_students: int, seed: int, extra_requests: int = 2, starts_per_class: int = 2,
+                            ) -> dict[str, Any]:
+    """Escenario de escalabilidad con conflictos inevitables, para medir a la heurística contra el óptimo.
+
+    Parte del escenario de escalabilidad y le agrega a cada estudiante 'extra_requests' solicitudes al azar
+    (que ya no salen de la programación de referencia, así que pueden cruzarse) y deja a cada clase con
+    solo 'starts_per_class' horas de inicio permitidas. Los cupos suben a 40 para que la dificultad venga
+    de los horarios y no de la capacidad.
+    """
+    data = build_scale_scenario(n_students, seed)
+    rng = random.Random(seed * 7919 + n_students)
+    class_ids = [c["id"] for c in data["classes"]]
+    for s in data["students"]:
+        have = {r["class_id"] for r in s["requests"]}
+        options = [cid for cid in class_ids if cid not in have]
+        for cid in rng.sample(options, min(extra_requests, len(options))):
+            s["requests"].append({"class_id": cid, "priority": rng.randint(config.MIN_PRIORITY, config.MAX_PRIORITY)})
+    for c in data["classes"]:
+        if len(c["allowed_starts"]) > starts_per_class:
+            c["allowed_starts"] = sorted(rng.sample(c["allowed_starts"], starts_per_class))
+        c["capacity"] = max(c["capacity"], 40)
+    data["metadata"]["name"] = f"conflictos_{n_students:03d}_s{seed}"
+    data["metadata"]["description"] = (
+        "Escenario de escalabilidad con solicitudes extra al azar y menos horas permitidas: "
+        "hay cruces inevitables y la solución óptima no se conoce de antemano."
+    )
+    data["expected"] = {"description": "Sin solución esperada conocida; se compara la heurística con el exacto.",
+                        "violations": 0}
+    return data
+
+
 # ======================================================================
 # Escritura de archivos
 # ======================================================================

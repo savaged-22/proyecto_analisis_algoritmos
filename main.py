@@ -111,6 +111,64 @@ def run_comparison(input_path: Path) -> None:
         print(" | ".join(v.ljust(w) for v, w in zip(row, widths)))
 
 
+def print_table(title: str, headers: list[str], rows: list[list[str]]) -> None:
+    widths = [max(len(h), *(len(r[i]) for r in rows)) for i, h in enumerate(headers)]
+    print(f"\n{title}\n")
+    print(" | ".join(h.ljust(w) for h, w in zip(headers, widths)))
+    print("-+-".join("-" * w for w in widths))
+    for row in rows:
+        print(" | ".join(v.ljust(w) for v, w in zip(row, widths)))
+
+
+def run_experiments(which: list[str], sizes: list[int], seeds: list[int]) -> None:
+    """Experimentos de escalabilidad, podas y aproximación; guarda CSV y JSON en data/outputs/experimentos."""
+    from src.analysis import experiments
+
+    results = {}
+    if "escalabilidad" in which:
+        res = experiments.scalability(sizes, seeds)
+        results["escalabilidad"] = res
+        print_table(
+            f"ESCALABILIDAD (escenario A en proporción, promedio de {len(seeds)} semillas)",
+            ["Modo", "Estudiantes", "Clases", "Cobertura", "Prioridad", "Incumpl.", "Fase 1 ms", "Fase 2 ms", "Total ms"],
+            [[r["mode"], str(r["students"]), str(r["classes"]), f"{r['coverage']}%", f"{r['priority']}%",
+              str(r["violations"]), f"{r['phase1_ms']:.1f}", f"{r['phase2_ms']:.1f}", f"{r['total_ms']:.1f}"]
+             for r in res["summary"]],
+        )
+        print("\nExponente empírico (pendiente log-log del tiempo contra el número de estudiantes):")
+        for mode, slopes in res["loglog_slopes"].items():
+            print(f"  {mode:<11} fase 1: {slopes['phase1_ms']}  fase 2: {slopes['phase2_ms']}  total: {slopes['total_ms']}")
+
+    if "podas" in which:
+        res = experiments.pruning([SCENARIOS_DIR / f"{n}.json" for n in STANDARD_SCENARIOS])
+        results["podas"] = res
+        limit = res["node_limit"]
+        print_table(
+            "PODAS: trabajo de cada estrategia de la fase 1",
+            ["Escenario", "Clases", "Fuerza bruta (hojas)", "Backtracking (nodos)", "Ramif. y poda (nodos)", "Reducción"],
+            [[r["scenario"], str(r["classes"]), f"{r['brute_force_leaves']:.2e}",
+              f"{r['backtracking_nodes']:,}" + ("" if r["backtracking_complete"] else f" (tope {limit:,})"),
+              f"{r['exacto_nodes']:,}", f"x{r['reduction']}"] for r in res["rows"]],
+        )
+
+    if "aproximacion" in which:
+        res = experiments.approximation()
+        results["aproximacion"] = res
+        print_table(
+            "APROXIMACIÓN: heurística (DSATUR) frente al óptimo (ramificación y poda)",
+            ["Estudiantes", "Semilla", "Clases", "Costo heur.", "Costo óptimo", "Prioridad heur.", "Prioridad ópt.",
+             "Razón", "ms heur.", "ms ópt."],
+            [[str(r["students"]), str(r["seed"]), str(r["classes"]), str(r["heuristic_cost"]), str(r["exact_cost"]),
+              str(r["heuristic_priority"]), str(r["exact_priority"]), f"{r['ratio']:.3f}",
+              f"{r['heuristic_ms']:.1f}", f"{r['exact_ms']:.1f}"] for r in res["rows"]],
+        )
+        print(f"\nRazón promedio: {res['mean_ratio']} · peor caso: {res['min_ratio']} · "
+              f"la heurística llegó al óptimo en {res['heuristic_optimal_share'] * 100:.0f}% de los casos")
+
+    for path in experiments.write_results(OUTPUTS_DIR / "experimentos", results):
+        print(f"[OK] {path.relative_to(BASE_DIR)}")
+
+
 def run_verifier(scenario_path: Path, output_path: Path) -> None:
     """Verifica con R1-R10 una solución exportada, sin ejecutar el algoritmo."""
     scenario = load_scenario_file(scenario_path)
@@ -144,6 +202,10 @@ def main() -> None:
                         help="Estrategia de la fase 1 (por defecto: auto).")
     parser.add_argument("--comparar", action="store_true",
                         help="Compara las estrategias de la fase 1 sobre el escenario de entrada.")
+    parser.add_argument("--experimentos", nargs="*", choices=["escalabilidad", "podas", "aproximacion"],
+                        help="Experimentos de análisis (sin argumentos: todos). Usa --sizes y --seeds.")
+    parser.add_argument("--sizes", type=int, nargs="+", default=[20, 50, 100, 200],
+                        help="Tamaños (estudiantes) para el experimento de escalabilidad.")
     parser.add_argument("--verify", nargs=2, metavar=("ESCENARIO", "SALIDA"),
                         help="Verifica una solución exportada contra su escenario (R1-R10).")
     args = parser.parse_args()
@@ -160,6 +222,10 @@ def main() -> None:
 
     if args.benchmark:
         run_benchmark()
+        return
+
+    if args.experimentos is not None:
+        run_experiments(args.experimentos or ["escalabilidad", "podas", "aproximacion"], args.sizes, args.seeds)
         return
 
     if args.verify:

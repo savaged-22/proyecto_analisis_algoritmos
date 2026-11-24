@@ -33,7 +33,10 @@ src/
 │   ├── interval_dp.py      programación dinámica por estudiante (intervalos ponderados)
 │   └── enrollment.py       fase 2: reparto de cupos entre estudiantes
 ├── report/report.py        solución, horarios por clase/salón/profesor/estudiante, motivos y métricas
-├── verify/verifier.py      verificador independiente de R1-R10
+├── verify/
+│   ├── verifier.py         verificador independiente de R1-R10
+│   └── expectations.py     compara el resultado con lo esperado de cada escenario
+├── analysis/experiments.py escalabilidad, podas y aproximación
 └── solver/orchestrator.py  coordina carga, fase 1, fase 2, reporte y verificación
 tests/                      pruebas unitarias (python -m unittest discover -s tests -t .)
 data/scenarios/             demo y escenarios A-F
@@ -151,7 +154,9 @@ el reparto de cupos entre estudiantes es una heurística.
 | `E_capacidad` | Una clase con dos cupos menos que solicitudes. |
 | `F_imposible` | Un profesor con seis clases de dos horas en una jornada de diez horas. |
 
-Cada archivo trae en `expected` la descripción del caso y lo que debe cumplir la salida.
+Cada archivo trae en `expected` la descripción del caso y lo que debe cumplir la salida;
+[`src/verify/expectations.py`](src/verify/expectations.py) lo comprueba sobre el resultado, y las pruebas
+lo exigen para la semilla publicada y para otras 15 semillas.
 `data/scenarios/demo.json` es un ejemplo pequeño escrito a mano para la demostración.
 
 `python main.py --scale 20 50 100 200 --seeds 1 2 3` genera escenarios de escalabilidad (el conjunto
@@ -184,6 +189,42 @@ python main.py --verify data/scenarios/demo.json data/outputs/output_demo.json
 Revisar una solución cuesta O(M² + S·K²) (pares de clases y pares de clases de cada estudiante), es
 decir, tiempo polinomial.
 
+## Resultados
+
+`python main.py --experimentos` corre los tres experimentos y guarda CSV y JSON en
+`data/outputs/experimentos/`. Valores medidos en un portátil con Python 3.12.
+
+**Escalabilidad** (escenario A en proporción, promedio de 3 semillas, 0 incumplimientos en todos):
+
+| Modo | Estudiantes | Clases | Cobertura | Fase 1 | Fase 2 | Total |
+|---|---|---|---|---|---|---|
+| heurística | 20 | 8 | 99.3 % | 0.9 ms | 1.1 ms | 2.1 ms |
+| heurística | 50 | 20 | 97.7 % | 3.8 ms | 2.6 ms | 6.8 ms |
+| heurística | 100 | 40 | 99.9 % | 14.3 ms | 6.0 ms | 21.4 ms |
+| heurística | 200 | 80 | 99.3 % | 59.4 ms | 15.3 ms | 76.6 ms |
+| exacto | 20 | 8 | 100 % | 3.2 ms | 1.6 ms | 5.0 ms |
+| exacto | 50 | 20 | 100 % | 22.0 ms | 3.5 ms | 26.1 ms |
+| exacto | 100 | 40 | 100 % | 41.3 ms | 7.3 ms | 49.7 ms |
+| exacto | 200 | 80 | 100 % | 2630 ms | 20.1 ms | 2653 ms |
+
+Exponente empírico del tiempo (pendiente en escala log-log, t ≈ c·n^k): heurística, fase 1 k ≈ 1.8
+(DSATUR es O(M²·H)) y fase 2 k ≈ 1.2 (O(S·R log R)); con el exacto la fase 1 sube a k ≈ 2.7 y se dispara
+en el tamaño más grande, como se espera de una búsqueda exponencial.
+
+**Podas** (trabajo de cada estrategia de la fase 1 para el mismo óptimo):
+
+| Escenario | Fuerza bruta (hojas) | Backtracking (nodos) | Ramificación y poda (nodos) |
+|---|---|---|---|
+| demo | 1.8·10⁴ | 189 | 3 |
+| A_factible | 6.1·10¹¹ | 2 437 | 1 |
+| C_profesor | 8.1·10¹¹ | 1 267 | 25 |
+| F_imposible | 7.2·10¹⁴ | 107 439 | 437 |
+
+**Aproximación** (escenarios con conflictos inevitables, 20 y 50 estudiantes, 5 semillas cada uno):
+la heurística atiende en promedio el 98.9 % de la prioridad que atiende el óptimo, 94.8 % en el peor caso,
+y llega al óptimo en el 60 % de las instancias. La coloración de grafos no admite una garantía de
+aproximación de factor constante, por eso la calidad de la heurística se mide empíricamente.
+
 ## Uso
 
 ```bash
@@ -194,5 +235,6 @@ python main.py --benchmark                           # demo + A-F en una tabla
 python main.py --verify ESCENARIO SALIDA             # verifica una solución exportada
 python main.py -i ESCENARIO --modo exacto            # elige la estrategia de la fase 1
 python main.py --comparar -i ESCENARIO               # compara las estrategias de la fase 1
+python main.py --experimentos [escalabilidad podas aproximacion]
 python -m unittest discover -s tests -t .            # pruebas
 ```
