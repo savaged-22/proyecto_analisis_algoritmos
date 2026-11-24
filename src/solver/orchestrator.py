@@ -24,6 +24,7 @@ class TimetableOrchestrator:
         self.timings: dict[str, float] = {}
         self.report: TimetableReport | None = None
         self.enrollment_solver: EnrollmentSolver | None = None
+        self.conflict_graph = None
 
     # Accesos directos a las entidades del escenario cargado
     @property
@@ -72,6 +73,7 @@ class TimetableOrchestrator:
         # -------------------------------------------------------------
         t0_graph = time.perf_counter()
         conflict_graph = build_conflict_graph(self.classes, self.students)
+        self.conflict_graph = conflict_graph
         t1_graph = time.perf_counter()
         self.timings["conflict_graph_ms"] = round((t1_graph - t0_graph) * 1000.0, 3)
 

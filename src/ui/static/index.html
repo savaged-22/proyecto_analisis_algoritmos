@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Asignación de horarios — algoritmo paso a paso</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1>Asignación de horarios estudiantiles</h1>
+      <p>Grafo de conflictos · DSATUR · Ramificación y poda · Programación dinámica</p>
+    </div>
+    <div class="controls">
+      <label>Escenario <select id="scenario-select"></select></label>
+      <label>Fase 1 <select id="mode-select"></select></label>
+      <button id="run-button" class="primary">Ejecutar</button>
+    </div>
+  </header>
+
+  <div id="status" class="status" role="status"></div>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="datos">1 · Datos</button>
+    <button class="tab" data-tab="grafo">2 · Grafo</button>
+    <button class="tab" data-tab="fase1">3 · Fase 1: ubicar clases</button>
+    <button class="tab" data-tab="fase2">4 · Fase 2: inscribir</button>
+    <button class="tab" data-tab="resultados">5 · Resultados</button>
+  </nav>
+
+  <main>
+    <section id="tab-datos" class="panel active"></section>
+    <section id="tab-grafo" class="panel"></section>
+    <section id="tab-fase1" class="panel"></section>
+    <section id="tab-fase2" class="panel"></section>
+    <section id="tab-resultados" class="panel"></section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

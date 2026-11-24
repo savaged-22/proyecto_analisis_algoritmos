@@ -35,6 +35,7 @@ DEFAULT_PHASE1_MODE: Final[str] = "auto"
 EXACT_MAX_CLASSES: Final[int] = 12           # en modo auto, hasta cuántas clases se usa el exacto
 EXACT_NODE_LIMIT: Final[int] = 1_000_000     # tope de nodos del backtracking (devuelve lo mejor hallado)
 BRUTE_FORCE_MAX_LEAVES: Final[int] = 2_000_000
+TRACE_LIMIT: Final[int] = 300                # nodos del árbol que se guardan para mostrarlos en la interfaz
 
 
 def request_weight(priority: int, total_requests: int) -> int:

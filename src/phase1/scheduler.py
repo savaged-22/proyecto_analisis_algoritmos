@@ -79,6 +79,8 @@ def schedule_classes(
                                            use_bound=(resolved == "exacto"))
             final, final_cost, proven = solver.solve(initial=heuristic)
             result["search"] = solver.stats.to_dict()
+            result["search_trace"] = solver.trace
+            result["search_order"] = solver.order
             result["optimal"] = proven
         result["search_ms"] = round((time.perf_counter() - t0) * 1000.0, 3)
         apply_assignment(final, classes, rooms, professors, grid)

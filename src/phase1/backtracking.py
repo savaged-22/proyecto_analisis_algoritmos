@@ -70,6 +70,7 @@ class BacktrackingScheduler:
         cost: ScheduleCost,
         use_bound: bool = True,
         node_limit: int = config.EXACT_NODE_LIMIT,
+        trace_limit: int = config.TRACE_LIMIT,
     ) -> None:
         self.classes = {c.id: c for c in classes}
         self.rooms = {r.id: r for r in rooms}
@@ -97,6 +98,8 @@ class BacktrackingScheduler:
         self.stats = SearchStats()
         self.best_cost = float("inf")
         self.best: Assignment = {}
+        self.trace_limit = trace_limit
+        self.trace: list[dict] = []    # primeros nodos del árbol, para mostrarlos en la interfaz
 
     # ==================================================================
     def solve(self, initial: Assignment | None = None) -> tuple[Assignment, CostBreakdown, bool]:
@@ -112,48 +115,73 @@ class BacktrackingScheduler:
         self._room_busy = {rid: 0 for rid in self.rooms}
         self._prof_busy = {pid: 0 for pid in self.professors}
         self._undo: list[tuple] = []
-        self._search(0, 0.0)
+        self.trace = []
+        self._search(0, 0.0, None)
 
         return self.best, self.cost.breakdown(self.best, self._masks_of(self.best)), not self.stats.node_limit_hit
 
     # ==================================================================
     # Búsqueda
     # ==================================================================
-    def _search(self, level: int, cost_so_far: float) -> None:
+    def _search(self, level: int, cost_so_far: float, decision: tuple[str, str] | None) -> None:
+        """decision: (clase, hora elegida o "sin programar") que llevó a este nodo; None en la raíz."""
         if self.stats.node_limit_hit:
             return
         self.stats.nodes += 1
         if self.stats.nodes >= self.node_limit:
             self.stats.node_limit_hit = True
             return
+        node = self._trace_node(level, cost_so_far, decision)
 
         # Poda por cota
-        if self.use_bound and cost_so_far + self._lower_bound(level) >= self.best_cost:
-            self.stats.pruned_by_bound += 1
-            return
+        if self.use_bound:
+            bound = self._lower_bound(level)
+            if node is not None:
+                node["bound"] = round(cost_so_far + bound, 2)
+            if cost_so_far + bound >= self.best_cost:
+                self.stats.pruned_by_bound += 1
+                if node is not None:
+                    node["status"] = "podada"
+                return
 
         # Hoja: programación completa
         if level == len(self.order):
-            if cost_so_far < self.best_cost:
+            improved = cost_so_far < self.best_cost
+            if improved:
                 self.best_cost = cost_so_far
                 self.best = {cid: (slot, self._room_of[cid]) if slot is not None else None
                              for cid, slot in self._slot_of.items()}
                 self.stats.improvements += 1
+            if node is not None:
+                node["status"] = "mejor solución" if improved else "hoja"
             return
 
         cid = self.order[level]
+        cls = self.classes[cid]
         for increment, slot, mask in self._options(cid):
             if not self._place(cid, slot, mask):
                 continue                       # ningún acomodo de salones permite esta hora
-            self._search(level + 1, cost_so_far + increment)
+            label = self.grid.format_slot(slot, cls.duration_hours)
+            self._search(level + 1, cost_so_far + increment, (cid, label))
             self._remove(cid)
             if self.stats.node_limit_hit:
                 return
 
         # Última opción: dejar la clase sin programar
         self._slot_of[cid] = None
-        self._search(level + 1, cost_so_far + self.cost.unscheduled_cost(cid))
+        self._search(level + 1, cost_so_far + self.cost.unscheduled_cost(cid), (cid, "sin programar"))
         del self._slot_of[cid]
+
+    def _trace_node(self, level: int, cost: float, decision: tuple[str, str] | None) -> dict | None:
+        """Guarda el nodo para la interfaz (solo los primeros config.TRACE_LIMIT)."""
+        if len(self.trace) >= self.trace_limit:
+            return None
+        node = {"depth": level, "class_id": decision[0] if decision else None,
+                "choice": decision[1] if decision else "raíz", "cost": round(cost, 2),
+                "best_known": None if self.best_cost == float("inf") else round(self.best_cost, 2),
+                "status": "explorada"}
+        self.trace.append(node)
+        return node
 
     def _options(self, cid: str) -> list[tuple[float, int, int]]:
         """Horas válidas para la clase dado lo ya programado, con su costo incremental."""

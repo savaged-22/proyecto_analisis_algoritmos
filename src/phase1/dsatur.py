@@ -68,6 +68,7 @@ class DSATURColoringSolver:
 
             # 2. Mejor par (hora, salón)
             best = self._find_best_assignment(u)
+            step["candidates"] = self._last_candidates
             if best is None:
                 unscheduled.append(selected_id)
                 self.steps.append({**step, "result": "sin programar"})
@@ -123,20 +124,31 @@ class DSATURColoringSolver:
 
         best: tuple[int, int, Room, float] | None = None
         best_key = (float("inf"), float("inf"))
+        self._last_candidates = []   # lo evaluado en cada hora, para mostrarlo en la interfaz
         for slot in cls.allowed_starts:
             mask = self.grid.create_slot_mask(slot, cls.duration_hours)
+            candidate = {"slot": slot, "time": self.grid.format_slot(slot, cls.duration_hours)}
+            self._last_candidates.append(candidate)
             # Restricción dura: profesor disponible y sin otra clase a esa hora (R2)
             if not prof.is_available(mask, cls.duration_hours):
+                candidate["status"] = "profesor no disponible u ocupado"
                 continue
             soft_penalty = sum(w for n, w in scheduled_neighbors if masks_overlap(mask, n.time_mask))
+            candidate["penalty"] = soft_penalty
+            candidate["crosses"] = [n.id for n, _ in scheduled_neighbors if masks_overlap(mask, n.time_mask)]
 
+            slot_best = None
             for room in self.rooms.values():
                 if not room.can_accommodate(cls.min_room_capacity, cls.required_room_type):
                     continue
                 if not room.is_free(mask):
                     continue
+                if slot_best is None or room.capacity < slot_best.capacity:
+                    slot_best = room
                 candidate_key = (soft_penalty, room.capacity - cls.min_room_capacity)
                 if candidate_key < best_key:
                     best_key = candidate_key
                     best = (slot, mask, room, soft_penalty)
+            candidate["status"] = "posible" if slot_best else "sin salón libre"
+            candidate["room_id"] = slot_best.id if slot_best else None
         return best

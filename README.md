@@ -37,6 +37,7 @@ src/
 │   ├── verifier.py         verificador independiente de R1-R10
 │   └── expectations.py     compara el resultado con lo esperado de cada escenario
 ├── analysis/experiments.py escalabilidad, podas y aproximación
+├── ui/                     interfaz web local (servidor con http.server, traza y página HTML/JS)
 └── solver/orchestrator.py  coordina carga, fase 1, fase 2, reporte y verificación
 tests/                      pruebas unitarias (python -m unittest discover -s tests -t .)
 data/scenarios/             demo y escenarios A-F
@@ -225,6 +226,25 @@ la heurística atiende en promedio el 98.9 % de la prioridad que atiende el ópt
 y llega al óptimo en el 60 % de las instancias. La coloración de grafos no admite una garantía de
 aproximación de factor constante, por eso la calidad de la heurística se mide empíricamente.
 
+## Interfaz
+
+```bash
+python main.py --ui            # abre http://127.0.0.1:8000 en el navegador
+```
+
+Funciona solo con la biblioteca estándar (no hay que instalar nada) y solo escucha en `127.0.0.1`.
+Muestra el algoritmo paso a paso:
+
+1. **Datos**: tablas editables de salones, profesores, clases y estudiantes (horas como `8-11, 14`,
+   solicitudes como `ALG:3, BD:1`). Al pulsar *Ejecutar* se recalcula todo; un dato inválido muestra
+   el error del validador.
+2. **Grafo**: el grafo de conflictos coloreado con la hora que recibió cada clase.
+3. **Fase 1**: DSATUR paso a paso (clase elegida, horas evaluadas, costo de cruces, salón) con el
+   horario llenándose, y el árbol de ramificación y poda con el costo, la cota y las ramas podadas.
+4. **Fase 2**: la tabla `OPT[j]` de cada estudiante con `p(j)` y el cálculo de cada fila, el horario
+   resultante, los motivos de las pendientes y los cupos negados.
+5. **Resultados**: cobertura, prioridades por nivel, R1-R10 y la comparación con el resultado esperado.
+
 ## Uso
 
 ```bash
@@ -236,5 +256,6 @@ python main.py --verify ESCENARIO SALIDA             # verifica una solución ex
 python main.py -i ESCENARIO --modo exacto            # elige la estrategia de la fase 1
 python main.py --comparar -i ESCENARIO               # compara las estrategias de la fase 1
 python main.py --experimentos [escalabilidad podas aproximacion]
+python main.py --ui [--port 8000]                    # interfaz paso a paso
 python -m unittest discover -s tests -t .            # pruebas
 ```

@@ -206,6 +206,9 @@ def main() -> None:
                         help="Experimentos de análisis (sin argumentos: todos). Usa --sizes y --seeds.")
     parser.add_argument("--sizes", type=int, nargs="+", default=[20, 50, 100, 200],
                         help="Tamaños (estudiantes) para el experimento de escalabilidad.")
+    parser.add_argument("--ui", action="store_true", help="Abre la interfaz web local para ver el algoritmo paso a paso.")
+    parser.add_argument("--port", type=int, default=8000, help="Puerto de la interfaz (por defecto 8000).")
+    parser.add_argument("--sin-navegador", action="store_true", help="No abrir el navegador al iniciar la interfaz.")
     parser.add_argument("--verify", nargs=2, metavar=("ESCENARIO", "SALIDA"),
                         help="Verifica una solución exportada contra su escenario (R1-R10).")
     args = parser.parse_args()
@@ -222,6 +225,11 @@ def main() -> None:
 
     if args.benchmark:
         run_benchmark()
+        return
+
+    if args.ui:
+        from src.ui.server import serve
+        serve(SCENARIOS_DIR, port=args.port, open_browser=not args.sin_navegador)
         return
 
     if args.experimentos is not None:
