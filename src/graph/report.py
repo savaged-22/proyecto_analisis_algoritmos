@@ -5,13 +5,7 @@ from ..models.course_class import CourseClass
 from ..models.room import Room
 from ..models.professor import Professor
 from ..models.student import Student
-from ..models.time_mask import (
-    slot_to_day_hour,
-    format_slot,
-    format_mask,
-    masks_overlap,
-    TOTAL_SLOTS,
-)
+from ..models.time_mask import TimeGrid, masks_overlap
 
 
 class TimetableReport:
@@ -23,6 +17,7 @@ class TimetableReport:
         rooms: list[Room],
         professors: list[Professor],
         students: list[Student],
+        grid: TimeGrid,
         phase1_metrics: dict[str, Any] | None = None,
         phase2_metrics: dict[str, Any] | None = None,
         timings: dict[str, float] | None = None,
@@ -31,6 +26,7 @@ class TimetableReport:
         self.rooms = {r.id: r for r in rooms}
         self.professors = {p.id: p for p in professors}
         self.students = {s.id: s for s in students}
+        self.grid = grid
         self.phase1_metrics = phase1_metrics or {}
         self.phase2_metrics = phase2_metrics or {}
         self.timings = timings or {}
@@ -47,11 +43,10 @@ class TimetableReport:
             start_h = 0
             end_h = 0
             if c.assigned_slot is not None:
-                day_idx, start_h = slot_to_day_hour(c.assigned_slot)
+                day_idx, start_h = self.grid.slot_to_day_hour(c.assigned_slot)
                 end_h = start_h + c.duration_hours
-                time_str = format_slot(c.assigned_slot, c.duration_hours)
-                from ..models.time_mask import DAYS
-                day_name = DAYS[day_idx]
+                time_str = self.grid.format_slot(c.assigned_slot, c.duration_hours)
+                day_name = self.grid.day_names[day_idx]
 
             enrolled_cnt = len(c.enrolled_students)
             occupancy_rate = (enrolled_cnt / c.capacity * 100.0) if c.capacity > 0 else 0.0
@@ -92,14 +87,14 @@ class TimetableReport:
                         "class_id": c.id,
                         "course_name": c.course_name,
                         "slot_index": c.assigned_slot,
-                        "time_str": format_slot(c.assigned_slot, c.duration_hours),
+                        "time_str": self.grid.format_slot(c.assigned_slot, c.duration_hours),
                         "duration_hours": c.duration_hours,
                         "enrolled_count": len(c.enrolled_students)
                     })
 
             # Ordenar línea de tiempo por slot
             assigned_classes_in_room.sort(key=lambda item: item["slot_index"])
-            utilization_rate = (hours_used / TOTAL_SLOTS * 100.0) if TOTAL_SLOTS > 0 else 0.0
+            utilization_rate = hours_used / self.grid.total_slots * 100.0
 
             room_map[r.id] = {
                 "room_id": r.id,
@@ -107,7 +102,7 @@ class TimetableReport:
                 "capacity": r.capacity,
                 "room_type": r.room_type,
                 "hours_used": hours_used,
-                "total_available_slots": TOTAL_SLOTS,
+                "total_available_slots": self.grid.total_slots,
                 "utilization_rate_percent": round(utilization_rate, 2),
                 "timeline": assigned_classes_in_room
             }
@@ -124,17 +119,17 @@ class TimetableReport:
                         "class_id": c.id,
                         "course_name": c.course_name,
                         "room_id": c.assigned_room_id,
-                        "time_str": format_slot(c.assigned_slot, c.duration_hours),
+                        "time_str": self.grid.format_slot(c.assigned_slot, c.duration_hours),
                         "duration_hours": c.duration_hours
                     })
 
-            workload_rate = (p.assigned_hours / p.max_hours * 100.0) if p.max_hours > 0 else 0.0
+            workload_rate = (p.assigned_hours / p.max_hours * 100.0) if p.max_hours else None
             prof_map[p.id] = {
                 "professor_id": p.id,
                 "professor_name": p.name,
                 "assigned_hours": p.assigned_hours,
                 "max_hours": p.max_hours,
-                "workload_percent": round(workload_rate, 2),
+                "workload_percent": round(workload_rate, 2) if workload_rate is not None else None,
                 "classes": prof_classes
             }
         return prof_map
@@ -144,7 +139,6 @@ class TimetableReport:
         student_map: dict[str, dict[str, Any]] = {}
         for s in self.students.values():
             enrolled_details: list[dict[str, Any]] = []
-            assigned_course_ids = set()
             total_hours = 0
 
             # Verificar ausencia de colisiones en la agenda asignada
@@ -156,29 +150,27 @@ class TimetableReport:
                         has_clashes = True
 
             for c in assigned_objs:
-                assigned_course_ids.add(c.course_id)
                 total_hours += c.duration_hours
                 prof = self.professors.get(c.professor_id)
                 enrolled_details.append({
                     "class_id": c.id,
                     "course_id": c.course_id,
                     "course_name": c.course_name,
-                    "time_str": format_slot(c.assigned_slot, c.duration_hours) if c.assigned_slot is not None else "N/A",
+                    "time_str": self.grid.format_slot(c.assigned_slot, c.duration_hours) if c.assigned_slot is not None else "N/A",
                     "room_id": c.assigned_room_id,
                     "professor_name": prof.name if prof else "N/A"
                 })
 
-            req_courses = [r.course_id for r in s.requests]
-            unsatisfied = [c_id for c_id in req_courses if c_id not in assigned_course_ids]
-            sat_rate = (len(s.assigned_classes) / len(req_courses) * 100.0) if req_courses else 100.0
+            req_classes = [r.class_id for r in s.requests]
+            unsatisfied = [c_id for c_id in req_classes if c_id not in s.assigned_classes]
+            sat_rate = (len(s.assigned_classes) / len(req_classes) * 100.0) if req_classes else 100.0
 
             student_map[s.id] = {
                 "student_id": s.id,
                 "student_name": s.name,
-                "priority_score": s.priority_score,
-                "requested_courses": req_courses,
+                "requests": [r.to_dict() for r in s.requests],
                 "enrolled_classes": enrolled_details,
-                "unsatisfied_courses": unsatisfied,
+                "unsatisfied_classes": unsatisfied,
                 "satisfaction_rate_percent": round(sat_rate, 2),
                 "total_hours_per_week": total_hours,
                 "has_schedule_clashes": has_clashes
@@ -203,10 +195,8 @@ class TimetableReport:
         )
 
         prof_maps = self.build_professor_schedule_map()
-        avg_prof_workload = (
-            sum(p["workload_percent"] for p in prof_maps.values()) / len(prof_maps)
-            if prof_maps else 0.0
-        )
+        workloads = [p["workload_percent"] for p in prof_maps.values() if p["workload_percent"] is not None]
+        avg_prof_workload = sum(workloads) / len(workloads) if workloads else 0.0
 
         # Verificación estricta de invariantes
         student_clashes = sum(1 for s in self.students.values() if self._student_has_clashes(s))

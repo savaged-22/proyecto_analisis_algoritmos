@@ -14,13 +14,8 @@ from typing import Any
 from ..models.course_class import CourseClass
 from ..models.room import Room
 from ..models.professor import Professor
-from ..models.time_mask import (
-    create_slot_mask,
-    masks_overlap,
-    get_all_candidate_slots,
-    format_slot,
-)
-from .conflict_graph import ConflictGraph, HARD_CONFLICT_WEIGHT
+from ..models.time_mask import TimeGrid, masks_overlap
+from .conflict_graph import ConflictGraph
 
 
 class DSATURColoringSolver:
@@ -31,17 +26,13 @@ class DSATURColoringSolver:
         conflict_graph: ConflictGraph,
         rooms: list[Room],
         professors: list[Professor],
+        grid: TimeGrid,
     ) -> None:
         self.graph = conflict_graph
         self.rooms = {r.id: r for r in rooms}
         self.professors = {p.id: p for p in professors}
         self.classes = self.graph.vertices
-
-        # Mapeo de slots candidatos por duración
-        self.candidate_slots_by_duration: dict[int, list[tuple[int, int]]] = {
-            1: get_all_candidate_slots(1),
-            2: get_all_candidate_slots(2),
-        }
+        self.grid = grid
 
     def solve(self) -> dict[str, Any]:
         """Ejecuta el algoritmo DSATUR ponderado sobre todas las clases no asignadas.
@@ -124,7 +115,8 @@ class DSATURColoringSolver:
         if not prof:
             return None
 
-        candidates = self.candidate_slots_by_duration.get(cls.duration_hours, [])
+        # Solo las horas de inicio permitidas para la clase (R8)
+        candidates = [(slot, self.grid.create_slot_mask(slot, cls.duration_hours)) for slot in cls.allowed_starts]
         best_choice: tuple[int, int, Room, float] | None = None
         min_penalty = float("inf")
 
@@ -159,13 +151,13 @@ class DSATURColoringSolver:
 
             # Buscar salón compatible libre
             for room in self.rooms.values():
-                if not room.can_accommodate(cls.capacity, cls.required_room_type):
+                if not room.can_accommodate(cls.min_room_capacity, cls.required_room_type):
                     continue
                 if not room.is_free(mask):
                     continue
 
                 # Penalización por desperdicio de capacidad de aula (ajuste fino)
-                room_waste_penalty = (room.capacity - cls.capacity) * 0.01
+                room_waste_penalty = (room.capacity - cls.min_room_capacity) * 0.01
                 total_candidate_penalty = slot_soft_penalty + room_waste_penalty
 
                 if total_candidate_penalty < min_penalty:

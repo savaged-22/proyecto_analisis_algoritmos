@@ -1,0 +1,42 @@
+{
+  "metadata": {
+    "name": "demo",
+    "description": "Ejemplo pequeño para la demostración: 6 clases, 3 profesores, 3 salones y 8 estudiantes. Incluye un cupo agotado, un cruce entre clases, un profesor con una sola hora para dos clases y una clase que exige laboratorio."
+  },
+  "parameters": {"num_days": 1, "start_hour": 8, "end_hour": 18},
+  "rooms": [
+    {"id": "AULA-01", "name": "Salón 01", "capacity": 30, "availability": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]},
+    {"id": "AULA-02", "name": "Salón 02", "capacity": 20, "availability": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]},
+    {"id": "LAB-01", "name": "Laboratorio 01", "capacity": 15, "room_type": "laboratorio", "availability": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]}
+  ],
+  "professors": [
+    {"id": "PROF-01", "name": "Dra. Ada Lovelace", "availability": [8, 9, 10, 11]},
+    {"id": "PROF-02", "name": "Dr. Alan Turing", "availability": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]},
+    {"id": "PROF-03", "name": "Dra. Grace Hopper", "availability": [14]}
+  ],
+  "classes": [
+    {"id": "ALG", "course_name": "Algoritmos", "professor_id": "PROF-01", "capacity": 3, "duration_hours": 2, "allowed_starts": [8]},
+    {"id": "BD", "course_name": "Bases de Datos", "professor_id": "PROF-02", "capacity": 10, "duration_hours": 2, "allowed_starts": [8]},
+    {"id": "MAT", "course_name": "Matemáticas Discretas", "professor_id": "PROF-01", "capacity": 10, "duration_hours": 1, "allowed_starts": [9, 10, 11]},
+    {"id": "RED", "course_name": "Laboratorio de Redes", "professor_id": "PROF-02", "capacity": 10, "duration_hours": 1, "allowed_starts": [10, 14], "required_room_type": "laboratorio"},
+    {"id": "ETI", "course_name": "Ética", "professor_id": "PROF-03", "capacity": 10, "duration_hours": 1, "allowed_starts": [14]},
+    {"id": "COM", "course_name": "Comunicación", "professor_id": "PROF-03", "capacity": 10, "duration_hours": 1, "allowed_starts": [14]}
+  ],
+  "students": [
+    {"id": "E1", "name": "Estudiante 1", "requests": [{"class_id": "ALG", "priority": 3}, {"class_id": "BD", "priority": 1}, {"class_id": "ETI", "priority": 2}]},
+    {"id": "E2", "name": "Estudiante 2", "requests": [{"class_id": "BD", "priority": 3}, {"class_id": "ALG", "priority": 2}]},
+    {"id": "E3", "name": "Estudiante 3", "requests": [{"class_id": "ALG", "priority": 3}, {"class_id": "MAT", "priority": 2}]},
+    {"id": "E4", "name": "Estudiante 4", "requests": [{"class_id": "ALG", "priority": 2}, {"class_id": "RED", "priority": 3}, {"class_id": "COM", "priority": 1}]},
+    {"id": "E5", "name": "Estudiante 5", "requests": [{"class_id": "ALG", "priority": 1}, {"class_id": "MAT", "priority": 3}, {"class_id": "ETI", "priority": 3}]},
+    {"id": "E6", "name": "Estudiante 6", "requests": [{"class_id": "BD", "priority": 2}, {"class_id": "RED", "priority": 2}, {"class_id": "COM", "priority": 2}]},
+    {"id": "E7", "name": "Estudiante 7", "requests": [{"class_id": "MAT", "priority": 1}, {"class_id": "RED", "priority": 1}, {"class_id": "ETI", "priority": 1}]},
+    {"id": "E8", "name": "Estudiante 8", "requests": [{"class_id": "ALG", "priority": 3}, {"class_id": "COM", "priority": 2}]}
+  ],
+  "expected": {
+    "description": "ALG y BD solo pueden iniciar a las 8:00, así que se cruzan: E1 se queda con ALG (prioridad 3) y E2 con BD (prioridad 3). ALG tiene 5 interesados sin cruce y cupo 3: 2 quedan pendientes por cupo. PROF-03 solo puede de 14:00 a 15:00: ETI (suma de prioridades 6) se programa y COM (suma 5) queda sin programar. RED solo cabe en LAB-01.",
+    "violations": 0,
+    "scheduled_classes": 5,
+    "unscheduled_classes": ["COM"],
+    "pending_for_capacity": {"ALG": 2}
+  }
+}

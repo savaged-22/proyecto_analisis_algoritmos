@@ -1,200 +1,202 @@
-"""Módulo de utilidades de bitmasks para representación temporal (8:00 - 18:00, duración 1-2h).
+"""Representación de la jornada con bitmasks.
 
-Cada semana lectiva se modela en 5 días (Lunes a Viernes), con 10 slots horarios por día:
-    Slot 0: 08:00 - 09:00
-    Slot 1: 09:00 - 10:00
-    Slot 2: 10:00 - 11:00
-    Slot 3: 11:00 - 12:00
-    Slot 4: 12:00 - 13:00
-    Slot 5: 13:00 - 14:00
-    Slot 6: 14:00 - 15:00
-    Slot 7: 15:00 - 16:00
-    Slot 8: 16:00 - 17:00
-    Slot 9: 17:00 - 18:00
+La jornada se divide en bloques de una hora. Cada bloque es un bit de un entero:
 
-Total de slots semanales: 5 días * 10 horas = 50 slots.
-Un entero de 64 bits almacena el horario completo de cualquier entidad, permitiendo
-operaciones bitwise O(1) para detección de traslapes y verificaciones de disponibilidad.
+    slot = día * horas_por_día + (hora - hora_inicial)
+
+Con la jornada por defecto (un día, 8:00 a 18:00) hay 10 slots:
+
+    slot 0 -> 08:00-09:00, slot 1 -> 09:00-10:00, ..., slot 9 -> 17:00-18:00
+
+Una clase de dos horas que inicia en el slot s ocupa los bits s y s+1.
+Con esta representación, saber si dos horarios se cruzan es una sola operación:
+
+    se_cruzan(a, b)  <=>  (a & b) != 0                      O(1)
+    cabe_en(disp, a) <=>  (disp & a) == a                   O(1)
+
+El número de días es un parámetro: con varios días, los slots de cada día van
+seguidos y una clase nunca cruza de un día al siguiente.
 """
 
+from dataclasses import dataclass
 from typing import Final
 
-DAYS: Final[list[str]] = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"]
-NUM_DAYS: Final[int] = 5
-SLOTS_PER_DAY: Final[int] = 10
-START_HOUR: Final[int] = 8
-END_HOUR: Final[int] = 18
-TOTAL_SLOTS: Final[int] = NUM_DAYS * SLOTS_PER_DAY  # 50 slots
+DAY_NAMES: Final[list[str]] = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]
 
-FULL_WEEK_MASK: Final[int] = (1 << TOTAL_SLOTS) - 1
 EMPTY_MASK: Final[int] = 0
 
 
-def slot_to_day_hour(slot: int) -> tuple[int, int]:
-    """Convierte un índice de slot (0 a 49) a una tupla (índice_día, hora_inicio).
+@dataclass(frozen=True)
+class TimeGrid:
+    """Jornada académica: días x bloques de una hora.
 
-    Args:
-        slot: Índice del slot entre 0 y 49.
-
-    Returns:
-        Tupla (día, hora) donde día está en [0, 4] y hora en [8, 17].
-
-    Raises:
-        ValueError: Si el slot está fuera de rango.
+    Atributos:
+        num_days: Número de días de la programación (1 en la versión inicial).
+        start_hour: Hora inicial de la jornada (8 = 8:00 a. m.).
+        end_hour: Hora final de la jornada (18 = 6:00 p. m.).
     """
-    if not (0 <= slot < TOTAL_SLOTS):
-        raise ValueError(f"Slot {slot} fuera de rango [0, {TOTAL_SLOTS - 1}]")
-    day_idx = slot // SLOTS_PER_DAY
-    start_hour = START_HOUR + (slot % SLOTS_PER_DAY)
-    return day_idx, start_hour
+    num_days: int = 1
+    start_hour: int = 8
+    end_hour: int = 18
 
+    def __post_init__(self) -> None:
+        if not 1 <= self.num_days <= len(DAY_NAMES):
+            raise ValueError(f"num_days debe estar entre 1 y {len(DAY_NAMES)}")
+        if not 0 <= self.start_hour < self.end_hour <= 24:
+            raise ValueError("La jornada debe cumplir 0 <= start_hour < end_hour <= 24")
 
-def day_hour_to_slot(day: int, hour: int) -> int:
-    """Convierte (día, hora) al índice de slot lineal (0 a 49).
+    # ------------------------------------------------------------------
+    # Tamaño de la jornada
+    # ------------------------------------------------------------------
+    @property
+    def hours_per_day(self) -> int:
+        return self.end_hour - self.start_hour
 
-    Args:
-        day: Índice de día (0=Lunes, ..., 4=Viernes).
-        hour: Hora de inicio (8 a 17).
+    @property
+    def total_slots(self) -> int:
+        return self.num_days * self.hours_per_day
 
-    Returns:
-        Índice lineal de slot.
+    @property
+    def full_mask(self) -> int:
+        """Máscara con todos los bloques de la jornada disponibles."""
+        return (1 << self.total_slots) - 1
 
-    Raises:
-        ValueError: Si el día o la hora están fuera de rango.
-    """
-    if not (0 <= day < NUM_DAYS):
-        raise ValueError(f"Día {day} inválido. Debe estar en [0, {NUM_DAYS - 1}]")
-    if not (START_HOUR <= hour < END_HOUR):
-        raise ValueError(f"Hora {hour} inválida. Debe estar en [{START_HOUR}, {END_HOUR - 1}]")
-    return day * SLOTS_PER_DAY + (hour - START_HOUR)
+    @property
+    def day_names(self) -> list[str]:
+        return DAY_NAMES[: self.num_days]
 
+    # ------------------------------------------------------------------
+    # Conversión slot <-> (día, hora)
+    # ------------------------------------------------------------------
+    def slot_to_day_hour(self, slot: int) -> tuple[int, int]:
+        """Convierte un slot en (índice de día, hora de inicio)."""
+        if not 0 <= slot < self.total_slots:
+            raise ValueError(f"Slot {slot} fuera de rango [0, {self.total_slots - 1}]")
+        return slot // self.hours_per_day, self.start_hour + slot % self.hours_per_day
 
-def create_slot_mask(slot: int, duration_hours: int = 1) -> int:
-    """Genera la máscara de bits para un bloque que inicia en 'slot' con duración de 1 o 2 horas.
+    def day_hour_to_slot(self, day: int, hour: int) -> int:
+        """Convierte (índice de día, hora) en slot."""
+        if not 0 <= day < self.num_days:
+            raise ValueError(f"Día {day} inválido. Debe estar en [0, {self.num_days - 1}]")
+        if not self.start_hour <= hour < self.end_hour:
+            raise ValueError(f"Hora {hour} fuera de la jornada [{self.start_hour}, {self.end_hour - 1}]")
+        return day * self.hours_per_day + (hour - self.start_hour)
 
-    Una clase de 2 horas no puede cruzar el límite entre días (no puede iniciar a las 17:00).
+    # ------------------------------------------------------------------
+    # Máscaras de clases
+    # ------------------------------------------------------------------
+    def is_valid_start(self, slot: int, duration_hours: int) -> bool:
+        """Indica si una clase de esa duración puede iniciar en el slot sin salir de la jornada (R7)."""
+        if not 0 <= slot < self.total_slots:
+            return False
+        _, hour = self.slot_to_day_hour(slot)
+        return hour + duration_hours <= self.end_hour
 
-    Args:
-        slot: Índice inicial de slot (0 a 49).
-        duration_hours: Duración en horas (1 o 2).
+    def create_slot_mask(self, slot: int, duration_hours: int) -> int:
+        """Máscara de una clase que inicia en 'slot' y dura 'duration_hours' horas consecutivas."""
+        if duration_hours not in (1, 2):
+            raise ValueError(f"Duración {duration_hours}h no soportada. Debe ser 1 o 2 horas.")
+        if not self.is_valid_start(slot, duration_hours):
+            raise ValueError(f"Una clase de {duration_hours}h no puede iniciar en el slot {slot}.")
+        return ((1 << duration_hours) - 1) << slot
 
-    Returns:
-        Máscara de bits entera con los bits correspondientes activados.
+    def candidate_starts(self, duration_hours: int) -> list[int]:
+        """Todos los slots donde puede iniciar una clase de esa duración."""
+        return [s for s in range(self.total_slots) if self.is_valid_start(s, duration_hours)]
 
-    Raises:
-        ValueError: Si la duración no es 1 o 2, o si la clase sobrepasa el límite del día.
-    """
-    if duration_hours not in (1, 2):
-        raise ValueError(f"Duración {duration_hours}h no soportada. Debe ser 1 o 2 horas.")
+    # ------------------------------------------------------------------
+    # Lectura de horarios escritos en el escenario
+    # ------------------------------------------------------------------
+    def hours_to_slots(self, spec: list[int] | dict[str, list[int]] | None) -> list[int]:
+        """Convierte una especificación de horas del escenario en slots.
 
-    day, hour = slot_to_day_hour(slot)
-    if hour + duration_hours > END_HOUR:
-        raise ValueError(
-            f"La clase que inicia a las {hour}:00 con duración {duration_hours}h "
-            f"excede el límite diario de las {END_HOUR}:00."
-        )
+        Formatos aceptados:
+            None                       -> todos los slots de la jornada
+            [8, 9, 14]                 -> esas horas, en todos los días
+            {"Lunes": [8, 9], ...}     -> horas por día (con varios días)
+        """
+        if spec is None:
+            return list(range(self.total_slots))
+        if isinstance(spec, list):
+            return sorted(
+                self.day_hour_to_slot(day, int(h)) for day in range(self.num_days) for h in spec
+            )
+        if isinstance(spec, dict):
+            slots: list[int] = []
+            for day_name, hours in spec.items():
+                if day_name not in self.day_names:
+                    raise ValueError(f"Día '{day_name}' no existe en la jornada {self.day_names}")
+                day = self.day_names.index(day_name)
+                slots.extend(self.day_hour_to_slot(day, int(h)) for h in hours)
+            return sorted(slots)
+        raise ValueError(f"Formato de horario no reconocido: {spec!r}")
 
-    mask = 1 << slot
-    if duration_hours == 2:
-        mask |= (1 << (slot + 1))
-    return mask
+    def hours_to_mask(self, spec: list[int] | dict[str, list[int]] | None) -> int:
+        """Igual que hours_to_slots, pero devuelve la máscara de disponibilidad."""
+        return slots_to_mask(self.hours_to_slots(spec))
 
+    def mask_to_hours(self, mask: int) -> list[int] | dict[str, list[int]]:
+        """Operación inversa de hours_to_mask (lista con un día, diccionario con varios)."""
+        by_day: dict[str, list[int]] = {}
+        for slot in mask_to_slots(mask):
+            day, hour = self.slot_to_day_hour(slot)
+            by_day.setdefault(self.day_names[day], []).append(hour)
+        if self.num_days == 1:
+            return by_day.get(self.day_names[0], [])
+        return by_day
 
-def create_time_mask(day: int, start_hour: int, duration_hours: int = 1) -> int:
-    """Crea una máscara de bits a partir de día, hora de inicio y duración.
+    # ------------------------------------------------------------------
+    # Formato legible
+    # ------------------------------------------------------------------
+    def format_slot(self, slot: int, duration_hours: int = 1) -> str:
+        """Ej.: '08:00-10:00' con un día, 'Martes 14:00-15:00' con varios."""
+        day, hour = self.slot_to_day_hour(slot)
+        text = f"{hour:02d}:00-{hour + duration_hours:02d}:00"
+        return text if self.num_days == 1 else f"{self.day_names[day]} {text}"
 
-    Args:
-        day: Índice del día (0=Lunes, 4=Viernes).
-        start_hour: Hora de inicio (8 a 17).
-        duration_hours: Duración (1 o 2 horas).
+    def format_mask(self, mask: int) -> str:
+        """Describe una máscara arbitraria como intervalos contiguos."""
+        slots = mask_to_slots(mask)
+        if not slots:
+            return "Sin asignación"
+        intervals: list[str] = []
+        i = 0
+        while i < len(slots):
+            start = slots[i]
+            day = start // self.hours_per_day
+            length = 1
+            while (i + 1 < len(slots) and slots[i + 1] == start + length
+                   and slots[i + 1] // self.hours_per_day == day):
+                length += 1
+                i += 1
+            intervals.append(self.format_slot(start, length))
+            i += 1
+        return ", ".join(intervals)
 
-    Returns:
-        Máscara de bits entera.
-    """
-    slot = day_hour_to_slot(day, start_hour)
-    return create_slot_mask(slot, duration_hours)
+    def to_dict(self) -> dict[str, int]:
+        return {"num_days": self.num_days, "start_hour": self.start_hour, "end_hour": self.end_hour}
 
 
 def masks_overlap(mask1: int, mask2: int) -> bool:
-    """Determina en O(1) si dos máscaras temporales comparten al menos un slot activo."""
+    """Dos horarios se cruzan si comparten al menos un bloque. O(1)."""
     return (mask1 & mask2) != 0
 
 
 def mask_to_slots(mask: int) -> list[int]:
-    """Extrae la lista de índices de slots activos a partir de una máscara de bits."""
+    """Índices de los bits activos de la máscara, de menor a mayor."""
     slots: list[int] = []
-    temp = mask
-    slot_idx = 0
-    while temp > 0:
-        if temp & 1:
-            slots.append(slot_idx)
-        temp >>= 1
-        slot_idx += 1
+    slot = 0
+    while mask:
+        if mask & 1:
+            slots.append(slot)
+        mask >>= 1
+        slot += 1
     return slots
 
 
 def slots_to_mask(slots: list[int]) -> int:
-    """Construye una máscara de bits a partir de una lista de slots."""
+    """Máscara con los slots indicados activos."""
     mask = 0
     for s in slots:
-        if 0 <= s < TOTAL_SLOTS:
-            mask |= (1 << s)
+        mask |= 1 << s
     return mask
-
-
-def format_slot(slot: int, duration_hours: int = 1) -> str:
-    """Genera una representación textual legible de un slot o bloque horario.
-
-    Ejemplo: 'Lunes 08:00-10:00' o 'Martes 14:00-15:00'.
-    """
-    day_idx, start_h = slot_to_day_hour(slot)
-    end_h = start_h + duration_hours
-    day_name = DAYS[day_idx]
-    return f"{day_name} {start_h:02d}:00-{end_h:02d}:00"
-
-
-def format_mask(mask: int) -> str:
-    """Convierte una máscara arbitraria en una cadena descriptiva de intervalos horarios."""
-    if mask == 0:
-        return "Sin asignación"
-    slots = mask_to_slots(mask)
-    if not slots:
-        return "Sin asignación"
-
-    # Agrupar slots contiguos por día
-    intervals: list[str] = []
-    i = 0
-    while i < len(slots):
-        start_slot = slots[i]
-        curr_day, start_h = slot_to_day_hour(start_slot)
-        count = 1
-        while (i + 1 < len(slots) and
-               slots[i + 1] == start_slot + count and
-               slot_to_day_hour(slots[i + 1])[0] == curr_day):
-            count += 1
-            i += 1
-        end_h = start_h + count
-        day_name = DAYS[curr_day]
-        intervals.append(f"{day_name} {start_h:02d}:00-{end_h:02d}:00")
-        i += 1
-
-    return ", ".join(intervals)
-
-
-def get_all_candidate_slots(duration_hours: int = 1) -> list[tuple[int, int]]:
-    """Retorna todas las tuplas válidas (índice_slot, máscara) para una duración dada.
-
-    Para duración 1h: 50 slots (todos los slots de la semana).
-    Para duración 2h: 45 slots (se excluye el slot de las 17:00 de cada día).
-
-    Returns:
-        Lista de tuplas (slot_index, slot_mask).
-    """
-    candidates: list[tuple[int, int]] = []
-    for day in range(NUM_DAYS):
-        max_hour = END_HOUR - duration_hours
-        for hour in range(START_HOUR, max_hour + 1):
-            slot = day_hour_to_slot(day, hour)
-            mask = create_slot_mask(slot, duration_hours)
-            candidates.append((slot, mask))
-    return candidates

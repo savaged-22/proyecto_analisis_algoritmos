@@ -27,6 +27,7 @@ from typing import Any
 from ..models.course_class import CourseClass
 from ..models.student import Student
 from ..models.time_mask import masks_overlap
+from ..config import MAX_PRIORITY
 
 
 @dataclass
@@ -106,53 +107,35 @@ class StudentEnrollmentMCMF:
         self.students = {s.id: s for s in students}
         self.network = MinCostFlowNetwork()
 
-        # Mapeo auxiliar de curso -> clases disponibles
-        self.course_classes: dict[str, list[CourseClass]] = {}
-        for c in classes:
-            if c.is_scheduled:
-                self.course_classes.setdefault(c.course_id, []).append(c)
-
     def build_network(self) -> None:
         """Construye la red dirigida de flujo con costos basados en prioridades."""
         net = self.network
         net.add_node(self.SRC)
         net.add_node(self.SNK)
 
-        # 1. SRC -> Estudiante
         for student in self.students.values():
+            # 1. SRC -> Estudiante
             s_node = f"STU_{student.id}"
-            max_courses = len(student.requests)
-            net.add_edge(self.SRC, s_node, capacity=max_courses, cost=0)
+            net.add_edge(self.SRC, s_node, capacity=len(student.requests), cost=0)
 
-            # 2. Estudiante -> Solicitud de materia
             for req in student.requests:
-                req_node = f"REQ_{student.id}_{req.course_id}"
+                cls = self.classes[req.class_id]
+                fits_availability = (student.availability_mask & cls.time_mask) == cls.time_mask
+                if not cls.is_scheduled or not fits_availability:
+                    continue
+                # 2. Estudiante -> Solicitud
+                req_node = f"REQ_{student.id}_{req.class_id}"
                 net.add_edge(s_node, req_node, capacity=1, cost=0)
 
-                # 3. Solicitud -> Secciones programadas del curso
-                available_sections = self.course_classes.get(req.course_id, [])
-                for cls in available_sections:
-                    cls_node = f"CLS_{cls.id}"
-
-                    # Función de costo:
-                    # - Menor costo para mayor prioridad del requerimiento (req.priority: 1, 2, 3...)
-                    # - Menor costo para mayor promedio/puntaje del estudiante
-                    # - Bonificación si coincide con el profesor preferido
-                    base_cost = 100
-                    priority_penalty = (req.priority - 1) * 30
-                    merit_discount = int((student.priority_score - 1.0) * 15)
-                    pref_prof_discount = 20 if (req.preferred_professor_id == cls.professor_id) else 0
-
-                    edge_cost = max(1, base_cost + priority_penalty - merit_discount - pref_prof_discount)
-
-                    net.add_edge(
-                        req_node,
-                        cls_node,
-                        capacity=1,
-                        cost=edge_cost,
-                        class_id=cls.id,
-                        student_id=student.id
-                    )
+                # 3. Solicitud -> Clase solicitada: menor costo a mayor prioridad (3 = más alta)
+                net.add_edge(
+                    req_node,
+                    f"CLS_{cls.id}",
+                    capacity=1,
+                    cost=MAX_PRIORITY + 1 - req.priority,
+                    class_id=cls.id,
+                    student_id=student.id
+                )
 
         # 4. Clase -> SNK
         for cls in self.classes.values():

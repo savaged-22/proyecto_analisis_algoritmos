@@ -5,10 +5,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from ..models.room import Room
-from ..models.professor import Professor
-from ..models.course_class import CourseClass
-from ..models.student import Student, Request
+from ..data.scenario import Scenario, load_scenario_dict, load_scenario_file
 from ..models.time_mask import masks_overlap
 from ..graph.conflict_graph import build_conflict_graph
 from ..graph.dsatur_coloring import DSATURColoringSolver
@@ -20,47 +17,45 @@ class TimetableOrchestrator:
     """Orquestador central del sistema de programación académica y asignación de cursos."""
 
     def __init__(self) -> None:
-        self.rooms: list[Room] = []
-        self.professors: list[Professor] = []
-        self.classes: list[CourseClass] = []
-        self.students: list[Student] = []
-
+        self.scenario: Scenario | None = None
         self.phase1_results: dict[str, Any] = {}
         self.phase2_results: dict[str, Any] = {}
         self.timings: dict[str, float] = {}
         self.report: TimetableReport | None = None
 
+    # Accesos directos a las entidades del escenario cargado
+    @property
+    def grid(self):
+        return self._require_scenario().grid
+
+    @property
+    def rooms(self):
+        return self._require_scenario().rooms
+
+    @property
+    def professors(self):
+        return self._require_scenario().professors
+
+    @property
+    def classes(self):
+        return self._require_scenario().classes
+
+    @property
+    def students(self):
+        return self._require_scenario().students
+
+    def _require_scenario(self) -> Scenario:
+        if self.scenario is None:
+            raise RuntimeError("Primero se debe cargar un escenario.")
+        return self.scenario
+
     def load_scenario_dict(self, data: dict[str, Any]) -> None:
-        """Carga las entidades a partir de un diccionario estructurado."""
-        self.rooms = [Room.from_dict(r) for r in data.get("rooms", [])]
-        self.professors = [Professor.from_dict(p) for p in data.get("professors", [])]
-
-        # Lectura de clases (pueden venir en lista 'classes' o dentro de 'courses')
-        self.classes = []
-        if "classes" in data:
-            self.classes = [CourseClass.from_dict(c) for c in data["classes"]]
-        elif "courses" in data:
-            for course in data["courses"]:
-                c_id = str(course["id"])
-                c_name = str(course.get("name", c_id))
-                for sec in course.get("sections", []):
-                    sec_data = dict(sec)
-                    sec_data.setdefault("course_id", c_id)
-                    sec_data.setdefault("course_name", c_name)
-                    self.classes.append(CourseClass.from_dict(sec_data))
-
-        self.students = [Student.from_dict(s) for s in data.get("students", [])]
+        """Carga y valida un escenario a partir de un diccionario."""
+        self.scenario = load_scenario_dict(data)
 
     def load_scenario_file(self, file_path: str | Path) -> None:
-        """Carga un archivo de escenario JSON validando su existencia y formato."""
-        path = Path(file_path).resolve()
-        if not path.is_file():
-            raise FileNotFoundError(f"Archivo de escenario no encontrado: {path}")
-
-        with open(path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-
-        self.load_scenario_dict(data)
+        """Carga y valida un archivo de escenario JSON."""
+        self.scenario = load_scenario_file(file_path)
 
     def run(self) -> dict[str, Any]:
         """Ejecuta secuencialmente la Fase 1, Fase 2 y la validación de integridad.
@@ -85,7 +80,8 @@ class TimetableOrchestrator:
         dsatur_solver = DSATURColoringSolver(
             conflict_graph=conflict_graph,
             rooms=self.rooms,
-            professors=self.professors
+            professors=self.professors,
+            grid=self.grid
         )
         self.phase1_results = dsatur_solver.solve()
         t1_p1 = time.perf_counter()
@@ -120,6 +116,7 @@ class TimetableOrchestrator:
             rooms=self.rooms,
             professors=self.professors,
             students=self.students,
+            grid=self.grid,
             phase1_metrics=self.phase1_results,
             phase2_metrics=self.phase2_results,
             timings=self.timings
@@ -160,15 +157,11 @@ class TimetableOrchestrator:
         classes_by_id = {c.id: c for c in self.classes}
         for s in self.students:
             s_classes = [classes_by_id[c_id] for c_id in s.assigned_classes if c_id in classes_by_id]
-            # Validar que no haya dos secciones del mismo curso
-            seen_courses = set()
+            # Validar que solo esté en clases que solicitó (R9)
+            requested = {r.class_id for r in s.requests}
             for c in s_classes:
-                if c.course_id in seen_courses:
-                    raise ValueError(
-                        f"Violación Estudiante: El alumno {s.id} está inscrito en múltiples secciones "
-                        f"del curso {c.course_id}."
-                    )
-                seen_courses.add(c.course_id)
+                if c.id not in requested:
+                    raise ValueError(f"Violación Estudiante: {s.id} quedó en {c.id} sin haberla solicitado.")
 
             # Validar que no haya solapamiento horario
             for i in range(len(s_classes)):
