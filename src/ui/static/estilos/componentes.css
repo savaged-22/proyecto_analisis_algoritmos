@@ -1,0 +1,608 @@
+/*
+ * Componentes base del sistema de diseño, como clases globales: superficie, botón, campo, insignia,
+ * tabla, aviso, cifra y encabezado de página. Cada uno con sus estados (hover, foco, deshabilitado,
+ * error). Las vistas usan estas clases; app.css solo acomoda el marco y lo propio de cada vista.
+ */
+
+/* ---------- Superficie ---------- */
+
+/* Un bloque con sentido propio. Sin tarjetas dentro de tarjetas. */
+.panel {
+  min-width: 0;
+  padding: var(--esp-5);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+  box-shadow: var(--sombra-1);
+}
+
+.panel > h3:first-child,
+.panel > .cabeza-panel:first-child {
+  margin-bottom: var(--esp-3);
+}
+
+.cabeza-panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-2) var(--esp-3);
+}
+
+.cabeza-panel h3 {
+  margin: 0;
+}
+
+.seccion + .seccion {
+  margin-top: var(--espacio-seccion);
+  padding-top: var(--espacio-seccion);
+  border-top: 1px solid var(--borde);
+}
+
+/* Bloques uno debajo del otro con el mismo espacio. */
+.pila {
+  display: grid;
+  gap: var(--esp-4);
+  min-width: 0;
+}
+
+/* Dos columnas en ancho; una en angosto. */
+.rejilla {
+  display: grid;
+  gap: var(--esp-4);
+  align-items: start;
+}
+
+@media (min-width: 64rem) {
+  .rejilla.dos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rejilla.lateral-derecha {
+    grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr);
+  }
+
+  .rejilla.lateral-izquierda {
+    grid-template-columns: minmax(14rem, 1fr) minmax(0, 3fr);
+  }
+}
+
+/* ---------- Botón ---------- */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--esp-2);
+  min-height: var(--alto-control);
+  padding: var(--relleno-control);
+  padding-inline: var(--esp-4);
+  background: var(--acento);
+  border: 1px solid var(--acento);
+  border-radius: var(--radio);
+  color: var(--sobre-acento);
+  font-size: var(--texto-base);
+  font-weight: var(--peso-semi);
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--duracion),
+    border-color var(--duracion),
+    color var(--duracion);
+}
+
+.boton:hover:not(:disabled) {
+  background: var(--acento-fuerte);
+  border-color: var(--acento-fuerte);
+  color: var(--sobre-acento);
+}
+
+.boton.secundario {
+  background: var(--superficie);
+  border-color: var(--borde-fuerte);
+  color: var(--texto);
+}
+
+.boton.secundario:hover:not(:disabled) {
+  background: var(--superficie-hundida);
+  border-color: var(--borde-fuerte);
+  color: var(--texto);
+}
+
+/* Sin borde: acciones de menos peso dentro de una fila o una barra. */
+.boton.fantasma {
+  background: transparent;
+  border-color: transparent;
+  color: var(--acento);
+}
+
+.boton.fantasma:hover:not(:disabled) {
+  background: var(--acento-suave);
+  border-color: transparent;
+  color: var(--acento-fuerte);
+}
+
+.boton.pequeno {
+  min-height: 1.875rem;
+  padding-inline: var(--esp-3);
+  font-size: var(--texto-sm);
+}
+
+/* Solo un ícono: lleva aria-label. */
+.boton.icono {
+  width: var(--alto-control);
+  padding: 0;
+}
+
+.boton.icono.pequeno {
+  width: 1.875rem;
+}
+
+.boton.ancho {
+  width: 100%;
+}
+
+.boton:disabled,
+.boton[aria-disabled='true'] {
+  background: var(--superficie-hundida);
+  border-color: var(--borde);
+  color: var(--texto-deshabilitado);
+  cursor: not-allowed;
+}
+
+/* Un botón que alterna (reproducir/pausa) o una opción elegida en un grupo. */
+.boton[aria-pressed='true'] {
+  background: var(--acento-suave);
+  border-color: var(--acento-borde);
+  color: var(--acento-fuerte);
+}
+
+/* ---------- Campo ---------- */
+
+.campo {
+  display: grid;
+  align-content: start;
+  gap: var(--esp-1);
+  min-width: 0;
+}
+
+.campo label,
+.campo .etiqueta {
+  color: var(--texto);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-semi);
+}
+
+.campo input:not([type='checkbox'], [type='radio']),
+.campo select,
+.campo textarea,
+.control {
+  width: 100%;
+  min-height: var(--alto-control);
+  padding: var(--esp-2) var(--esp-3);
+  background: var(--superficie);
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio);
+  color: var(--texto);
+  font-size: var(--texto-base);
+  transition:
+    border-color var(--duracion),
+    box-shadow var(--duracion);
+}
+
+.campo textarea,
+textarea.control {
+  min-height: 22rem;
+  font-family: var(--fuente-mono);
+  font-size: var(--texto-sm);
+  resize: vertical;
+}
+
+.campo :is(input, select, textarea):hover:not(:disabled),
+.control:hover:not(:disabled) {
+  border-color: var(--texto-suave);
+}
+
+.campo :is(input, select, textarea):focus-visible,
+.control:focus-visible {
+  border-color: var(--acento);
+  outline: none;
+  box-shadow:
+    0 0 0 3px var(--acento-suave),
+    0 0 0 1px var(--acento);
+}
+
+.campo :is(input, select, textarea)[aria-invalid='true'],
+.control[aria-invalid='true'] {
+  border-color: var(--peligro);
+}
+
+.campo :is(input, select, textarea)[aria-invalid='true']:focus-visible,
+.control[aria-invalid='true']:focus-visible {
+  box-shadow:
+    0 0 0 3px var(--peligro-fondo),
+    0 0 0 1px var(--peligro);
+}
+
+/* Selector: flecha propia para que se vea igual en todos los navegadores. */
+.campo select,
+select.control {
+  padding-right: var(--esp-8);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%2344546a' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+  background-position: right var(--esp-3) center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.ayuda {
+  margin: 0;
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+}
+
+/* Campos en una fila que se acomoda en angosto. */
+.fila-campos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-3);
+}
+
+.fila-campos .campo {
+  width: 9rem;
+}
+
+/* ---------- Insignia ---------- */
+
+.insignia {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--esp-2);
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+/* El estado se lee por la palabra; el punto lo refuerza con el color de su significado. */
+.insignia::before {
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--radio-pleno);
+  background: var(--punto, var(--texto-tenue));
+  content: '';
+}
+
+.insignia[data-tono='exito'] {
+  --punto: var(--exito);
+}
+
+.insignia[data-tono='aviso'] {
+  --punto: var(--aviso-borde);
+}
+
+.insignia[data-tono='peligro'] {
+  --punto: var(--peligro);
+}
+
+.insignia[data-tono='info'] {
+  --punto: var(--info);
+}
+
+.insignia[data-tono='neutro'] {
+  --punto: var(--texto-tenue);
+}
+
+/* ---------- Tabla ---------- */
+
+/* En pantallas angostas la tabla se desplaza dentro de su contenedor, no la página. */
+.tabla-contenedor {
+  position: relative;
+  overflow-x: auto;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+}
+
+/* Dentro de un panel que ya tiene borde, la tabla solo necesita el desplazamiento. */
+.tabla-contenedor.sin-marco {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--texto-base);
+}
+
+.tabla th,
+.tabla td {
+  padding: var(--relleno-celda);
+  border-bottom: 1px solid var(--borde);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.tabla thead th {
+  background: var(--superficie);
+  color: var(--texto-tenue);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semi);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tabla tbody tr:last-child > * {
+  border-bottom: none;
+}
+
+.tabla tbody tr:hover > * {
+  background: var(--superficie-resaltada);
+}
+
+.tabla .numero {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Fila elegida o destacada: fondo de selección y peso, no solo color. */
+.tabla tr.elegida > * {
+  background: var(--seleccion);
+}
+
+.tabla tr.elegida > :first-child {
+  box-shadow: inset 3px 0 0 var(--marca);
+  font-weight: var(--peso-semi);
+}
+
+.tabla tr.tenue > * {
+  color: var(--texto-tenue);
+}
+
+/* Controles dentro de una celda: compactos. */
+.tabla .control {
+  min-width: 4rem;
+  min-height: 2rem;
+  padding: var(--esp-1) var(--esp-2);
+  border-radius: var(--radio-sm);
+  font-size: var(--texto-sm);
+}
+
+/* ---------- Aviso ---------- */
+
+.aviso {
+  --icono-aviso: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v5M12 8h.01'/%3E%3C/svg%3E");
+  --tono-aviso: var(--info);
+  position: relative;
+  display: block;
+  margin: 0;
+  padding: var(--esp-2) var(--esp-3) var(--esp-2) calc(var(--esp-3) + 1rem + var(--esp-2));
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+}
+
+.aviso::before {
+  position: absolute;
+  top: calc(var(--esp-2) + 0.125rem);
+  left: var(--esp-3);
+  width: 1rem;
+  height: 1rem;
+  background: var(--tono-aviso);
+  content: '';
+  mask: var(--icono-aviso) center / contain no-repeat;
+}
+
+.aviso strong {
+  color: var(--texto);
+}
+
+.aviso p + p {
+  margin-top: var(--esp-1);
+}
+
+.aviso.exito {
+  --icono-aviso: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='m8 12 3 3 5-6'/%3E%3C/svg%3E");
+  --tono-aviso: var(--exito);
+}
+
+.aviso.advertencia {
+  --icono-aviso: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3 2 20h20L12 3z'/%3E%3Cpath d='M12 10v4M12 17h.01'/%3E%3C/svg%3E");
+  --tono-aviso: var(--aviso-borde);
+}
+
+/* Un error sí se destaca: es lo que hay que corregir. */
+.aviso.error {
+  --icono-aviso: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v6M12 16h.01'/%3E%3C/svg%3E");
+  --tono-aviso: var(--peligro);
+  border-color: var(--peligro-borde);
+  color: var(--peligro);
+}
+
+/* ---------- Cifras (indicadores) ---------- */
+
+/* Una tarjeta por cifra: la etiqueta arriba, la cifra protagonista y una nota debajo. Sin fondos de color. */
+.cifras {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--esp-3);
+}
+
+.cifra {
+  display: grid;
+  gap: var(--esp-1);
+  align-content: start;
+  padding: var(--esp-4);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+  box-shadow: var(--sombra-1);
+}
+
+.cifra .nombre {
+  color: var(--texto-tenue);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+}
+
+.cifra .valor {
+  font-size: var(--texto-cifra);
+  font-weight: var(--peso-semi);
+  line-height: var(--interlineado-ajustado);
+  font-variant-numeric: tabular-nums;
+}
+
+.cifra .nota {
+  color: var(--texto-tenue);
+  font-size: var(--texto-xs);
+}
+
+/* ---------- Barra de progreso ---------- */
+
+.pista {
+  display: block;
+  height: 0.5rem;
+  overflow: hidden;
+  background: var(--superficie-hundida);
+  border-radius: var(--radio-pleno);
+}
+
+.pista > .barra {
+  display: block;
+  height: 100%;
+  background: var(--acento);
+  border-radius: var(--radio-pleno);
+}
+
+/* ---------- Encabezado de página ---------- */
+
+/* Dónde está, el título de la sección y su explicación. */
+.encabezado-pagina {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--esp-3) var(--esp-4);
+  margin-bottom: var(--esp-6);
+}
+
+.titulos {
+  min-width: 0;
+}
+
+.titulos .migas {
+  margin: 0 0 var(--esp-1);
+  color: var(--texto-tenue);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semi);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.titulos h2 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--esp-3);
+  margin: 0;
+  font-size: var(--texto-2xl);
+}
+
+.titulos > p:not(.migas) {
+  max-width: 52rem;
+  margin: var(--esp-1) 0 0;
+  color: var(--texto-suave);
+}
+
+.acciones-pagina {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+}
+
+/* ---------- Barra de guardado ---------- */
+
+/* Fija abajo mientras hay cambios sin aplicar. */
+.barra-guardado {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--esp-2) var(--esp-3);
+  margin-top: var(--esp-4);
+  padding: var(--esp-3) 0;
+  background: var(--fondo);
+  border-top: 1px solid var(--borde);
+}
+
+.barra-guardado .estado-guardado {
+  margin-right: auto;
+  color: var(--aviso);
+  font-size: var(--texto-sm);
+}
+
+/* ---------- Lista y datos ---------- */
+
+.lista {
+  display: grid;
+  gap: var(--esp-1);
+  margin: 0;
+  padding-left: var(--esp-5);
+}
+
+.datos {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--esp-1) var(--esp-4);
+  margin: 0;
+}
+
+.datos dt {
+  color: var(--texto-tenue);
+}
+
+.datos dd {
+  margin: 0;
+  font-weight: var(--peso-medio);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Utilidades ---------- */
+
+.solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.tenue {
+  color: var(--texto-tenue);
+}
+
+.mono {
+  font-family: var(--fuente-mono);
+  font-size: var(--texto-sm);
+}
+
+.estado {
+  margin: 0;
+  padding: var(--esp-8) var(--esp-4);
+  color: var(--texto-suave);
+  text-align: center;
+}

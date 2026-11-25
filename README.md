@@ -233,7 +233,9 @@ python main.py --ui            # abre http://127.0.0.1:8000 en el navegador
 ```
 
 Funciona solo con la biblioteca estándar (no hay que instalar nada) y solo escucha en `127.0.0.1`.
-Muestra el algoritmo paso a paso:
+La barra lateral tiene el escenario, la estrategia de la fase 1, el botón *Ejecutar* y las cinco
+secciones del algoritmo (cada una con su dirección, `#/datos`, `#/grafo`…); en pantallas angostas pasa
+a un cajón. Muestra el algoritmo paso a paso:
 
 1. **Datos**: tablas editables de salones, profesores, clases y estudiantes (horas como `8-11, 14`,
    solicitudes como `ALG:3, BD:1`). Al pulsar *Ejecutar* se recalcula todo; un dato inválido muestra
@@ -244,6 +246,12 @@ Muestra el algoritmo paso a paso:
 4. **Fase 2**: la tabla `OPT[j]` de cada estudiante con `p(j)` y el cálculo de cada fila, el horario
    resultante, los motivos de las pendientes y los cupos negados.
 5. **Resultados**: cobertura, prioridades por nivel, R1-R10 y la comparación con el resultado esperado.
+
+El diseño sale de un sistema de tokens en dos capas (`src/ui/static/estilos/tokens.css`): la paleta
+(los únicos colores, en azules) y los usos (texto, acento, bordes, estados). Las vistas solo usan los
+usos y las clases de `componentes.css` (panel, campo, botón, tabla, insignia, aviso, cifra), así que
+cambiar la paleta es cambiar la primera capa. `tests/test_contraste.py` comprueba que cada par de
+texto y fondo cumpla WCAG AA.
 
 ## Uso
 

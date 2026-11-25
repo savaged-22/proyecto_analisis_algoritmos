@@ -3,10 +3,40 @@
  * Toda la lógica del algoritmo vive en Python; esta página solo edita el escenario,
  * pide la ejecución a /api/run y muestra la traza paso a paso. */
 
-const state = { scenario: null, trace: null, dirty: false, step: 0, student: null, playing: null };
+const state = { scenario: null, trace: null, dirty: false, step: 0, student: null, playing: null, saveBar: null };
 
 const HOUR_COLORS = ["#8ecae6", "#ffb703", "#90be6d", "#f4a261", "#cdb4db",
                      "#f28482", "#84a59d", "#ffd6a5", "#a0c4ff", "#bdb2ff", "#caffbf", "#fdffb6"];
+
+// Las cinco secciones de la barra lateral, en el orden en que corre el algoritmo.
+const SECTIONS = [
+  { id: "datos", title: "Datos", icon: "tabla" },
+  { id: "grafo", title: "Grafo", icon: "grafo" },
+  { id: "fase1", title: "Fase 1: ubicar clases", icon: "calendario" },
+  { id: "fase2", title: "Fase 2: inscribir", icon: "usuarios" },
+  { id: "resultados", title: "Resultados", icon: "grafica" },
+];
+
+// Íconos de línea de un solo trazo (24×24, trazo 1.75, puntas redondas); toman el color del texto.
+const ICONS = {
+  menu: ["M4 6h16", "M4 12h16", "M4 18h16"],
+  cerrar: ["M6 6l12 12", "M18 6 6 18"],
+  mas: ["M12 5v14", "M5 12h14"],
+  izquierda: ["m15 18-6-6 6-6"],
+  derecha: ["m9 18 6-6-6-6"],
+  inicio: ["m11 18-6-6 6-6", "m19 18-6-6 6-6"],
+  fin: ["m5 18 6-6-6-6", "m13 18 6-6-6-6"],
+  reproducir: ["M7 4v16l13-8Z"],
+  pausa: ["M8 5v14", "M16 5v14"],
+  tabla: ["M4 5h16v14H4Z", "M4 10h16", "M10 10v9"],
+  grafo: ["M6 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z", "M18 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z",
+          "M12 21a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z", "M8 6h8", "M7 7.8l4 9.4", "M17 7.8l-4 9.4"],
+  calendario: ["M8 2v4", "M16 2v4", "M3 9h18", "M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"],
+  usuarios: ["M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2", "M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z",
+             "M22 21v-2a4 4 0 0 0-3-3.9", "M16 3.1a4 4 0 0 1 0 7.8"],
+  grafica: ["M3 3v18h18", "M7 15l4-4 3 3 5-6"],
+  ejecutar: ["M5 3v18l15-9Z"],
+};
 
 // ---------------------------------------------------------------------------
 // Utilidades
@@ -34,12 +64,44 @@ function svg(tag, attrs, ...children) {
   return el;
 }
 
-function badge(text, kind) { return h("span", { className: `badge ${kind}` }, text); }
+function icon(name, size = 16) {
+  const el = svg("svg", { width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor",
+    "stroke-width": 1.75, "stroke-linecap": "round", "stroke-linejoin": "round", "aria-hidden": "true", focusable: "false" });
+  for (const d of ICONS[name]) el.append(svg("path", { d }));
+  return h("span", { className: "icono-svg" }, el);
+}
+
+// Insignia: el estado se lee por la palabra; el punto lo refuerza con su color.
+const TONES = { ok: "exito", bad: "peligro", warn: "aviso", info: "info", muted: "neutro" };
+function badge(text, kind) { return h("span", { className: "insignia", "data-tono": TONES[kind] || kind }, text); }
 
 function setStatus(text, kind) {
-  const el = document.getElementById("status");
-  el.textContent = text;
-  el.className = `status ${kind || ""}`;
+  const tone = { ok: "exito", error: "error", dirty: "advertencia" }[kind] || "";
+  document.getElementById("estado-ejecucion").replaceChildren(text ? h("div", { className: `aviso ${tone}` }, text) : "");
+}
+
+function pageHeader(sectionId, title, description, ...extra) {
+  const index = SECTIONS.findIndex(s => s.id === sectionId);
+  return h("div", { className: "encabezado-pagina" },
+    h("div", { className: "titulos" },
+      h("p", { className: "migas" }, `Paso ${index + 1} de ${SECTIONS.length} · ${state.scenario?.metadata?.name || "escenario"}`),
+      h("h2", {}, title, ...extra),
+      description ? h("p", {}, description) : null));
+}
+
+function panel(title, ...children) {
+  return h("section", { className: "panel" }, title ? h("h3", {}, title) : null, ...children);
+}
+
+function figure(name, value, note) {
+  return h("div", { className: "cifra" }, h("span", { className: "nombre" }, name),
+    h("span", { className: "valor" }, value), note ? h("span", { className: "nota" }, note) : null);
+}
+
+function table(headers, rows, numericColumns = [], extraClass = "") {
+  return h("div", { className: "tabla-contenedor" }, h("table", { className: `tabla ${extraClass}`.trim() },
+    h("thead", {}, h("tr", {}, ...headers.map((t, i) => h("th", { className: numericColumns.includes(i) ? "numero" : null }, t)))),
+    h("tbody", {}, ...rows)));
 }
 
 function grid() { return state.trace.grid; }
@@ -91,9 +153,54 @@ function parseRequests(text) {
 function formatRequests(reqs) { return (reqs || []).map(r => `${r.class_id}:${r.priority}`).join(", "); }
 
 // ---------------------------------------------------------------------------
+// Marco: barra lateral, secciones y cajón en pantallas angostas
+// ---------------------------------------------------------------------------
+function buildShell() {
+  document.getElementById("boton-menu").append(icon("menu", 20));
+  document.getElementById("boton-cerrar-menu").append(icon("cerrar", 20));
+  document.getElementById("run-button").prepend(icon("ejecutar"));
+  document.getElementById("menu-secciones").replaceChildren(...SECTIONS.map(s =>
+    h("li", {}, h("a", { href: `#/${s.id}`, "data-seccion": s.id, onclick: closeMenu }, icon(s.icon), s.title))));
+
+  document.getElementById("boton-menu").addEventListener("click", openMenu);
+  document.getElementById("boton-cerrar-menu").addEventListener("click", closeMenu);
+  document.getElementById("fondo-cajon").addEventListener("click", closeMenu);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenu(); });
+  window.addEventListener("hashchange", showSection);
+  showSection();
+}
+
+function currentSection() {
+  const id = location.hash.replace(/^#\/?/, "");
+  return SECTIONS.some(s => s.id === id) ? id : "datos";
+}
+
+function showSection() {
+  const id = currentSection();
+  for (const s of SECTIONS) document.getElementById(`vista-${s.id}`).hidden = s.id !== id;
+  document.querySelectorAll("#menu-secciones a").forEach(a => {
+    if (a.dataset.seccion === id) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  });
+  document.getElementById("titulo-barra").textContent = `Horarios · ${SECTIONS.find(s => s.id === id).title}`;
+}
+
+function openMenu() {
+  document.getElementById("marco").classList.add("menu-abierto");
+  document.getElementById("fondo-cajon").hidden = false;
+  document.getElementById("boton-menu").setAttribute("aria-expanded", "true");
+}
+
+function closeMenu() {
+  document.getElementById("marco").classList.remove("menu-abierto");
+  document.getElementById("fondo-cajon").hidden = true;
+  document.getElementById("boton-menu").setAttribute("aria-expanded", "false");
+}
+
+// ---------------------------------------------------------------------------
 // Carga y ejecución
 // ---------------------------------------------------------------------------
 async function init() {
+  buildShell();
   const info = await (await fetch("/api/scenarios")).json();
   const scenarioSelect = document.getElementById("scenario-select");
   info.scenarios.forEach(name => scenarioSelect.append(h("option", { value: name }, name)));
@@ -106,19 +213,14 @@ async function init() {
   scenarioSelect.addEventListener("change", () => loadScenario(scenarioSelect.value));
   modeSelect.addEventListener("change", run);
   document.getElementById("run-button").addEventListener("click", run);
-  document.querySelectorAll(".tab").forEach(tab => tab.addEventListener("click", () => showTab(tab.dataset.tab)));
   await loadScenario(info.scenarios[0]);
-}
-
-function showTab(name) {
-  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === name));
-  document.querySelectorAll(".panel").forEach(p => p.classList.toggle("active", p.id === `tab-${name}`));
 }
 
 async function loadScenario(name) {
   const res = await fetch(`/api/scenario?name=${encodeURIComponent(name)}`);
   state.scenario = await res.json();
   state.student = null;
+  state.dirty = false;
   renderData();
   await run();
 }
@@ -135,16 +237,20 @@ async function run() {
   if (!res.ok) { setStatus(`No se pudo ejecutar: ${data.error}`, "error"); return; }
   state.trace = data;
   state.dirty = false;
+  if (state.saveBar) state.saveBar.hidden = true;
   state.step = data.phase1.dsatur_steps.length;
   if (!state.student || !data.phase2.dp[state.student]) state.student = Object.keys(data.phase2.dp)[0] || null;
   const m = data.result.metrics;
   setStatus(`Listo: ${m.scheduled_classes}/${m.total_classes} clases programadas · ${m.attended_requests}/${m.total_requests} ` +
             `solicitudes atendidas (${m.coverage_percent}%) · ${m.violations_total} incumplimientos de R1-R10`, "ok");
+  document.getElementById("resumen-lateral").textContent =
+    `${m.attended_requests}/${m.total_requests} solicitudes · ${m.violations_total} incumplimientos`;
   renderGraph(); renderPhase1(); renderPhase2(); renderResults();
 }
 
 function markDirty() {
   state.dirty = true;
+  if (state.saveBar) state.saveBar.hidden = false;
   setStatus("Datos modificados: pulse Ejecutar para recalcular.", "dirty");
 }
 
@@ -152,61 +258,77 @@ function markDirty() {
 // 1. Datos (tablas editables)
 // ---------------------------------------------------------------------------
 const TABLES = [
-  { key: "rooms", title: "Salones", blank: () => ({ id: "AULA-NUEVA", name: "Salón nuevo", capacity: 30 }), cols: [
+  { key: "rooms", title: "Salones", help: "Capacidad, tipo y horas en que se puede usar cada salón.",
+    blank: () => ({ id: "AULA-NUEVA", name: "Salón nuevo", capacity: 30 }), cols: [
     { key: "id", label: "Id" }, { key: "name", label: "Nombre" }, { key: "capacity", label: "Capacidad", type: "int" },
     { key: "room_type", label: "Tipo" }, { key: "availability", label: "Disponibilidad (horas)", type: "hours" }] },
-  { key: "professors", title: "Profesores", blank: () => ({ id: "PROF-NUEVO", name: "Profesor nuevo" }), cols: [
+  { key: "professors", title: "Profesores", help: "Horas en que cada profesor puede dictar clase.",
+    blank: () => ({ id: "PROF-NUEVO", name: "Profesor nuevo" }), cols: [
     { key: "id", label: "Id" }, { key: "name", label: "Nombre" },
     { key: "availability", label: "Disponibilidad (horas)", type: "hours" }, { key: "max_hours", label: "Máx. horas", type: "int" }] },
-  { key: "classes", title: "Clases", blank: () => ({ id: "NUEVA", professor_id: "", capacity: 20, duration_hours: 1 }), cols: [
+  { key: "classes", title: "Clases", help: "Profesor, cupo, duración y horas de inicio permitidas de cada clase.",
+    blank: () => ({ id: "NUEVA", professor_id: "", capacity: 20, duration_hours: 1 }), cols: [
     { key: "id", label: "Id" }, { key: "course_name", label: "Nombre" }, { key: "professor_id", label: "Profesor" },
     { key: "capacity", label: "Cupo", type: "int" }, { key: "duration_hours", label: "Horas", type: "int" },
     { key: "allowed_starts", label: "Horas de inicio permitidas", type: "hours" },
     { key: "required_room_type", label: "Tipo de salón" }] },
-  { key: "students", title: "Estudiantes", blank: () => ({ id: "EST-NUEVO", name: "Estudiante nuevo", requests: [] }), cols: [
+  { key: "students", title: "Estudiantes", help: "Solicitudes de cada estudiante con su prioridad (3 = más alta).",
+    blank: () => ({ id: "EST-NUEVO", name: "Estudiante nuevo", requests: [] }), cols: [
     { key: "id", label: "Id" }, { key: "name", label: "Nombre" },
     { key: "requests", label: "Solicitudes (CLASE:prioridad, 3 = más alta)", type: "requests" },
     { key: "availability", label: "Disponibilidad (horas)", type: "hours" }] },
 ];
 
 function renderData() {
-  const panel = document.getElementById("tab-datos");
-  panel.replaceChildren();
+  const view = document.getElementById("vista-datos");
+  view.replaceChildren();
   const sc = state.scenario;
-  panel.append(h("div", { className: "card explain" },
-    h("h2", {}, sc.metadata?.name || "Escenario"),
-    h("p", {}, sc.metadata?.description || ""),
-    sc.expected?.description ? h("p", {}, h("strong", {}, "Resultado esperado: "), sc.expected.description) : null,
-    h("p", { className: "muted" }, "Puede cambiar cualquier dato y pulsar Ejecutar. Horas: \"8-11, 14\". " +
-      "Solicitudes: \"ALG:3, BD:1\". Un campo de horas vacío significa toda la jornada.")));
+
+  view.append(pageHeader("datos", "Datos del escenario", sc.metadata?.description || "",
+    badge(sc.metadata?.name || "escenario", "info")));
+
+  const blocks = h("div", { className: "pila" });
+  if (sc.expected?.description) {
+    blocks.append(h("div", { className: "aviso" }, h("strong", {}, "Resultado esperado: "), sc.expected.description));
+  }
+  blocks.append(h("p", { className: "ayuda" }, "Puede cambiar cualquier dato y pulsar Ejecutar. Horas: \"8-11, 14\". " +
+    "Solicitudes: \"ALG:3, BD:1\". Un campo de horas vacío significa toda la jornada."));
 
   const params = sc.parameters || (sc.parameters = {});
-  panel.append(h("div", { className: "card" }, h("h2", {}, "Jornada"),
-    h("div", { className: "toolbar" },
+  blocks.append(panel("Jornada",
+    h("div", { className: "fila-campos" },
       ...[["num_days", "Días", 1], ["start_hour", "Hora inicial", 8], ["end_hour", "Hora final", 18]].map(([key, label, def]) =>
-        h("label", {}, `${label} `, h("input", { type: "number", value: params[key] ?? def, style: "width:5rem",
-          oninput: e => { params[key] = +e.target.value; markDirty(); } }))))));
+        h("div", { className: "campo" }, h("label", { for: `jornada-${key}` }, label),
+          h("input", { id: `jornada-${key}`, type: "number", value: params[key] ?? def,
+            oninput: e => { params[key] = +e.target.value; markDirty(); } }))))));
 
-  for (const table of TABLES) panel.append(renderEditableTable(table));
+  for (const t of TABLES) blocks.append(renderEditableTable(t));
 
-  const textarea = h("textarea", {}, JSON.stringify(sc, null, 2));
-  panel.append(h("details", { className: "card" }, h("summary", {}, "Editar el escenario como JSON"),
-    textarea,
-    h("div", { className: "toolbar" }, h("button", { onclick: () => {
-      try { state.scenario = JSON.parse(textarea.value); renderData(); markDirty(); }
-      catch (err) { setStatus(`JSON no válido: ${err.message}`, "error"); }
-    } }, "Aplicar JSON"))));
+  const textarea = h("textarea", { className: "control", "aria-label": "Escenario en JSON" }, JSON.stringify(sc, null, 2));
+  blocks.append(h("section", { className: "panel" },
+    h("details", {}, h("summary", {}, h("strong", {}, "Editar el escenario como JSON")),
+      h("div", { className: "pila", style: "margin-top:var(--esp-3)" }, textarea,
+        h("div", {}, h("button", { className: "boton secundario", type: "button", onclick: () => {
+          try { state.scenario = JSON.parse(textarea.value); renderData(); markDirty(); }
+          catch (err) { setStatus(`JSON no válido: ${err.message}`, "error"); }
+        } }, "Aplicar JSON"))))));
+  view.append(blocks);
+
+  state.saveBar = h("div", { className: "barra-guardado", hidden: !state.dirty },
+    h("span", { className: "estado-guardado" }, "Datos modificados: pulse Ejecutar para recalcular."),
+    h("button", { className: "boton", type: "button", onclick: run }, icon("ejecutar"), "Ejecutar"));
+  view.append(state.saveBar);
 }
 
-function renderEditableTable(table) {
-  const rows = state.scenario[table.key] || (state.scenario[table.key] = []);
+function renderEditableTable(t) {
+  const rows = state.scenario[t.key] || (state.scenario[t.key] = []);
   const body = h("tbody");
   rows.forEach((row, index) => {
-    const cells = table.cols.map(col => {
+    const cells = t.cols.map(col => {
       let value = row[col.key];
       if (col.type === "hours") value = formatHours(value);
       else if (col.type === "requests") value = formatRequests(value);
-      const input = h("input", { value: value ?? "" });
+      const input = h("input", { className: "control", value: value ?? "", "aria-label": `${col.label} de ${row.id ?? "la fila"}` });
       input.addEventListener("change", () => {
         try {
           const raw = input.value;
@@ -216,32 +338,37 @@ function renderEditableTable(table) {
           else if (col.type === "requests") parsed = parseRequests(raw);
           else parsed = raw.trim() === "" ? undefined : raw.trim();
           if (parsed === undefined) delete row[col.key]; else row[col.key] = parsed;
-          input.style.borderColor = "";
+          input.removeAttribute("aria-invalid");
           markDirty();
         } catch (err) {
-          input.style.borderColor = "var(--bad)";
+          input.setAttribute("aria-invalid", "true");
           setStatus(err.message, "error");
         }
       });
       return h("td", {}, input);
     });
-    cells.push(h("td", {}, h("button", { className: "small", title: "Eliminar fila",
-      onclick: () => { rows.splice(index, 1); renderData(); markDirty(); } }, "✕")));
+    cells.push(h("td", { className: "accion" }, h("button", { className: "boton fantasma icono pequeno", type: "button",
+      "aria-label": "Eliminar fila", title: "Eliminar fila",
+      onclick: () => { rows.splice(index, 1); renderData(); markDirty(); } }, icon("cerrar"))));
     body.append(h("tr", {}, ...cells));
   });
-  return h("div", { className: "card" },
-    h("div", { className: "toolbar" }, h("h2", { style: "margin:0" }, `${table.title} (${rows.length})`),
-      h("button", { className: "small", onclick: () => { rows.push(table.blank()); renderData(); markDirty(); } }, "+ Agregar")),
-    h("div", { style: "overflow-x:auto" }, h("table", {},
-      h("thead", {}, h("tr", {}, ...table.cols.map(c => h("th", {}, c.label)), h("th", {}, ""))), body)));
+  return h("section", { className: "panel" },
+    h("div", { className: "cabeza-panel" },
+      h("div", {}, h("h3", {}, `${t.title} (${rows.length})`), h("p", { className: "ayuda" }, t.help)),
+      h("button", { className: "boton secundario pequeno", type: "button",
+        onclick: () => { rows.push(t.blank()); renderData(); markDirty(); } }, icon("mas"), "Agregar")),
+    h("div", { className: "tabla-contenedor sin-marco", "data-densidad": "compacta", style: "margin-top:var(--esp-3)" },
+      h("table", { className: "tabla" },
+        h("thead", {}, h("tr", {}, ...t.cols.map(c => h("th", {}, c.label)), h("th", {}, h("span", { className: "solo-lectores" }, "Acciones")))),
+        body)));
 }
 
 // ---------------------------------------------------------------------------
-// 2. Grafo de conflictos coloreado
+// 2. Grafo de conflictos coloreado (el dibujo del SVG es el mismo)
 // ---------------------------------------------------------------------------
 function renderGraph() {
-  const panel = document.getElementById("tab-grafo");
-  panel.replaceChildren();
+  const view = document.getElementById("vista-grafo");
+  view.replaceChildren();
   const { nodes, edges, stats } = state.trace.graph;
   const W = 680, H = 560, cx = W / 2, cy = H / 2, R = Math.min(W, H) / 2 - 70;
   const pos = {};
@@ -251,7 +378,7 @@ function renderGraph() {
   });
   const maxW = Math.max(1, ...edges.filter(e => !e.hard).map(e => e.weight));
   const canvas = svg("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}` });
-  const info = h("div", {}, h("p", { className: "muted" }, "Haga clic en una clase para ver sus conflictos."));
+  const info = h("div", {}, h("p", { className: "ayuda" }, "Haga clic en una clase para ver sus conflictos."));
 
   for (const e of edges) {
     const a = pos[e.u], b = pos[e.v];
@@ -276,26 +403,30 @@ function renderGraph() {
   }
 
   const usedSlots = [...new Set(nodes.filter(n => n.slot !== null).map(n => n.slot % hoursPerDay()))].sort((a, b) => a - b);
-  panel.append(h("div", { className: "grid-side" },
-    h("div", { className: "card" }, h("h2", {}, "Grafo de conflictos coloreado con las horas"),
-      h("div", { className: "graph-wrap" }, canvas),
-      h("div", { className: "legend" },
-        h("span", {}, h("span", { className: "swatch", style: "background:#b3261e" }), "conflicto duro (mismo profesor)"),
-        h("span", {}, h("span", { className: "swatch", style: "background:#8a96a3" }), "conflicto blando (grosor = peso)"),
-        ...usedSlots.map(s => h("span", {}, h("span", { className: "swatch", style: `background:${hourColor(s)}` }),
-          `${grid().start_hour + s}:00`)))),
-    h("div", {},
-      h("div", { className: "card explain" }, h("h2", {}, "Cómo leer el grafo"),
-        h("p", {}, "Cada vértice es una clase. Una arista roja une clases del mismo profesor: no pueden ir a la misma hora. " +
-          "Una arista gris une clases que algún estudiante pidió juntas; su peso es la suma de min(prioridad_a, prioridad_b)."),
-        h("p", {}, "Ubicar las clases equivale a colorear el grafo usando las horas como colores: por eso el problema " +
-          "es NP-difícil (se reduce desde k-coloración). El color de cada vértice es la hora que recibió.")),
-      h("div", { className: "card" }, h("h2", {}, "Estadísticas"),
-        h("ul", { className: "list" },
-          h("li", {}, `${stats.vertices} vértices, ${stats.total_edges} aristas`),
-          h("li", {}, `${stats.hard_edges} duras y ${stats.soft_edges} blandas`),
-          h("li", {}, `densidad ${stats.density}`))),
-      h("div", { className: "card" }, h("h2", {}, "Clase seleccionada"), info))));
+  view.append(
+    pageHeader("grafo", "Grafo de conflictos", "Cada vértice es una clase y su color es la hora que recibió en la fase 1."),
+    h("div", { className: "rejilla lateral-derecha" },
+      panel("Grafo coloreado con las horas",
+        h("div", { className: "lienzo-grafo" }, canvas),
+        h("div", { className: "leyenda" },
+          h("span", {}, h("span", { className: "muestra", style: "background:#b3261e" }), "conflicto duro (mismo profesor)"),
+          h("span", {}, h("span", { className: "muestra", style: "background:#8a96a3" }), "conflicto blando (grosor = peso)"),
+          ...usedSlots.map(s => h("span", {}, h("span", { className: "muestra", style: `background:${hourColor(s)}` }),
+            `${grid().start_hour + s}:00`)))),
+      h("div", { className: "pila" },
+        h("div", { className: "aviso" },
+          h("p", {}, h("strong", {}, "Cómo leer el grafo. "), "Cada vértice es una clase. Una arista roja une clases del mismo " +
+            "profesor: no pueden ir a la misma hora. Una arista gris une clases que algún estudiante pidió juntas; su peso " +
+            "es la suma de min(prioridad_a, prioridad_b)."),
+          h("p", {}, "Ubicar las clases equivale a colorear el grafo usando las horas como colores: por eso el problema " +
+            "es NP-difícil (se reduce desde k-coloración). El color de cada vértice es la hora que recibió.")),
+        panel("Estadísticas", h("dl", { className: "datos" },
+          h("dt", {}, "Vértices"), h("dd", {}, stats.vertices),
+          h("dt", {}, "Aristas"), h("dd", {}, stats.total_edges),
+          h("dt", {}, "Duras"), h("dd", {}, stats.hard_edges),
+          h("dt", {}, "Blandas"), h("dd", {}, stats.soft_edges),
+          h("dt", {}, "Densidad"), h("dd", {}, stats.density))),
+        panel("Clase seleccionada", info))));
 }
 
 function showNodeInfo(node, edges, info, canvas) {
@@ -307,12 +438,13 @@ function showNodeInfo(node, edges, info, canvas) {
     .map(e => ({ id: e.u === node.id ? e.v : e.u, hard: e.hard, weight: e.weight }));
   info.replaceChildren(
     h("p", {}, h("strong", {}, `${node.id} · ${node.name}`)),
-    h("p", { className: "muted" }, `${node.professor_id} · ${node.duration} h · demanda ${node.demand} · cupo ${node.capacity}`),
-    h("p", {}, node.slot !== null ? `Programada ${slotLabel(node.slot)} en ${node.room_id}` : "Sin programar"),
-    h("ul", { className: "list" }, ...neighbors.map(n => h("li", {},
+    h("p", { className: "ayuda" }, `${node.professor_id} · ${node.duration} h · demanda ${node.demand} · cupo ${node.capacity}`),
+    h("p", { style: "margin:var(--esp-2) 0" }, node.slot !== null ? `Programada ${slotLabel(node.slot)} en ${node.room_id}` : "Sin programar"),
+    h("ul", { className: "lista" }, ...neighbors.map(n => h("li", {},
       n.hard ? badge("duro", "bad") : badge(`peso ${n.weight}`, "muted"), ` ${n.id}`))),
-    h("button", { className: "small", onclick: () => canvas.querySelectorAll("line").forEach(l =>
-      l.setAttribute("stroke-opacity", l.getAttribute("stroke") === "#b3261e" ? 0.9 : 0.45)) }, "Ver todo"));
+    h("button", { className: "boton secundario pequeno", type: "button", style: "margin-top:var(--esp-3)",
+      onclick: () => canvas.querySelectorAll("line").forEach(l =>
+        l.setAttribute("stroke-opacity", l.getAttribute("stroke") === "#b3261e" ? 0.9 : 0.45)) }, "Ver todo"));
 }
 
 // ---------------------------------------------------------------------------
@@ -325,22 +457,22 @@ function renderTimetable(placements, highlightId) {
   for (const room of state.trace.rooms) {
     const available = new Set(room.available_slots);
     const mine = placements.filter(p => p.room_id === room.id);
-    const row = h("tr", {}, h("td", { className: "room" }, `${room.id} `, h("span", { className: "muted" }, `(${room.capacity})`)));
+    const row = h("tr", {}, h("td", { className: "salon" }, `${room.id} `, h("span", { className: "tenue" }, `(${room.capacity})`)));
     for (let s = 0; s < total;) {
       const p = mine.find(x => x.slot === s);
       if (p) {
         row.append(h("td", { colspan: p.duration },
-          h("div", { className: `cell-class${p.class_id === highlightId ? " new" : ""}`, style: `background:${hourColor(p.slot)}`,
+          h("div", { className: `celda-clase${p.class_id === highlightId ? " nueva" : ""}`, style: `background:${hourColor(p.slot)}`,
             title: `${p.class_id} ${slotLabel(p.slot)}` }, p.class_id)));
         s += p.duration;
       } else {
-        row.append(h("td", {}, available.has(s) ? "" : h("div", { className: "cell-class blocked", title: "salón no disponible" }, "—")));
+        row.append(h("td", {}, available.has(s) ? "" : h("div", { className: "celda-clase bloqueada", title: "salón no disponible" }, "—")));
         s += 1;
       }
     }
     body.append(row);
   }
-  return h("div", { className: "timetable" }, h("table", {}, h("thead", {}, header), body));
+  return h("div", { className: "horario" }, h("table", {}, h("thead", {}, header), body));
 }
 
 function finalPlacements() {
@@ -352,23 +484,32 @@ function finalPlacements() {
 // 3. Fase 1: DSATUR paso a paso y búsqueda exacta
 // ---------------------------------------------------------------------------
 function renderPhase1() {
-  const panel = document.getElementById("tab-fase1");
-  panel.replaceChildren();
+  const view = document.getElementById("vista-fase1");
+  view.replaceChildren();
   const p1 = state.trace.phase1;
   const modeText = { heuristica: "heurística DSATUR", exacto: "ramificación y poda (exacto)",
                      backtracking: "backtracking sin cota", fuerza_bruta: "fuerza bruta" }[p1.mode];
   const search = p1.search || {};
-  panel.append(h("div", { className: "card explain" },
-    h("h2", {}, `Estrategia usada: ${modeText}${p1.requested_mode === "auto" ? " (elegida automáticamente)" : ""}`),
-    h("p", {}, "Costo que se minimiza: ", h("span", { className: "formula" },
+
+  view.append(pageHeader("fase1", "Fase 1 · Ubicar clases",
+    `Estrategia usada: ${modeText}${p1.requested_mode === "auto" ? " (elegida automáticamente)" : ""}.`,
+    p1.optimal === true ? badge("óptimo probado", "ok") : null,
+    p1.optimal === false ? badge("mejor hallado (límite de nodos)", "warn") : null));
+
+  const figures = [figure("Costo con DSATUR", p1.heuristic_cost.total), figure("Costo final", p1.cost.total)];
+  if (search.nodes !== undefined) {
+    figures.push(figure("Nodos visitados", search.nodes.toLocaleString("es"),
+      `${search.improvements} mejoras · ${search.room_reassignments} reacomodos de salones`));
+    figures.push(figure("Podados por cota", search.pruned_by_bound.toLocaleString("es")));
+  } else if (search.leaves !== undefined) {
+    figures.push(figure("Combinaciones revisadas", search.leaves.toLocaleString("es")));
+    figures.push(figure("Combinaciones válidas", search.valid_leaves.toLocaleString("es")));
+  }
+
+  const blocks = h("div", { className: "pila" },
+    h("div", { className: "aviso" }, "Costo que se minimiza: ", h("span", { className: "formula" },
       "BASE · clases sin programar + prioridad de las no programadas + Σ pesos de cruces")),
-    h("p", {}, `Costo con DSATUR: ${p1.heuristic_cost.total} · costo final: ${p1.cost.total}`,
-      p1.optimal === true ? " · " : "", p1.optimal === true ? badge("óptimo probado", "ok") : "",
-      p1.optimal === false ? badge("mejor hallado (límite de nodos)", "warn") : ""),
-    search.nodes !== undefined ? h("p", {}, `Búsqueda: ${search.nodes} nodos visitados, ${search.pruned_by_bound} podados por cota, ` +
-      `${search.improvements} mejoras, ${search.room_reassignments} reacomodos de salones.`) : null,
-    search.leaves !== undefined ? h("p", {}, `Fuerza bruta: ${search.leaves.toLocaleString("es")} combinaciones revisadas, ` +
-      `${search.valid_leaves.toLocaleString("es")} válidas.`) : null));
+    h("div", { className: "cifras" }, ...figures));
 
   // DSATUR paso a paso
   const steps = p1.dsatur_steps;
@@ -377,56 +518,61 @@ function renderPhase1() {
     class_id: s.class_id, slot: s.slot, room_id: s.room_id, duration: classById(s.class_id).duration }));
   const current = k > 0 ? steps[k - 1] : null;
   const go = n => { stopPlaying(); state.step = Math.max(0, Math.min(steps.length, n)); renderPhase1(); };
-  const playButton = h("button", { onclick: () => togglePlay(steps.length) }, state.playing ? "⏸ Pausa" : "▶ Reproducir");
+  const stepButton = (label, iconName, target) => h("button", { className: "boton secundario pequeno", type: "button",
+    onclick: () => go(target) }, icon(iconName), label);
 
-  panel.append(h("div", { className: "card" },
-    h("h2", {}, "DSATUR paso a paso"),
-    h("p", { className: "muted" }, "En cada paso se toma la clase con menos horas disponibles (la más restringida) y se le da " +
-      "la hora con menos cruces y el salón más pequeño que le sirve. No retrocede."),
-    h("div", { className: "stepper" },
-      h("button", { onclick: () => go(0) }, "⏮"), h("button", { onclick: () => go(k - 1) }, "◀ Anterior"),
-      h("button", { onclick: () => go(k + 1) }, "Siguiente ▶"), h("button", { onclick: () => go(steps.length) }, "⏭"),
-      playButton, h("span", { className: "counter" }, `paso ${k} de ${steps.length}`)),
-    h("div", { className: "grid2" },
-      h("div", {}, current ? renderDsaturStep(current) : h("p", { className: "muted" }, "Pulse Siguiente para empezar.")),
-      h("div", {}, h("h3", {}, "Orden de selección"), h("ol", { className: "list" },
-        ...steps.map((s, i) => h("li", { style: i === k - 1 ? "font-weight:700" : (i >= k ? "color:#9aa5b1" : "") },
-          `${s.class_id} → `, s.result === "programada" ? `${s.time} en ${s.room_id}` : badge("sin programar", "bad")))))),
-    h("h3", {}, "Horario después de este paso"),
+  blocks.append(h("section", { className: "panel" },
+    h("h3", {}, "DSATUR paso a paso"),
+    h("p", { className: "ayuda", style: "margin-bottom:var(--esp-3)" }, "En cada paso se toma la clase con menos horas " +
+      "disponibles (la más restringida) y se le da la hora con menos cruces y el salón más pequeño que le sirve. No retrocede."),
+    h("div", { className: "pasos" },
+      stepButton("Inicio", "inicio", 0), stepButton("Anterior", "izquierda", k - 1),
+      stepButton("Siguiente", "derecha", k + 1), stepButton("Final", "fin", steps.length),
+      h("button", { className: "boton secundario pequeno", type: "button", "aria-pressed": state.playing ? "true" : "false",
+        onclick: () => togglePlay(steps.length) }, icon(state.playing ? "pausa" : "reproducir"), state.playing ? "Pausa" : "Reproducir"),
+      h("span", { className: "contador" }, `paso ${k} de ${steps.length}`)),
+    h("div", { className: "rejilla lateral-derecha" },
+      h("div", {}, current ? renderDsaturStep(current) : h("p", { className: "ayuda" }, "Pulse Siguiente para empezar.")),
+      h("div", {}, h("h4", { style: "margin-bottom:var(--esp-2)" }, "Orden de selección"),
+        h("ol", { className: "lista orden-seleccion" },
+          ...steps.map((s, i) => h("li", { className: i === k - 1 ? "actual" : (i >= k ? "pendiente" : null) },
+            `${s.class_id} → `, s.result === "programada" ? `${s.time} en ${s.room_id}` : badge("sin programar", "bad")))))),
+    h("h4", { style: "margin:var(--esp-5) 0 var(--esp-2)" }, "Horario después de este paso"),
     renderTimetable(placed, current?.class_id)));
 
   // Búsqueda exacta
   if (p1.search_trace && p1.search_trace.length) {
-    const colors = { "podada": "warn", "mejor solución": "ok", "hoja": "muted", "explorada": "info" };
-    panel.append(h("div", { className: "card" },
-      h("h2", {}, "Árbol de búsqueda (ramificación y poda)"),
-      h("p", { className: "muted" }, `Orden de las clases (un nivel por clase): ${p1.search_order.join(" → ")}. ` +
+    const tones = { "podada": "warn", "mejor solución": "ok", "hoja": "muted", "explorada": "info" };
+    blocks.append(h("section", { className: "panel" },
+      h("h3", {}, "Árbol de búsqueda (ramificación y poda)"),
+      h("p", { className: "ayuda" }, `Orden de las clases (un nivel por clase): ${p1.search_order.join(" → ")}. ` +
         "Cada línea es un nodo: la decisión tomada, el costo acumulado y la cota (costo + mínimo de lo que falta). " +
         "Si la cota alcanza a la mejor solución conocida, la rama se poda."),
-      search.nodes > p1.search_trace.length ? h("p", { className: "muted" },
+      search.nodes > p1.search_trace.length ? h("p", { className: "ayuda" },
         `Se muestran los primeros ${p1.search_trace.length} de ${search.nodes} nodos.`) : null,
-      h("div", { className: "tree" }, ...p1.search_trace.map(node => h("div", { style: `padding-left:${node.depth * 18}px` },
-        node.class_id ? `${node.class_id} = ${node.choice}` : "raíz",
-        `  costo ${node.cost}`, node.bound !== undefined ? `  cota ${node.bound}` : "",
-        node.best_known !== null ? `  mejor ${node.best_known}  ` : "  ",
-        badge(node.status, colors[node.status] || "muted"))))));
+      h("div", { className: "arbol", style: "margin-top:var(--esp-3)" }, ...p1.search_trace.map(node =>
+        h("div", { style: `padding-left:${node.depth * 18}px` },
+          h("span", {}, node.class_id ? `${node.class_id} = ${node.choice}` : "raíz",
+            `  costo ${node.cost}`, node.bound !== undefined ? `  cota ${node.bound}` : "",
+            node.best_known !== null ? `  mejor ${node.best_known}` : ""),
+          badge(node.status, tones[node.status] || "muted"))))));
   }
 
-  panel.append(h("div", { className: "card" }, h("h2", {}, "Programación final de la fase 1"),
-    renderTimetable(finalPlacements(), null)));
+  blocks.append(panel("Programación final de la fase 1", renderTimetable(finalPlacements(), null)));
+  view.append(blocks);
 }
 
 function renderDsaturStep(step) {
   return h("div", {},
-    h("h3", {}, `Clase elegida: ${step.class_id}`),
-    h("p", {}, `Horas disponibles: ${step.available_starts} · horas bloqueadas por vecinos blandos: ${step.soft_saturation}`),
-    h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "Hora"), h("th", {}, "Estado"), h("th", { className: "num" }, "Costo cruces"),
-      h("th", {}, "Cruza con"), h("th", {}, "Salón"))),
-      h("tbody", {}, ...(step.candidates || []).map(c => h("tr", { className: step.slot === c.slot ? "highlight" : (c.status !== "posible" ? "dim" : "") },
-        h("td", {}, c.time), h("td", {}, c.status === "posible" ? badge("posible", "ok") : badge(c.status, "muted")),
-        h("td", { className: "num" }, c.penalty ?? "—"), h("td", {}, (c.crosses || []).join(", ") || "—"),
-        h("td", {}, c.room_id || "—"))))),
-    h("p", {}, step.result === "programada" ? `Resultado: ${step.time} en ${step.room_id}`
+    h("h4", {}, `Clase elegida: ${step.class_id}`),
+    h("p", { className: "ayuda", style: "margin:var(--esp-1) 0 var(--esp-3)" },
+      `Horas disponibles: ${step.available_starts} · horas bloqueadas por vecinos blandos: ${step.soft_saturation}`),
+    table(["Hora", "Estado", "Costo cruces", "Cruza con", "Salón"],
+      (step.candidates || []).map(c => h("tr", { className: step.slot === c.slot ? "elegida" : (c.status !== "posible" ? "tenue" : null) },
+        h("td", { className: "hora" }, c.time), h("td", {}, c.status === "posible" ? badge("posible", "ok") : badge(c.status, "muted")),
+        h("td", { className: "numero" }, c.penalty ?? "—"), h("td", {}, (c.crosses || []).join(", ") || "—"),
+        h("td", {}, c.room_id || "—"))), [2]),
+    h("p", { style: "margin-top:var(--esp-3)" }, step.result === "programada" ? `Resultado: ${step.time} en ${step.room_id}`
       : h("span", {}, "Resultado: ", badge("sin programar: no hay hora y salón válidos", "bad"))));
 }
 
@@ -446,73 +592,82 @@ function stopPlaying() { if (state.playing) { clearInterval(state.playing); stat
 // 4. Fase 2: DP por estudiante
 // ---------------------------------------------------------------------------
 function renderPhase2() {
-  const panel = document.getElementById("tab-fase2");
-  panel.replaceChildren();
+  const view = document.getElementById("vista-fase2");
+  view.replaceChildren();
   const p2 = state.trace.phase2;
   const schedules = state.trace.result.student_schedule;
   const N = p2.total_requests;
 
-  panel.append(h("div", { className: "card explain" },
-    h("h2", {}, "Programación dinámica: selección de intervalos ponderados"),
-    h("p", {}, "Con las horas ya fijas, las clases que pidió un estudiante son intervalos. Se ordenan por hora de fin " +
-      "(Θ(n log n)), se calcula p(j) con búsqueda binaria (Θ(log n)) y se llena la tabla:"),
-    h("p", {}, h("span", { className: "formula" }, "OPT[j] = max( OPT[j−1] , w_j + OPT[p(j)] )")),
-    h("p", {}, `Peso de cada solicitud: ${p2.weight_rule}, con N = ${N}. Así la DP maximiza la suma de prioridades ` +
-      "y, a igual suma, el número de clases."),
-    h("p", {}, `Reparto de cupos: ${p2.stats.rounds} ronda(s), ${p2.stats.rejections} cupo(s) negado(s), ` +
-      `${p2.stats.fill_improvements} mejora(s) en el relleno final.`)));
+  view.append(pageHeader("fase2", "Fase 2 · Inscribir estudiantes",
+    "Con las horas ya fijas, cada estudiante arma su mejor horario con programación dinámica."));
 
-  const list = h("div", { className: "card" }, h("h2", {}, "Estudiantes"),
-    h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "Estudiante"), h("th", { className: "num" }, "Atendidas"))),
-      h("tbody", {}, ...Object.values(schedules).map(s => h("tr", {
-        className: s.student_id === state.student ? "highlight" : "", style: "cursor:pointer",
-        onclick: () => { state.student = s.student_id; renderPhase2(); } },
-        h("td", {}, s.student_id), h("td", { className: "num" }, `${s.enrolled_classes.length}/${s.requests.length}`))))));
+  const blocks = h("div", { className: "pila" },
+    h("div", { className: "aviso" },
+      h("p", {}, "Las clases que pidió un estudiante son intervalos. Se ordenan por hora de fin (Θ(n log n)), se calcula " +
+        "p(j) con búsqueda binaria (Θ(log n)) y se llena la tabla ", h("span", { className: "formula" }, "OPT[j] = max( OPT[j−1] , w_j + OPT[p(j)] )")),
+      h("p", {}, `Peso de cada solicitud: ${p2.weight_rule}, con N = ${N}. Así la DP maximiza la suma de prioridades ` +
+        "y, a igual suma, el número de clases.")),
+    h("div", { className: "cifras" },
+      figure("Rondas de reparto", p2.stats.rounds),
+      figure("Cupos negados", p2.stats.rejections),
+      figure("Mejoras del relleno", p2.stats.fill_improvements),
+      figure("Solicitudes atendidas", `${p2.stats.attended_requests}/${N}`)));
 
-  const detail = h("div", {});
+  const select = sid => { state.student = sid; renderPhase2(); };
+  const list = table(["Estudiante", "Atendidas"], Object.values(schedules).map(s => h("tr", {
+      className: s.student_id === state.student ? "elegida" : null, tabindex: "0",
+      "aria-selected": s.student_id === state.student ? "true" : "false",
+      onclick: () => select(s.student_id),
+      onkeydown: e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(s.student_id); } } },
+    h("td", {}, s.student_id), h("td", { className: "numero" }, `${s.enrolled_classes.length}/${s.requests.length}`))), [1]);
+  list.classList.add("lista-estudiantes");
+
+  const detail = h("div", { className: "pila" });
   const sid = state.student;
   if (sid && schedules[sid]) {
     const dp = p2.dp[sid];
     const sched = schedules[sid];
-    detail.append(h("div", { className: "card" }, h("h2", {}, `Tabla de la DP de ${sid}`),
-      dp && dp.items.length ? renderDpTable(dp) : h("p", { className: "muted" }, "No tuvo clases candidatas en la DP."),
-      h("h3", {}, "Horario resultante"),
-      h("ul", { className: "list" }, ...sched.enrolled_classes.map(c =>
-        h("li", {}, `${c.class_id} (prioridad ${c.priority}) · ${c.time_str} · ${c.room_id}`))),
-      sched.pending_requests.length ? h("h3", {}, "Solicitudes pendientes") : null,
-      sched.pending_requests.length ? h("ul", { className: "list" }, ...sched.pending_requests.map(p =>
-        h("li", {}, `${p.class_id} (prioridad ${p.priority}): `, badge(p.reason, "warn")))) : null));
+    detail.append(h("section", { className: "panel" },
+      h("h3", {}, `Tabla de la DP de ${sid}`),
+      dp && dp.items.length ? renderDpTable(dp) : h("p", { className: "ayuda" }, "No tuvo clases candidatas en la DP."),
+      h("div", { className: "rejilla dos", style: "margin-top:var(--esp-4)" },
+        h("div", {}, h("h4", { style: "margin-bottom:var(--esp-2)" }, "Horario resultante"),
+          sched.enrolled_classes.length ? h("ul", { className: "lista" }, ...sched.enrolled_classes.map(c =>
+            h("li", {}, `${c.class_id} (prioridad ${c.priority}) · ${c.time_str} · ${c.room_id}`)))
+            : h("p", { className: "ayuda" }, "Sin clases inscritas.")),
+        sched.pending_requests.length ? h("div", {}, h("h4", { style: "margin-bottom:var(--esp-2)" }, "Solicitudes pendientes"),
+          h("ul", { className: "lista" }, ...sched.pending_requests.map(p =>
+            h("li", {}, `${p.class_id} (prioridad ${p.priority}): `, badge(p.reason, "warn"))))) : null)));
   }
   if (p2.rejections.length) {
-    detail.append(h("div", { className: "card" }, h("h2", {}, "Cupos negados durante el reparto"),
-      h("p", { className: "muted" }, "Cuando una clase recibe más estudiantes que su cupo, se queda con los de mayor prioridad; " +
-        "los demás vuelven a correr su DP sin esa clase."),
-      h("ul", { className: "list" }, ...p2.rejections.map(r =>
+    detail.append(h("section", { className: "panel" },
+      h("h3", {}, "Cupos negados durante el reparto"),
+      h("p", { className: "ayuda", style: "margin-bottom:var(--esp-2)" }, "Cuando una clase recibe más estudiantes que su cupo, " +
+        "se queda con los de mayor prioridad; los demás vuelven a correr su DP sin esa clase."),
+      h("ul", { className: "lista" }, ...p2.rejections.map(r =>
         h("li", {}, `Ronda ${r.round}: ${r.student_id} sin cupo en ${r.class_id} (prioridad ${r.priority})`)))));
   }
-  panel.append(h("div", { className: "grid-side", style: "grid-template-columns:minmax(220px,1fr) minmax(0,3fr)" }, list, detail));
+  blocks.append(h("div", { className: "rejilla lateral-izquierda" }, list, detail));
+  view.append(blocks);
 }
 
 function renderDpTable(dp) {
-  const rows = [h("tr", { className: "dim" }, h("td", {}, "0"), h("td", {}, "—"), h("td", {}, ""), h("td", {}, ""),
-    h("td", { className: "num" }, ""), h("td", { className: "num" }, ""), h("td", {}, "caso base"), h("td", { className: "num" }, "0"), h("td", {}, ""))];
+  const rows = [h("tr", { className: "tenue" }, h("td", {}, "0"), h("td", {}, "—"), h("td", {}, ""), h("td", {}, ""),
+    h("td", { className: "numero" }, ""), h("td", { className: "numero" }, ""), h("td", {}, "caso base"), h("td", { className: "numero" }, "0"), h("td", {}, ""))];
   dp.items.forEach((it, idx) => {
     const j = idx + 1, p = dp.p[j];
     const skip = dp.opt[j - 1], take = it.weight + dp.opt[p];
     const pLabel = p === 0 ? "0" : `${p} (${dp.items[p - 1].class_id})`;
-    rows.push(h("tr", { className: dp.chosen.includes(it.class_id) ? "highlight" : "" },
-      h("td", {}, j), h("td", {}, it.class_id), h("td", {}, it.time), h("td", {}, it.priority),
-      h("td", { className: "num" }, it.weight), h("td", { className: "num" }, pLabel),
+    rows.push(h("tr", { className: dp.chosen.includes(it.class_id) ? "elegida" : null },
+      h("td", {}, j), h("td", {}, it.class_id), h("td", { className: "hora" }, it.time), h("td", {}, it.priority),
+      h("td", { className: "numero" }, it.weight), h("td", { className: "numero" }, pLabel),
       h("td", { className: "mono" }, `max(${skip}, ${it.weight} + ${dp.opt[p]} = ${take})`),
-      h("td", { className: "num" }, dp.opt[j]),
+      h("td", { className: "numero" }, dp.opt[j]),
       h("td", {}, dp.chosen.includes(it.class_id) ? badge("tomada", "ok") : "")));
   });
-  return h("div", {}, h("table", {},
-    h("thead", {}, h("tr", {}, h("th", {}, "j"), h("th", {}, "Clase"), h("th", {}, "Horario"), h("th", {}, "Prioridad"),
-      h("th", { className: "num" }, "w_j"), h("th", { className: "num" }, "p(j)"), h("th", {}, "OPT[j−1] vs w_j + OPT[p(j)]"),
-      h("th", { className: "num" }, "OPT[j]"), h("th", {}, ""))),
-    h("tbody", {}, ...rows)),
-    h("p", { className: "muted" }, `Mejor suma de pesos: ${dp.opt[dp.opt.length - 1]}. ` +
+  return h("div", {},
+    table(["j", "Clase", "Horario", "Prioridad", "w_j", "p(j)", "OPT[j−1] vs w_j + OPT[p(j)]", "OPT[j]", ""], rows, [4, 5, 7], "formulas"),
+    h("p", { className: "ayuda", style: "margin-top:var(--esp-2)" }, `Mejor suma de pesos: ${dp.opt[dp.opt.length - 1]}. ` +
       "La solución se reconstruye desde la última fila: si tomar j es al menos tan bueno, se toma y se salta a p(j)."));
 }
 
@@ -520,48 +675,55 @@ function renderDpTable(dp) {
 // 5. Resultados
 // ---------------------------------------------------------------------------
 function renderResults() {
-  const panel = document.getElementById("tab-resultados");
-  panel.replaceChildren();
+  const view = document.getElementById("vista-resultados");
+  view.replaceChildren();
   const { metrics: m, verification: v, class_schedule: classes } = state.trace.result;
-  const kpi = (label, value, sub) => h("div", { className: "kpi" }, h("div", { className: "label" }, label),
-    h("div", { className: "value" }, value), sub ? h("div", { className: "sub" }, sub) : null);
 
-  panel.append(h("div", { className: "kpis" },
-    kpi("Cobertura", `${m.coverage_percent}%`, `${m.attended_requests} de ${m.total_requests} solicitudes`),
-    kpi("Satisfacción de prioridades", `${m.priority_satisfaction_percent}%`, `${m.attended_priority_sum} de ${m.received_priority_sum}`),
-    kpi("Incumplimientos R1-R10", m.violations_total, "verificador independiente"),
-    kpi("Clases programadas", `${m.scheduled_classes}/${m.total_classes}`,
-      m.unscheduled_class_ids.length ? `sin programar: ${m.unscheduled_class_ids.join(", ")}` : "todas")));
+  view.append(pageHeader("resultados", "Resultados",
+    "Informe de la ejecución: cobertura, prioridades, restricciones obligatorias y comparación con lo esperado."));
 
-  const levels = Object.entries(m.by_priority).sort((a, b) => b[0] - a[0]).map(([level, d]) => h("tr", {},
-    h("td", {}, `Prioridad ${level}`), h("td", { className: "num" }, `${d.attended}/${d.requests}`),
-    h("td", { style: "width:45%" }, h("div", { className: "bar" }, h("span", { style: `width:${d.percent}%` }))),
-    h("td", { className: "num" }, `${d.percent}%`)));
-  const reasons = Object.entries(m.pending_by_reason).map(([r, n]) => h("li", {}, `${r}: ${n}`));
+  const levels = Object.entries(m.by_priority).sort((a, b) => b[0] - a[0]).map(([level, d]) =>
+    h("div", { className: "nivel" },
+      h("span", {}, `Prioridad ${level}`), h("span", { className: "numero" }, `${d.attended}/${d.requests}`),
+      h("span", { className: "pista" }, h("span", { className: "barra", style: `width:${d.percent}%` })),
+      h("span", { className: "numero" }, `${d.percent}%`)));
+  const reasons = Object.entries(m.pending_by_reason);
 
-  const rules = Object.entries(v.by_rule).map(([rule, count]) => h("tr", {},
-    h("td", {}, rule), h("td", { className: "num" }, count), h("td", {}, count ? badge("incumple", "bad") : badge("cumple", "ok"))));
-
-  panel.append(h("div", { className: "grid2" },
-    h("div", { className: "card" }, h("h2", {}, "Atención por nivel de prioridad"), h("table", {}, h("tbody", {}, ...levels)),
-      h("h3", {}, "Pendientes por motivo"), reasons.length ? h("ul", { className: "list" }, ...reasons) : h("p", { className: "muted" }, "Ninguna.")),
-    h("div", { className: "card" }, h("h2", {}, "Restricciones obligatorias"), h("table", {}, h("tbody", {}, ...rules)),
-      ...v.violations.map(x => h("p", {}, badge(x.rule, "bad"), ` ${x.message}`)))));
+  const blocks = h("div", { className: "pila" },
+    h("div", { className: "cifras" },
+      figure("Cobertura", `${m.coverage_percent}%`, `${m.attended_requests} de ${m.total_requests} solicitudes`),
+      figure("Satisfacción de prioridades", `${m.priority_satisfaction_percent}%`, `${m.attended_priority_sum} de ${m.received_priority_sum}`),
+      figure("Incumplimientos R1-R10", m.violations_total, "verificador independiente"),
+      figure("Clases programadas", `${m.scheduled_classes}/${m.total_classes}`,
+        m.unscheduled_class_ids.length ? `sin programar: ${m.unscheduled_class_ids.join(", ")}` : "todas")),
+    h("div", { className: "rejilla dos" },
+      panel("Atención por nivel de prioridad",
+        h("div", { className: "niveles" }, ...levels),
+        h("h4", { style: "margin:var(--esp-5) 0 var(--esp-2)" }, "Pendientes por motivo"),
+        reasons.length ? h("dl", { className: "datos" }, ...reasons.flatMap(([r, n]) => [h("dt", {}, r), h("dd", {}, n)]))
+          : h("p", { className: "ayuda" }, "Ninguna.")),
+      panel("Restricciones obligatorias",
+        table(["Regla", "Incumplimientos", "Estado"], Object.entries(v.by_rule).map(([rule, count]) => h("tr", {},
+          h("td", {}, rule), h("td", { className: "numero" }, count),
+          h("td", {}, count ? badge("incumple", "bad") : badge("cumple", "ok")))), [1]),
+        ...v.violations.map(x => h("div", { className: "aviso error", style: "margin-top:var(--esp-2)" }, `${x.rule}: ${x.message}`)))));
 
   if (state.trace.expectations.length) {
     const optimal = state.trace.phase1.optimal === true;
-    panel.append(h("div", { className: "card" }, h("h2", {}, "Comparación con el resultado esperado"),
-      h("table", {}, h("tbody", {}, ...state.trace.expectations.map(c => h("tr", {},
-        h("td", {}, c.passed ? badge("✓", "ok") : (c.only_if_optimal && !optimal ? badge("no exigido", "muted") : badge("✗", "bad"))),
-        h("td", {}, c.name), h("td", { className: "muted" }, c.detail, c.only_if_optimal ? " · requiere fase 1 exacta" : "")))))));
+    blocks.append(panel("Comparación con el resultado esperado",
+      table(["Estado", "Comprobación", "Detalle"], state.trace.expectations.map(c => h("tr", {},
+        h("td", {}, c.passed ? badge("cumple", "ok") : (c.only_if_optimal && !optimal ? badge("no exigido", "muted") : badge("no cumple", "bad"))),
+        h("td", {}, c.name),
+        h("td", { className: "tenue" }, c.detail, c.only_if_optimal ? " · requiere fase 1 exacta" : ""))))));
   }
 
-  panel.append(h("div", { className: "card" }, h("h2", {}, "Programación de clases"),
-    h("table", {}, h("thead", {}, h("tr", {}, ...["Clase", "Nombre", "Horario", "Salón", "Profesor", "Inscritos", "Cupo", "Demanda"].map(t => h("th", {}, t)))),
-      h("tbody", {}, ...Object.values(classes).map(c => h("tr", { className: c.is_scheduled ? "" : "dim" },
+  blocks.append(panel("Programación de clases",
+    table(["Clase", "Nombre", "Horario", "Salón", "Profesor", "Inscritos", "Cupo", "Demanda"],
+      Object.values(classes).map(c => h("tr", { className: c.is_scheduled ? null : "tenue" },
         h("td", {}, c.class_id), h("td", {}, c.course_name), h("td", {}, c.time_str), h("td", {}, c.room_id || "—"),
-        h("td", {}, c.professor_name), h("td", { className: "num" }, c.enrolled_count), h("td", { className: "num" }, c.capacity),
-        h("td", { className: "num" }, c.demand)))))));
+        h("td", {}, c.professor_name), h("td", { className: "numero" }, c.enrolled_count), h("td", { className: "numero" }, c.capacity),
+        h("td", { className: "numero" }, c.demand))), [5, 6, 7])));
+  view.append(blocks);
 }
 
 init().catch(err => setStatus(`Error al iniciar: ${err.message}`, "error"));
