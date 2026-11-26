@@ -7,7 +7,8 @@ una programación completa. Sin podas, el árbol tiene hasta Π (H_i + 1) hojas
 
 ¿Y los salones? No cambian el costo (los cruces dependen solo de las horas),
 solo deciden si algo cabe o no. Por eso no se ramifica por salón: cada clase
-recibe el salón libre más pequeño que le sirve, y si ninguno está libre se
+recibe el salón libre que mejor le sirve (Room.preference_key: sin usar un
+laboratorio si no lo pide, y el más pequeño), y si ninguno está libre se
 intenta reacomodar los salones de las clases ya ubicadas (un backtracking
 pequeño, solo de salones) antes de descartar esa hora. Así la búsqueda sigue
 siendo exacta sin multiplicar el árbol por el número de salones.
@@ -86,7 +87,7 @@ class BacktrackingScheduler:
         }
         self.fitting_rooms = {
             c.id: sorted((r for r in rooms if r.can_accommodate(c.min_room_capacity, c.required_room_type)),
-                         key=lambda r: (r.capacity, r.id))
+                         key=lambda r, c=c: r.preference_key(c.min_room_capacity, c.required_room_type))
             for c in classes
         }
         self.order = sorted(
@@ -276,7 +277,7 @@ class BacktrackingScheduler:
             self._room_of, self._room_busy = room_of, room_busy
 
     def _free_fitting_room(self, cid: str, mask: int, room_busy: dict[str, int]) -> str | None:
-        """El salón más pequeño que le sirve a la clase y está libre a esa hora."""
+        """El salón que mejor le sirve a la clase (ver Room.preference_key) y está libre a esa hora."""
         for room in self.fitting_rooms[cid]:
             if (room.availability_mask & mask) == mask and not room_busy[room.id] & mask:
                 return room.id

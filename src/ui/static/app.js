@@ -12,8 +12,8 @@ const HOUR_COLORS = ["#8ecae6", "#ffb703", "#90be6d", "#f4a261", "#cdb4db",
 const SECTIONS = [
   { id: "datos", title: "Datos", icon: "tabla" },
   { id: "grafo", title: "Grafo", icon: "grafo" },
-  { id: "fase1", title: "Fase 1: ubicar clases", icon: "calendario" },
-  { id: "fase2", title: "Fase 2: inscribir", icon: "usuarios" },
+  { id: "fase1", title: "Ubicar clases", icon: "calendario" },
+  { id: "fase2", title: "Inscribir", icon: "usuarios" },
   { id: "resultados", title: "Resultados", icon: "grafica" },
 ];
 
@@ -242,9 +242,9 @@ async function run() {
   if (!state.student || !data.phase2.dp[state.student]) state.student = Object.keys(data.phase2.dp)[0] || null;
   const m = data.result.metrics;
   setStatus(`Listo: ${m.scheduled_classes}/${m.total_classes} clases programadas · ${m.attended_requests}/${m.total_requests} ` +
-            `solicitudes atendidas (${m.coverage_percent}%) · ${m.violations_total} incumplimientos de R1-R10`, "ok");
+            `solicitudes atendidas (${m.coverage_percent}%) · ${m.violations_total} restricciones obligatorias incumplidas`, "ok");
   document.getElementById("resumen-lateral").textContent =
-    `${m.attended_requests}/${m.total_requests} solicitudes · ${m.violations_total} incumplimientos`;
+    `${m.attended_requests}/${m.total_requests} solicitudes · ${m.violations_total} restricciones incumplidas`;
   renderGraph(); renderPhase1(); renderPhase2(); renderResults();
 }
 
@@ -284,23 +284,21 @@ function renderData() {
   view.replaceChildren();
   const sc = state.scenario;
 
-  view.append(pageHeader("datos", "Datos del escenario", sc.metadata?.description || "",
-    badge(sc.metadata?.name || "escenario", "info")));
+  view.append(pageHeader("datos", "Datos", "Entradas del problema: jornada, salones, profesores, clases y estudiantes. " +
+    "Cambie lo que necesite y pulse Ejecutar. Horas como \"8-11, 14\" (vacío = toda la jornada); solicitudes como " +
+    "\"ALG:3, BD:1\" (prioridad 1 a 3, 3 la más alta)."));
 
   const blocks = h("div", { className: "pila" });
-  if (sc.expected?.description) {
-    blocks.append(h("div", { className: "aviso" }, h("strong", {}, "Resultado esperado: "), sc.expected.description));
-  }
-  blocks.append(h("p", { className: "ayuda" }, "Puede cambiar cualquier dato y pulsar Ejecutar. Horas: \"8-11, 14\". " +
-    "Solicitudes: \"ALG:3, BD:1\". Un campo de horas vacío significa toda la jornada."));
 
   const params = sc.parameters || (sc.parameters = {});
   blocks.append(panel("Jornada",
     h("div", { className: "fila-campos" },
-      ...[["num_days", "Días", 1], ["start_hour", "Hora inicial", 8], ["end_hour", "Hora final", 18]].map(([key, label, def]) =>
+      ...[["num_days", "Días de la semana", 1], ["start_hour", "Hora inicial", 8], ["end_hour", "Hora final", 18]].map(([key, label, def]) =>
         h("div", { className: "campo" }, h("label", { for: `jornada-${key}` }, label),
           h("input", { id: `jornada-${key}`, type: "number", value: params[key] ?? def,
-            oninput: e => { params[key] = +e.target.value; markDirty(); } }))))));
+            oninput: e => { params[key] = +e.target.value; markDirty(); } })))),
+    h("p", { className: "ayuda", style: "margin-top:var(--esp-2)" }, "Días de la semana: 1 programa una sola jornada " +
+      "(la versión inicial del diseño); con 5 se programa de lunes a viernes.")));
 
   for (const t of TABLES) blocks.append(renderEditableTable(t));
 
@@ -402,24 +400,20 @@ function renderGraph() {
     canvas.append(group);
   }
 
-  const usedSlots = [...new Set(nodes.filter(n => n.slot !== null).map(n => n.slot % hoursPerDay()))].sort((a, b) => a - b);
   view.append(
-    pageHeader("grafo", "Grafo de conflictos", "Cada vértice es una clase y su color es la hora que recibió en la fase 1."),
+    pageHeader("grafo", "Grafo de conflictos", "Qué clases no se pueden o no conviene ubicar a la misma hora."),
     h("div", { className: "rejilla lateral-derecha" },
       panel("Grafo coloreado con las horas",
-        h("div", { className: "lienzo-grafo" }, canvas),
-        h("div", { className: "leyenda" },
-          h("span", {}, h("span", { className: "muestra", style: "background:#b3261e" }), "conflicto duro (mismo profesor)"),
-          h("span", {}, h("span", { className: "muestra", style: "background:#8a96a3" }), "conflicto blando (grosor = peso)"),
-          ...usedSlots.map(s => h("span", {}, h("span", { className: "muestra", style: `background:${hourColor(s)}` }),
-            `${grid().start_hour + s}:00`)))),
+        h("div", { className: "lienzo-grafo" }, canvas)),
       h("div", { className: "pila" },
-        h("div", { className: "aviso" },
-          h("p", {}, h("strong", {}, "Cómo leer el grafo. "), "Cada vértice es una clase. Una arista roja une clases del mismo " +
-            "profesor: no pueden ir a la misma hora. Una arista gris une clases que algún estudiante pidió juntas; su peso " +
-            "es la suma de min(prioridad_a, prioridad_b)."),
-          h("p", {}, "Ubicar las clases equivale a colorear el grafo usando las horas como colores: por eso el problema " +
-            "es NP-difícil (se reduce desde k-coloración). El color de cada vértice es la hora que recibió.")),
+        panel("Cómo leer el grafo",
+          h("div", { className: "texto-tarjeta" },
+            h("p", {}, "Cada vértice es una clase. Su color es la hora que recibió y debajo aparecen la hora y el salón; " +
+              "un vértice blanco punteado es una clase que quedó sin programar."),
+            h("p", {}, "Una arista roja une dos clases del mismo profesor: no pueden ir a la misma hora. Una arista gris " +
+              "une dos clases que algún estudiante pidió juntas; entre más gruesa, más prioridad se pierde si se cruzan."),
+            h("p", {}, "Ubicar las clases sin cruces equivale a colorear este grafo usando las horas como colores. " +
+              "Por eso el problema es NP-difícil: se reduce desde la k-coloración de grafos."))),
         panel("Estadísticas", h("dl", { className: "datos" },
           h("dt", {}, "Vértices"), h("dd", {}, stats.vertices),
           h("dt", {}, "Aristas"), h("dd", {}, stats.total_edges),
@@ -491,7 +485,7 @@ function renderPhase1() {
                      backtracking: "backtracking sin cota", fuerza_bruta: "fuerza bruta" }[p1.mode];
   const search = p1.search || {};
 
-  view.append(pageHeader("fase1", "Fase 1 · Ubicar clases",
+  view.append(pageHeader("fase1", "Ubicar clases",
     `Estrategia usada: ${modeText}${p1.requested_mode === "auto" ? " (elegida automáticamente)" : ""}.`,
     p1.optimal === true ? badge("óptimo probado", "ok") : null,
     p1.optimal === false ? badge("mejor hallado (límite de nodos)", "warn") : null));
@@ -558,7 +552,7 @@ function renderPhase1() {
           badge(node.status, tones[node.status] || "muted"))))));
   }
 
-  blocks.append(panel("Programación final de la fase 1", renderTimetable(finalPlacements(), null)));
+  blocks.append(panel("Programación final de las clases", renderTimetable(finalPlacements(), null)));
   view.append(blocks);
 }
 
@@ -598,7 +592,7 @@ function renderPhase2() {
   const schedules = state.trace.result.student_schedule;
   const N = p2.total_requests;
 
-  view.append(pageHeader("fase2", "Fase 2 · Inscribir estudiantes",
+  view.append(pageHeader("fase2", "Inscribir",
     "Con las horas ya fijas, cada estudiante arma su mejor horario con programación dinámica."));
 
   const blocks = h("div", { className: "pila" },
@@ -680,7 +674,7 @@ function renderResults() {
   const { metrics: m, verification: v, class_schedule: classes } = state.trace.result;
 
   view.append(pageHeader("resultados", "Resultados",
-    "Informe de la ejecución: cobertura, prioridades, restricciones obligatorias y comparación con lo esperado."));
+    "Informe de la ejecución: cobertura, prioridades, restricciones obligatorias y algoritmos usados."));
 
   const levels = Object.entries(m.by_priority).sort((a, b) => b[0] - a[0]).map(([level, d]) =>
     h("div", { className: "nivel" },
@@ -693,7 +687,7 @@ function renderResults() {
     h("div", { className: "cifras" },
       figure("Cobertura", `${m.coverage_percent}%`, `${m.attended_requests} de ${m.total_requests} solicitudes`),
       figure("Satisfacción de prioridades", `${m.priority_satisfaction_percent}%`, `${m.attended_priority_sum} de ${m.received_priority_sum}`),
-      figure("Incumplimientos R1-R10", m.violations_total, "verificador independiente"),
+      figure("Restricciones incumplidas", m.violations_total, "verificador independiente"),
       figure("Clases programadas", `${m.scheduled_classes}/${m.total_classes}`,
         m.unscheduled_class_ids.length ? `sin programar: ${m.unscheduled_class_ids.join(", ")}` : "todas")),
     h("div", { className: "rejilla dos" },
@@ -703,19 +697,21 @@ function renderResults() {
         reasons.length ? h("dl", { className: "datos" }, ...reasons.flatMap(([r, n]) => [h("dt", {}, r), h("dd", {}, n)]))
           : h("p", { className: "ayuda" }, "Ninguna.")),
       panel("Restricciones obligatorias",
-        table(["Regla", "Incumplimientos", "Estado"], Object.entries(v.by_rule).map(([rule, count]) => h("tr", {},
-          h("td", {}, rule), h("td", { className: "numero" }, count),
-          h("td", {}, count ? badge("incumple", "bad") : badge("cumple", "ok")))), [1]),
+        table(["Restricción", "Estado"], Object.entries(v.by_rule).map(([rule, count]) => h("tr", {},
+          h("td", {}, state.trace.rules[rule] || rule),
+          h("td", {}, count ? badge("no cumple", "bad") : badge("cumple", "ok"))))),
         ...v.violations.map(x => h("div", { className: "aviso error", style: "margin-top:var(--esp-2)" }, `${x.rule}: ${x.message}`)))));
 
-  if (state.trace.expectations.length) {
-    const optimal = state.trace.phase1.optimal === true;
-    blocks.append(panel("Comparación con el resultado esperado",
-      table(["Estado", "Comprobación", "Detalle"], state.trace.expectations.map(c => h("tr", {},
-        h("td", {}, c.passed ? badge("cumple", "ok") : (c.only_if_optimal && !optimal ? badge("no exigido", "muted") : badge("no cumple", "bad"))),
-        h("td", {}, c.name),
-        h("td", { className: "tenue" }, c.detail, c.only_if_optimal ? " · requiere fase 1 exacta" : ""))))));
-  }
+  blocks.append(panel("Algoritmos usados y complejidad",
+    h("p", { className: "ayuda", style: "margin-bottom:var(--esp-3)" }, "M clases, S estudiantes, R solicitudes por estudiante, " +
+      "A salones, H horas de inicio permitidas por clase, d vecinos de una clase en el grafo, K clases por estudiante."),
+    table(["Paso", "Algoritmo", "Complejidad", "En este escenario"], state.trace.result.algorithms.map(a => h("tr", {},
+      h("td", {}, h("strong", {}, a.step)),
+      h("td", {}, h("div", {}, a.algorithm), h("div", { className: "ayuda" }, a.technique),
+        a.why && a.why !== "Siempre." ? h("div", { className: "ayuda" }, a.why) : null,
+        a.problem ? h("div", { className: "ayuda" }, a.problem) : null),
+      h("td", { className: "complejidad" }, a.complexity),
+      h("td", {}, h("div", {}, a.instance), h("div", { className: "ayuda" }, a.measured)))))));
 
   blocks.append(panel("Programación de clases",
     table(["Clase", "Nombre", "Horario", "Salón", "Profesor", "Inscritos", "Cupo", "Demanda"],

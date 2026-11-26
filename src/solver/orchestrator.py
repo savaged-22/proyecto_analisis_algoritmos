@@ -10,6 +10,7 @@ from ..graph.conflict_graph import build_conflict_graph
 from .. import config
 from ..phase1.scheduler import schedule_classes
 from ..phase2.enrollment import EnrollmentSolver
+from ..report.complexity import algorithms_used
 from ..report.report import TimetableReport
 from ..verify.verifier import verify_solution
 
@@ -25,6 +26,7 @@ class TimetableOrchestrator:
         self.report: TimetableReport | None = None
         self.enrollment_solver: EnrollmentSolver | None = None
         self.conflict_graph = None
+        self.result: dict[str, Any] | None = None
 
     # Accesos directos a las entidades del escenario cargado
     @property
@@ -129,8 +131,11 @@ class TimetableOrchestrator:
         # 5. Verificación independiente de R1-R10 sobre la solución final
         # -------------------------------------------------------------
         self.report.verification = verify_solution(self.scenario, self.report.build_solution())
+        self.report.algorithms = algorithms_used(self.scenario, self.phase1_results, self.phase2_results,
+                                                 self.timings, conflict_graph.get_statistics())
 
-        return self.report.to_full_dict()
+        self.result = self.report.to_full_dict()
+        return self.result
 
     def export_solution(self, output_path: str | Path) -> None:
         """Guarda la solución completa en un archivo JSON."""
@@ -140,9 +145,8 @@ class TimetableOrchestrator:
         path = Path(output_path).resolve()
         path.parent.mkdir(parents=True, exist_ok=True)
 
-        full_data = self.report.to_full_dict()
         with open(path, "w", encoding="utf-8") as f:
-            json.dump(full_data, f, indent=2, ensure_ascii=False)
+            json.dump(self.result, f, indent=2, ensure_ascii=False)
 
     def get_summary_text(self) -> str:
         """Retorna el informe legible para consola."""

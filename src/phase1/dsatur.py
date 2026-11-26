@@ -123,7 +123,7 @@ class DSATURColoringSolver:
         ]
 
         best: tuple[int, int, Room, float] | None = None
-        best_key = (float("inf"), float("inf"))
+        best_key = (float("inf"),)
         self._last_candidates = []   # lo evaluado en cada hora, para mostrarlo en la interfaz
         for slot in cls.allowed_starts:
             mask = self.grid.create_slot_mask(slot, cls.duration_hours)
@@ -143,9 +143,10 @@ class DSATURColoringSolver:
                     continue
                 if not room.is_free(mask):
                     continue
-                if slot_best is None or room.capacity < slot_best.capacity:
+                room_key = room.preference_key(cls.min_room_capacity, cls.required_room_type)
+                if slot_best is None or room_key < slot_best.preference_key(cls.min_room_capacity, cls.required_room_type):
                     slot_best = room
-                candidate_key = (soft_penalty, room.capacity - cls.min_room_capacity)
+                candidate_key = (soft_penalty, room_key)
                 if candidate_key < best_key:
                     best_key = candidate_key
                     best = (slot, mask, room, soft_penalty)

@@ -443,3 +443,17 @@ svg text {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
+
+/* Texto explicativo dentro de una tarjeta: párrafos separados, en el color del texto. */
+.texto-tarjeta {
+  display: grid;
+  gap: var(--esp-2);
+  color: var(--texto-suave);
+}
+
+/* La complejidad se lee en monoespaciada pero puede ocupar varias líneas. */
+.tabla td.complejidad {
+  max-width: 18rem;
+  font-family: var(--fuente-mono);
+  font-size: var(--texto-sm);
+}

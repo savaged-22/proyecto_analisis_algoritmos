@@ -6,7 +6,7 @@ from src.analysis.experiments import approximation, loglog_slope, pruning, scala
 from src.data.generator import build_conflict_scenario
 from src.data.scenario import load_scenario_dict
 
-DEMO = Path(__file__).resolve().parent.parent / "data" / "scenarios" / "demo.json"
+DEMO = Path(__file__).resolve().parent.parent / "data" / "scenarios" / "inicial.json"
 
 
 class ExperimentsTest(unittest.TestCase):

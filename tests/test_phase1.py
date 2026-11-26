@@ -83,26 +83,40 @@ class ExactSearchTest(unittest.TestCase):
         exact.solve()
         self.assertLess(exact.stats.nodes * 10, plain.stats.nodes)
 
-    def test_rooms_are_reassigned_when_best_fit_blocks_a_lab_class(self) -> None:
-        # X no exige laboratorio y, por ser el salón más pequeño, toma LAB; luego L (que sí exige
-        # laboratorio) solo puede a esa misma hora: hay que mover X al aula.
+    def test_rooms_are_reassigned_when_best_fit_blocks_another_class(self) -> None:
+        # X (1 h a las 8) toma PEQ, el salón que mejor le sirve. Luego L (2 h desde las 8) solo cabe en
+        # PEQ, porque GRANDE solo está habilitado a las 8: hay que mover X a GRANDE.
         data = {
-            "rooms": [{"id": "LAB", "capacity": 10, "room_type": "laboratorio"}, {"id": "AULA", "capacity": 30}],
-            "professors": [{"id": "P1", "availability": [8]}, {"id": "P2", "availability": [8]}],
+            "rooms": [{"id": "PEQ", "capacity": 8}, {"id": "GRANDE", "capacity": 20, "availability": [8]}],
+            "professors": [{"id": "P1", "availability": [8, 9]}, {"id": "P2", "availability": [8, 9]}],
             "classes": [
                 {"id": "X", "professor_id": "P1", "capacity": 5, "duration_hours": 1, "allowed_starts": [8]},
-                {"id": "L", "professor_id": "P2", "capacity": 5, "duration_hours": 1, "allowed_starts": [8, 9],
-                 "required_room_type": "laboratorio"},
+                {"id": "L", "professor_id": "P2", "capacity": 8, "duration_hours": 2, "allowed_starts": [8]},
             ],
-            "students": [{"id": "S", "requests": [{"class_id": "X", "priority": 1}]}],
+            "students": [{"id": f"S{i}", "requests": [{"class_id": "X", "priority": 3}] +
+                          ([{"class_id": "L", "priority": 1}] if i < 8 else [])} for i in range(10)],
         }
         sc, _, cost = solvers_for(data)
         solver = BacktrackingScheduler(sc.classes, sc.rooms, sc.professors, sc.grid, cost)
+        self.assertEqual(solver.order[0], "X")
         best, breakdown, _ = solver.solve()
         self.assertEqual(breakdown.unscheduled_classes, 0)
-        self.assertEqual(best["L"][1], "LAB")
-        self.assertEqual(best["X"][1], "AULA")
+        self.assertEqual(best["L"][1], "PEQ")
+        self.assertEqual(best["X"][1], "GRANDE")
         self.assertGreaterEqual(solver.stats.room_reassignments, 1)
+
+    def test_lab_rooms_are_kept_for_classes_that_need_them(self) -> None:
+        data = {
+            "rooms": [{"id": "LAB", "capacity": 10, "room_type": "laboratorio"}, {"id": "AULA", "capacity": 30}],
+            "professors": [{"id": "P1"}],
+            "classes": [{"id": "X", "professor_id": "P1", "capacity": 5, "duration_hours": 1, "allowed_starts": [8]}],
+            "students": [{"id": "S", "requests": [{"class_id": "X", "priority": 1}]}],
+        }
+        sc, graph, cost = solvers_for(data)
+        best, _, _ = BacktrackingScheduler(sc.classes, sc.rooms, sc.professors, sc.grid, cost).solve()
+        self.assertEqual(best["X"][1], "AULA")
+        DSATURColoringSolver(graph, sc.rooms, sc.professors, sc.grid).solve()
+        self.assertEqual(sc.classes[0].assigned_room_id, "AULA")
 
     def test_brute_force_refuses_large_instances(self) -> None:
         sc, _, cost = solvers_for(_load(SCENARIOS / "A_factible.json"))
@@ -153,7 +167,7 @@ class ScenarioExpectationsTest(unittest.TestCase):
         self.assertEqual(result["metrics"]["scheduled_classes"], exp["best_scheduled_classes"])
 
     def test_auto_mode_uses_exact_search_for_small_instances(self) -> None:
-        _, result = self.run_scenario("demo", mode="auto")
+        _, result = self.run_scenario("inicial", mode="auto")
         self.assertEqual(result["phase1_details"]["mode"], "exacto")
 
 

@@ -42,7 +42,7 @@ def make_handler(scenarios_dir: Path):
                 return self._json({"error": "No encontrado"}, HTTPStatus.NOT_FOUND)
             if url.path == "/api/scenarios":
                 names = sorted(p.stem for p in scenarios_dir.glob("*.json"))
-                names.sort(key=lambda n: (n != "demo", n))
+                names.sort(key=lambda n: (n != "inicial", n))
                 return self._json({"scenarios": names, "modes": list(config.PHASE1_MODES),
                                    "default_mode": config.DEFAULT_PHASE1_MODE})
             if url.path == "/api/scenario":

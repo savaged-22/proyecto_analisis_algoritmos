@@ -1,6 +1,6 @@
 """Comparación del resultado con la salida esperada de cada escenario.
 
-Cada escenario de prueba (generator.py, demo.json) trae en "expected" lo que debe
+Cada escenario de prueba (generator.py, inicial.json) trae en "expected" lo que debe
 cumplir la salida. Este módulo revisa esas condiciones sobre el resultado del
 algoritmo y devuelve una lista de comprobaciones (nombre, ¿cumple?, detalle).
 

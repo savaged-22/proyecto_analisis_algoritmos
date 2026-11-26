@@ -1,14 +1,14 @@
 """CLI del sistema de asignación de horarios estudiantiles.
 
 Uso:
-    python main.py                                   # ejecuta el escenario de demostración
+    python main.py                                   # ejecuta el escenario inicial del documento
     python main.py -i data/scenarios/C_profesor.json -v
     python main.py --generate [--seed 2026]          # escribe el conjunto base (A) y los escenarios B-F
     python main.py --scale 20 50 100 200 --seeds 1 2 3
     python main.py --benchmark
-    python main.py --verify data/scenarios/demo.json data/outputs/output_demo.json
+    python main.py --verify data/scenarios/inicial.json data/outputs/output_inicial.json
     python main.py -i data/scenarios/F_imposible.json --modo exacto
-    python main.py --comparar -i data/scenarios/demo.json   # heurística vs backtracking vs exacto vs fuerza bruta
+    python main.py --comparar -i data/scenarios/pequeno.json   # heurística vs backtracking vs exacto vs fuerza bruta
 """
 
 import argparse
@@ -27,8 +27,8 @@ BASE_DIR = Path(__file__).resolve().parent
 SCENARIOS_DIR = BASE_DIR / "data" / "scenarios"
 SCALE_DIR = SCENARIOS_DIR / "escala"
 OUTPUTS_DIR = BASE_DIR / "data" / "outputs"
-DEFAULT_SCENARIO = SCENARIOS_DIR / "demo.json"
-STANDARD_SCENARIOS = ["demo", "A_factible", "B_salones", "C_profesor", "D_estudiantes", "E_capacidad", "F_imposible"]
+DEFAULT_SCENARIO = SCENARIOS_DIR / "inicial.json"
+STANDARD_SCENARIOS = ["inicial", "pequeno", "A_factible", "B_salones", "C_profesor", "D_estudiantes", "E_capacidad", "F_imposible"]
 
 
 def run_single_scenario(input_path: Path, output_path: Path, verbose: bool = False,
@@ -44,7 +44,7 @@ def run_single_scenario(input_path: Path, output_path: Path, verbose: bool = Fal
     print(f"[OK] Solución exportada a: {output_path}")
 
     if verbose and orchestrator.report:
-        report_data = orchestrator.report.to_full_dict()
+        report_data = orchestrator.result
         print("\n--- Programación de clases ---")
         for c in report_data["class_schedule"].values():
             print(f" * {c['class_id']}: {c['course_name']} | {c['time_str']} | {c['room_id']} | "
@@ -88,7 +88,7 @@ def run_benchmark() -> None:
 
 def run_comparison(input_path: Path) -> None:
     """Corre la fase 1 con cada estrategia sobre el mismo escenario y compara trabajo y resultado."""
-    print(f"\nComparación de estrategias de la fase 1 sobre {input_path.name}\n")
+    print(f"\nComparación de estrategias para ubicar clases sobre {input_path.name}\n")
     headers = ["Estrategia", "Nodos/hojas", "Podas", "Costo F1", "Clases", "Solicitudes", "Prioridad", "Óptimo", "ms F1"]
     widths = [13, 12, 8, 9, 7, 12, 10, 11, 9]
     print(" | ".join(h.ljust(w) for h, w in zip(headers, widths)))
@@ -190,7 +190,7 @@ def main() -> None:
         sys.stdout.reconfigure(encoding="utf-8")
 
     parser =argparse.ArgumentParser(description="Asignación de horarios estudiantiles")
-    parser.add_argument("-i", "--input", type=str, help="Escenario JSON de entrada (por defecto, demo.json).")
+    parser.add_argument("-i", "--input", type=str, help="Escenario JSON de entrada (por defecto, inicial.json).")
     parser.add_argument("-o", "--output", type=str, help="Archivo JSON de salida.")
     parser.add_argument("-g", "--generate", action="store_true", help="Genera el conjunto base (A) y los escenarios B-F.")
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED, help="Semilla para --generate.")

@@ -11,6 +11,7 @@ from .. import config
 from ..models.time_mask import mask_to_slots
 from ..solver.orchestrator import TimetableOrchestrator
 from ..verify.expectations import check_expectations
+from ..verify.verifier import RULES
 
 
 def build_trace(orch: TimetableOrchestrator, result: dict[str, Any]) -> dict[str, Any]:
@@ -73,6 +74,7 @@ def build_trace(orch: TimetableOrchestrator, result: dict[str, Any]) -> dict[str
             "total_requests": orch.scenario.total_requests,
         },
         "result": {k: result[k] for k in ("metrics", "verification", "class_schedule", "student_schedule",
-                                         "room_schedule", "solution")},
+                                         "room_schedule", "solution", "algorithms")},
+        "rules": RULES,
         "expectations": [c.to_dict() for c in check_expectations(orch.scenario, result)],
     }

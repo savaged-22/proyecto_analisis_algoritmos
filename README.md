@@ -40,7 +40,7 @@ src/
 ├── ui/                     interfaz web local (servidor con http.server, traza y página HTML/JS)
 └── solver/orchestrator.py  coordina carga, fase 1, fase 2, reporte y verificación
 tests/                      pruebas unitarias (python -m unittest discover -s tests -t .)
-data/scenarios/             demo y escenarios A-F
+data/scenarios/             escenario inicial, escenario pequeño y escenarios A-F
 ```
 
 ## Representación del tiempo
@@ -88,7 +88,7 @@ solo si algo cabe: el árbol ramifica por horas y a cada clase se le da el saló
 si ninguno queda libre, se reacomodan los salones de las clases ya ubicadas antes de descartar esa hora.
 
 ```bash
-python main.py --comparar -i data/scenarios/demo.json
+python main.py --comparar -i data/scenarios/pequeno.json
 ```
 
 ```text
@@ -158,7 +158,11 @@ el reparto de cupos entre estudiantes es una heurística.
 Cada archivo trae en `expected` la descripción del caso y lo que debe cumplir la salida;
 [`src/verify/expectations.py`](src/verify/expectations.py) lo comprueba sobre el resultado, y las pruebas
 lo exigen para la semilla publicada y para otras 15 semillas.
-`data/scenarios/demo.json` es un ejemplo pequeño escrito a mano para la demostración.
+`data/scenarios/inicial.json` es el escenario inicial del documento (20 estudiantes, 5 profesores,
+8 clases, 10 salones), escrito a mano para la demostración: tiene un cupo agotado, un cruce entre clases,
+un profesor con una sola hora para dos clases y una clase que exige laboratorio. Es el que se carga por
+defecto. `data/scenarios/pequeno.json` tiene los mismos casos con 6 clases y 3 salones, para poder
+compararlo con la fuerza bruta (en el inicial tendría más de 4 mil millones de combinaciones).
 
 `python main.py --scale 20 50 100 200 --seeds 1 2 3` genera escenarios de escalabilidad (el conjunto
 base con estudiantes, clases, profesores y salones en proporción) en `data/scenarios/escala/`.
@@ -184,7 +188,7 @@ El JSON de salida tiene:
 para revisar cualquier solución, incluso una escrita a mano:
 
 ```bash
-python main.py --verify data/scenarios/demo.json data/outputs/output_demo.json
+python main.py --verify data/scenarios/inicial.json data/outputs/output_inicial.json
 ```
 
 Revisar una solución cuesta O(M² + S·K²) (pares de clases y pares de clases de cada estudiante), es
@@ -216,7 +220,8 @@ en el tamaño más grande, como se espera de una búsqueda exponencial.
 
 | Escenario | Fuerza bruta (hojas) | Backtracking (nodos) | Ramificación y poda (nodos) |
 |---|---|---|---|
-| demo | 1.8·10⁴ | 189 | 3 |
+| pequeno | 1.8·10⁴ | 189 | 3 |
+| inicial | 4.2·10⁹ | 1 629 | 3 |
 | A_factible | 6.1·10¹¹ | 2 437 | 1 |
 | C_profesor | 8.1·10¹¹ | 1 267 | 25 |
 | F_imposible | 7.2·10¹⁴ | 107 439 | 437 |
@@ -241,11 +246,12 @@ a un cajón. Muestra el algoritmo paso a paso:
    solicitudes como `ALG:3, BD:1`). Al pulsar *Ejecutar* se recalcula todo; un dato inválido muestra
    el error del validador.
 2. **Grafo**: el grafo de conflictos coloreado con la hora que recibió cada clase.
-3. **Fase 1**: DSATUR paso a paso (clase elegida, horas evaluadas, costo de cruces, salón) con el
+3. **Ubicar clases**: DSATUR paso a paso (clase elegida, horas evaluadas, costo de cruces, salón) con el
    horario llenándose, y el árbol de ramificación y poda con el costo, la cota y las ramas podadas.
-4. **Fase 2**: la tabla `OPT[j]` de cada estudiante con `p(j)` y el cálculo de cada fila, el horario
+4. **Inscribir**: la tabla `OPT[j]` de cada estudiante con `p(j)` y el cálculo de cada fila, el horario
    resultante, los motivos de las pendientes y los cupos negados.
-5. **Resultados**: cobertura, prioridades por nivel, R1-R10 y la comparación con el resultado esperado.
+5. **Resultados**: cobertura, prioridades por nivel, cada restricción obligatoria (cumple / no cumple)
+   y qué algoritmo se usó en cada paso con su complejidad y lo medido en ese escenario.
 
 El diseño sale de un sistema de tokens en dos capas (`src/ui/static/estilos/tokens.css`): la paleta
 (los únicos colores, en azules) y los usos (texto, acento, bordes, estados). Las vistas solo usan los
@@ -256,10 +262,10 @@ texto y fondo cumpla WCAG AA.
 ## Uso
 
 ```bash
-python main.py                                       # escenario de demostración
+python main.py                                       # escenario inicial del documento
 python main.py -i data/scenarios/C_profesor.json -v  # un escenario, con la programación de cada clase
 python main.py --generate                            # escenarios A-F
-python main.py --benchmark                           # demo + A-F en una tabla
+python main.py --benchmark                           # inicial, pequeño y A-F en una tabla
 python main.py --verify ESCENARIO SALIDA             # verifica una solución exportada
 python main.py -i ESCENARIO --modo exacto            # elige la estrategia de la fase 1
 python main.py --comparar -i ESCENARIO               # compara las estrategias de la fase 1

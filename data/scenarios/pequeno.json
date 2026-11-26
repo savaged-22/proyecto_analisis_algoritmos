@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "name": "demo",
-    "description": "Ejemplo pequeño para la demostración: 6 clases, 3 profesores, 3 salones y 8 estudiantes. Incluye un cupo agotado, un cruce entre clases, un profesor con una sola hora para dos clases y una clase que exige laboratorio."
+    "name": "pequeno",
+    "description": "Escenario pequeño (6 clases, 3 profesores, 3 salones, 8 estudiantes) para comparar las estrategias con la fuerza bruta, que en el escenario inicial tendría demasiadas combinaciones. Tiene los mismos casos: un cupo agotado, un cruce entre clases, un profesor con una sola hora para dos clases y una clase que exige laboratorio."
   },
   "parameters": {"num_days": 1, "start_hour": 8, "end_hour": 18},
   "rooms": [

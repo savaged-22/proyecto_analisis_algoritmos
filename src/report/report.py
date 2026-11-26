@@ -51,6 +51,7 @@ class TimetableReport:
         self.timings = timings or {}
         self.scenario_name = scenario_name
         self.verification: VerificationResult | None = None
+        self.algorithms: list[dict[str, str]] = []   # algoritmo y complejidad de cada paso (complexity.py)
 
     # ==================================================================
     # Solución (lo que revisa el verificador)
@@ -296,6 +297,7 @@ class TimetableReport:
             "metrics": self.calculate_global_metrics(),
             "solution": self.build_solution(),
             "verification": self.verification.to_dict() if self.verification else None,
+            "algorithms": self.algorithms,
             "class_schedule": self.build_class_schedule_map(),
             "room_schedule": self.build_room_schedule_map(),
             "professor_schedule": self.build_professor_schedule_map(),
@@ -346,9 +348,14 @@ class TimetableReport:
             for rule, count in self.verification.count_by_rule().items():
                 if count:
                     lines.append(f"       {rule} {RULES[rule]}: {count}")
+        if self.algorithms:
+            lines += [sub, " [5] Algoritmos usados y complejidad"]
+            for a in self.algorithms:
+                lines.append(f"     {a['step']}: {a['algorithm']} · {a['complexity']}")
+                lines.append(f"       {a['instance']} · {a['measured']}")
         lines += [
             sub,
-            " [5] Recursos y tiempos",
+            " [6] Recursos y tiempos",
             f"     Ocupación de salones:     {m['avg_room_utilization_percent']}% promedio",
             f"     Carga de profesores:      {m['avg_professor_workload_percent']}% de su disponibilidad",
             f"     Fase 1: {t.get('phase1_ms', 0):.2f} ms · Fase 2: {t.get('phase2_ms', 0):.2f} ms"

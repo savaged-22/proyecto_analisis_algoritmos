@@ -1,4 +1,4 @@
-"""Escenarios A-F y demo: el resultado cumple lo esperado, con cualquier estrategia y con varias semillas."""
+"""Escenario inicial y escenarios A-F: el resultado cumple lo esperado, con cualquier estrategia y con varias semillas."""
 
 import unittest
 from pathlib import Path
@@ -8,7 +8,7 @@ from src.solver.orchestrator import TimetableOrchestrator
 from src.verify.expectations import check_expectations, failed_checks
 
 SCENARIOS = Path(__file__).resolve().parent.parent / "data" / "scenarios"
-STANDARD = ["demo", "A_factible", "B_salones", "C_profesor", "D_estudiantes", "E_capacidad", "F_imposible"]
+STANDARD = ["inicial", "pequeno", "A_factible", "B_salones", "C_profesor", "D_estudiantes", "E_capacidad", "F_imposible"]
 
 
 def run(source, mode: str):

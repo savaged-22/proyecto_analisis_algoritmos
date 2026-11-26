@@ -31,6 +31,12 @@ class Room:
             return False
         return True
 
+    def preference_key(self, min_capacity: int, required_type: str = "") -> tuple:
+        """Orden para escoger salón entre los que sirven: primero los no especializados si la clase no
+        pide un tipo (un laboratorio se guarda para las clases que lo exigen) y luego el más pequeño."""
+        uses_special_room = bool(self.room_type) and not required_type
+        return (uses_special_room, self.capacity - min_capacity, self.id)
+
     def is_free(self, time_mask: int) -> bool:
         """El salón está habilitado y desocupado en ese horario (R1, R8)."""
         is_allowed = (self.availability_mask & time_mask) == time_mask

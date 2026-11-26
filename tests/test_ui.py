@@ -44,23 +44,23 @@ class UiServerTest(unittest.TestCase):
         self.assertIn(b"app.js", body)
         status, body = self.get("/api/scenarios")
         names = json.loads(body)["scenarios"]
-        self.assertEqual(names[0], "demo")
+        self.assertEqual(names[0], "inicial")
         self.assertIn("F_imposible", names)
 
     def test_run_returns_full_trace(self) -> None:
-        scenario = json.loads((SCENARIOS / "demo.json").read_text(encoding="utf-8"))
+        scenario = json.loads((SCENARIOS / "inicial.json").read_text(encoding="utf-8"))
         status, trace = self.post({"scenario": scenario, "mode": "exacto"})
         self.assertEqual(status, 200)
         self.assertEqual(trace["result"]["metrics"]["violations_total"], 0)
-        self.assertEqual(len(trace["graph"]["nodes"]), 6)
+        self.assertEqual(len(trace["graph"]["nodes"]), 8)
         self.assertTrue(trace["phase1"]["dsatur_steps"][0]["candidates"])
         self.assertTrue(trace["phase1"]["search_trace"])
-        dp = trace["phase2"]["dp"]["E1"]
+        dp = trace["phase2"]["dp"]["E01"]
         self.assertEqual(len(dp["opt"]), len(dp["items"]) + 1)
         self.assertTrue(all(c["passed"] for c in trace["expectations"]))
 
     def test_invalid_scenario_returns_clear_error(self) -> None:
-        scenario = json.loads((SCENARIOS / "demo.json").read_text(encoding="utf-8"))
+        scenario = json.loads((SCENARIOS / "inicial.json").read_text(encoding="utf-8"))
         scenario["students"][0]["requests"][0]["priority"] = 5
         status, body = self.post({"scenario": scenario, "mode": "auto"})
         self.assertEqual(status, 400)
