@@ -1,0 +1,459 @@
+/* Marco de la interfaz: barra lateral fija en escritorio, cajón en pantallas angostas. Y lo propio de cada vista. */
+
+:root {
+  --ancho-lateral: 16rem;
+}
+
+.saltar {
+  position: absolute;
+  top: var(--esp-2);
+  left: var(--esp-2);
+  z-index: calc(var(--capa-dialogo) + 1);
+  padding: var(--esp-2) var(--esp-3);
+  background: var(--superficie);
+  border-radius: var(--radio);
+  transform: translateY(-200%);
+}
+
+.saltar:focus {
+  transform: none;
+}
+
+.marco {
+  display: grid;
+  grid-template-columns: var(--ancho-lateral) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+/* ---------- Barra lateral ---------- */
+
+.lateral {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-5);
+  height: 100vh;
+  padding: var(--esp-4) var(--esp-3);
+  overflow-y: auto;
+  background: var(--superficie);
+  border-right: 1px solid var(--borde);
+}
+
+.cabeza-lateral {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--esp-2);
+  padding: 0 var(--esp-1);
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
+  margin: 0;
+}
+
+.marca img {
+  flex: none;
+  width: 3.25rem;
+  height: auto;
+}
+
+.nombre-marca {
+  display: grid;
+  gap: 2px;
+}
+
+.nombre-marca strong {
+  font-size: var(--texto-xl);
+  font-weight: var(--peso-negrita);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.nombre-marca span {
+  color: var(--texto-tenue);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medio);
+  line-height: var(--interlineado-ajustado);
+}
+
+.grupo-lateral {
+  display: grid;
+  gap: var(--esp-2);
+}
+
+.titulo-grupo {
+  margin: 0;
+  padding: 0 var(--esp-2);
+  color: var(--texto-tenue);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semi);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.grupo-lateral .campo {
+  padding: 0 var(--esp-1);
+}
+
+.menu {
+  display: grid;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu a {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-2);
+  min-height: 2.125rem;
+  padding: 0 var(--esp-2);
+  border-radius: var(--radio);
+  color: var(--texto-suave);
+  font-weight: var(--peso-medio);
+  text-decoration: none;
+}
+
+.menu a:hover {
+  background: var(--superficie-hundida);
+  color: var(--texto);
+}
+
+/* La sección abierta: fondo de selección, texto en azul noche, negrita y la barra de la marca. Se distingue
+   por el peso y la barra, no solo por el color. */
+.menu a[aria-current='page'] {
+  position: relative;
+  background: var(--seleccion);
+  color: var(--texto);
+  font-weight: var(--peso-semi);
+}
+
+.menu a[aria-current='page']::before {
+  position: absolute;
+  inset-block: var(--esp-2);
+  inset-inline-start: 0;
+  width: 3px;
+  border-radius: 0 var(--radio-sm) var(--radio-sm) 0;
+  background: var(--marca);
+  content: '';
+}
+
+.pie-lateral {
+  display: grid;
+  gap: var(--esp-2);
+  margin-top: auto;
+  padding-top: var(--esp-3);
+  border-top: 1px solid var(--borde);
+}
+
+.pie-lateral .ayuda {
+  padding: 0 var(--esp-1);
+}
+
+/* ---------- Contenido ---------- */
+
+main {
+  width: 100%;
+  max-width: var(--ancho-contenido);
+  margin: 0 auto;
+  padding: var(--esp-6) var(--esp-8) var(--esp-12);
+}
+
+main:focus {
+  outline: none;
+}
+
+#estado-ejecucion {
+  margin-bottom: var(--esp-5);
+}
+
+#estado-ejecucion:empty {
+  display: none;
+}
+
+.vista[hidden] {
+  display: none;
+}
+
+/* ---------- Barra superior y cajón (pantallas angostas) ---------- */
+
+.barra-superior {
+  display: none;
+}
+
+@media (max-width: 63.99rem) {
+  .marco {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+  }
+
+  .barra-superior {
+    position: sticky;
+    top: 0;
+    z-index: var(--capa-barra);
+    display: flex;
+    align-items: center;
+    gap: var(--esp-2);
+    min-height: 3.25rem;
+    padding: var(--esp-2) var(--esp-3);
+    background: var(--superficie);
+    border-bottom: 1px solid var(--borde);
+  }
+
+  .titulo-barra {
+    overflow: hidden;
+    font-weight: var(--peso-semi);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .lateral {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: var(--capa-dialogo);
+    width: min(18rem, 85vw);
+    box-shadow: var(--sombra-2);
+    transform: translateX(-100%);
+    transition: transform var(--duracion) ease-out;
+    visibility: hidden;
+  }
+
+  .menu-abierto .lateral {
+    transform: none;
+    visibility: visible;
+  }
+
+  .fondo-cajon {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--capa-dialogo) - 1);
+    background: rgb(15 42 74 / 40%);
+  }
+
+  main {
+    padding: var(--esp-4) var(--esp-4) var(--esp-10);
+  }
+}
+
+@media (min-width: 64rem) {
+  .boton-cerrar-menu,
+  .fondo-cajon {
+    display: none;
+  }
+}
+
+/* ---------- Íconos ---------- */
+
+.icono-svg {
+  display: inline-flex;
+  flex: none;
+}
+
+/* ---------- Vista: datos ---------- */
+
+/* Horas y fórmulas: sin cortes de línea ni mayúsculas que cambien la notación. */
+.tabla td.hora,
+.tabla td.mono {
+  white-space: nowrap;
+}
+
+.tabla.formulas thead th {
+  text-transform: none;
+}
+
+.tabla td.accion {
+  width: 1%;
+  white-space: nowrap;
+}
+
+/* ---------- Vista: grafo (el SVG se dibuja igual; aquí solo su contenedor) ---------- */
+
+.lienzo-grafo {
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+}
+
+svg text {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2) var(--esp-4);
+  margin-top: var(--esp-3);
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+}
+
+.leyenda span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--esp-1);
+}
+
+.muestra {
+  display: inline-block;
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 1px solid rgb(15 42 74 / 15%);
+  border-radius: 3px;
+}
+
+/* ---------- Vista: fase 1 ---------- */
+
+.pasos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--esp-2);
+  margin-bottom: var(--esp-4);
+}
+
+.pasos .contador {
+  margin-left: var(--esp-2);
+  color: var(--texto-tenue);
+  font-size: var(--texto-sm);
+}
+
+.orden-seleccion li.actual {
+  font-weight: var(--peso-semi);
+}
+
+.orden-seleccion li.pendiente {
+  color: var(--texto-deshabilitado);
+}
+
+.horario {
+  overflow-x: auto;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+}
+
+.horario table {
+  width: 100%;
+  min-width: 40rem;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.horario th,
+.horario td {
+  height: 2.5rem;
+  padding: var(--esp-1);
+  border-right: 1px solid var(--borde);
+  border-bottom: 1px solid var(--borde);
+  text-align: center;
+}
+
+.horario thead th {
+  color: var(--texto-tenue);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semi);
+  font-variant-numeric: tabular-nums;
+}
+
+.horario tr:last-child td {
+  border-bottom: none;
+}
+
+.horario td.salon {
+  width: 8.5rem;
+  background: var(--superficie-resaltada);
+  font-weight: var(--peso-semi);
+  text-align: left;
+}
+
+.celda-clase {
+  padding: var(--esp-1);
+  border-radius: var(--radio-sm);
+  color: var(--paleta-azul-noche);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semi);
+}
+
+.celda-clase.nueva {
+  outline: 2px solid var(--texto);
+  outline-offset: 1px;
+}
+
+.celda-clase.bloqueada {
+  background: repeating-linear-gradient(45deg, var(--superficie-hundida), var(--superficie-hundida) 5px, var(--superficie) 5px, var(--superficie) 10px);
+  color: var(--texto-tenue);
+  font-weight: var(--peso-normal);
+}
+
+.arbol {
+  max-height: 30rem;
+  overflow: auto;
+  padding: var(--esp-2) var(--esp-3);
+  background: var(--superficie-resaltada);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  font-family: var(--fuente-mono);
+  font-size: var(--texto-sm);
+}
+
+.arbol div {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
+  padding: 2px 0;
+  white-space: nowrap;
+}
+
+.formula {
+  display: inline-block;
+  padding: var(--esp-1) var(--esp-2);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-sm);
+  color: var(--texto);
+  font-family: var(--fuente-mono);
+  font-size: var(--texto-sm);
+}
+
+/* ---------- Vista: fase 2 ---------- */
+
+.lista-estudiantes tbody tr {
+  cursor: pointer;
+}
+
+/* ---------- Vista: resultados ---------- */
+
+.niveles {
+  display: grid;
+  gap: var(--esp-3);
+}
+
+.nivel {
+  display: grid;
+  grid-template-columns: 6rem 4rem minmax(0, 1fr) 3.5rem;
+  gap: var(--esp-3);
+  align-items: center;
+}
+
+.nivel .numero {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Texto explicativo dentro de una tarjeta: párrafos separados, en el color del texto. */
+.texto-tarjeta {
+  display: grid;
+  gap: var(--esp-2);
+  color: var(--texto-suave);
+}
+
+/* La complejidad se lee en monoespaciada pero puede ocupar varias líneas. */
+.tabla td.complejidad {
+  max-width: 18rem;
+  font-family: var(--fuente-mono);
+  font-size: var(--texto-sm);
+}

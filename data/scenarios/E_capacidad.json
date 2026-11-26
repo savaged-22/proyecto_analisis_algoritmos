@@ -1,0 +1,735 @@
+{
+  "metadata": {
+    "name": "E_capacidad",
+    "seed": 2026,
+    "description": "Derivado del conjunto base (A_factible)."
+  },
+  "parameters": {
+    "num_days": 1,
+    "start_hour": 8,
+    "end_hour": 18
+  },
+  "rooms": [
+    {
+      "id": "AULA-01",
+      "name": "Salón 01",
+      "capacity": 20,
+      "availability": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ]
+    },
+    {
+      "id": "AULA-02",
+      "name": "Salón 02",
+      "capacity": 30,
+      "availability": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ]
+    },
+    {
+      "id": "AULA-03",
+      "name": "Salón 03",
+      "capacity": 40,
+      "availability": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ]
+    },
+    {
+      "id": "AULA-04",
+      "name": "Salón 04",
+      "capacity": 40,
+      "availability": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ]
+    },
+    {
+      "id": "AULA-05",
+      "name": "Salón 05",
+      "capacity": 20,
+      "availability": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ]
+    },
+    {
+      "id": "AULA-06",
+      "name": "Salón 06",
+      "capacity": 25,
+      "availability": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ]
+    },
+    {
+      "id": "AULA-07",
+      "name": "Salón 07",
+      "capacity": 40,
+      "availability": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ]
+    },
+    {
+      "id": "AULA-08",
+      "name": "Salón 08",
+      "capacity": 40,
+      "availability": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ]
+    },
+    {
+      "id": "AULA-09",
+      "name": "Salón 09",
+      "capacity": 40,
+      "availability": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ]
+    },
+    {
+      "id": "AULA-10",
+      "name": "Salón 10",
+      "capacity": 35,
+      "availability": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ]
+    }
+  ],
+  "professors": [
+    {
+      "id": "PROF-01",
+      "name": "Dr. Alan Turing",
+      "availability": [
+        11,
+        12,
+        14,
+        15,
+        16
+      ]
+    },
+    {
+      "id": "PROF-02",
+      "name": "Dra. Ada Lovelace",
+      "availability": [
+        8,
+        13,
+        14,
+        15,
+        17
+      ]
+    },
+    {
+      "id": "PROF-03",
+      "name": "Dr. John von Neumann",
+      "availability": [
+        11,
+        12,
+        14,
+        15,
+        17
+      ]
+    },
+    {
+      "id": "PROF-04",
+      "name": "Dra. Grace Hopper",
+      "availability": [
+        10,
+        11,
+        13,
+        14,
+        15,
+        16
+      ]
+    },
+    {
+      "id": "PROF-05",
+      "name": "Dr. Claude Shannon",
+      "availability": [
+        8,
+        9,
+        10,
+        12,
+        15,
+        17
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "id": "INF101-1",
+      "course_id": "INF101",
+      "course_name": "Algoritmos y Complejidad",
+      "professor_id": "PROF-01",
+      "capacity": 20,
+      "duration_hours": 2,
+      "allowed_starts": [
+        9,
+        15
+      ]
+    },
+    {
+      "id": "INF102-1",
+      "course_id": "INF102",
+      "course_name": "Estructuras de Datos Avanzadas",
+      "professor_id": "PROF-02",
+      "capacity": 20,
+      "duration_hours": 1,
+      "allowed_starts": [
+        13,
+        16
+      ]
+    },
+    {
+      "id": "INF103-1",
+      "course_id": "INF103",
+      "course_name": "Bases de Datos Relacionales",
+      "professor_id": "PROF-03",
+      "capacity": 25,
+      "duration_hours": 2,
+      "allowed_starts": [
+        11,
+        14,
+        15
+      ]
+    },
+    {
+      "id": "INF104-1",
+      "course_id": "INF104",
+      "course_name": "Laboratorio de Redes y Seguridad",
+      "professor_id": "PROF-04",
+      "capacity": 20,
+      "duration_hours": 1,
+      "allowed_starts": [
+        8,
+        9,
+        13,
+        14
+      ]
+    },
+    {
+      "id": "INF105-1",
+      "course_id": "INF105",
+      "course_name": "Sistemas Operativos Distribuidos",
+      "professor_id": "PROF-05",
+      "capacity": 20,
+      "duration_hours": 2,
+      "allowed_starts": [
+        8,
+        9,
+        13,
+        14
+      ]
+    },
+    {
+      "id": "INF106-1",
+      "course_id": "INF106",
+      "course_name": "Inteligencia Artificial y Grafos",
+      "professor_id": "PROF-01",
+      "capacity": 25,
+      "duration_hours": 2,
+      "allowed_starts": [
+        11,
+        15
+      ]
+    },
+    {
+      "id": "INF107-1",
+      "course_id": "INF107",
+      "course_name": "Optimización Combinatoria",
+      "professor_id": "PROF-02",
+      "capacity": 20,
+      "duration_hours": 1,
+      "allowed_starts": [
+        12,
+        14,
+        15,
+        16
+      ]
+    },
+    {
+      "id": "INF108-1",
+      "course_id": "INF108",
+      "course_name": "Taller de Desarrollo de Software",
+      "professor_id": "PROF-03",
+      "capacity": 7,
+      "duration_hours": 1,
+      "allowed_starts": [
+        8,
+        16,
+        17
+      ]
+    }
+  ],
+  "students": [
+    {
+      "id": "EST-001",
+      "name": "Estudiante 001",
+      "requests": [
+        {
+          "class_id": "INF108-1",
+          "priority": 3
+        },
+        {
+          "class_id": "INF101-1",
+          "priority": 2
+        },
+        {
+          "class_id": "INF106-1",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "id": "EST-002",
+      "name": "Estudiante 002",
+      "requests": [
+        {
+          "class_id": "INF101-1",
+          "priority": 1
+        },
+        {
+          "class_id": "INF108-1",
+          "priority": 3
+        },
+        {
+          "class_id": "INF104-1",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "id": "EST-003",
+      "name": "Estudiante 003",
+      "requests": [
+        {
+          "class_id": "INF105-1",
+          "priority": 3
+        },
+        {
+          "class_id": "INF106-1",
+          "priority": 3
+        },
+        {
+          "class_id": "INF107-1",
+          "priority": 1
+        },
+        {
+          "class_id": "INF102-1",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-004",
+      "name": "Estudiante 004",
+      "requests": [
+        {
+          "class_id": "INF108-1",
+          "priority": 1
+        },
+        {
+          "class_id": "INF105-1",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-005",
+      "name": "Estudiante 005",
+      "requests": [
+        {
+          "class_id": "INF107-1",
+          "priority": 2
+        },
+        {
+          "class_id": "INF104-1",
+          "priority": 1
+        },
+        {
+          "class_id": "INF102-1",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "id": "EST-006",
+      "name": "Estudiante 006",
+      "requests": [
+        {
+          "class_id": "INF106-1",
+          "priority": 2
+        },
+        {
+          "class_id": "INF107-1",
+          "priority": 1
+        },
+        {
+          "class_id": "INF108-1",
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "id": "EST-007",
+      "name": "Estudiante 007",
+      "requests": [
+        {
+          "class_id": "INF103-1",
+          "priority": 3
+        },
+        {
+          "class_id": "INF102-1",
+          "priority": 1
+        },
+        {
+          "class_id": "INF105-1",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-008",
+      "name": "Estudiante 008",
+      "requests": [
+        {
+          "class_id": "INF102-1",
+          "priority": 3
+        },
+        {
+          "class_id": "INF105-1",
+          "priority": 3
+        },
+        {
+          "class_id": "INF104-1",
+          "priority": 1
+        },
+        {
+          "class_id": "INF101-1",
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "id": "EST-009",
+      "name": "Estudiante 009",
+      "requests": [
+        {
+          "class_id": "INF104-1",
+          "priority": 1
+        },
+        {
+          "class_id": "INF108-1",
+          "priority": 3
+        },
+        {
+          "class_id": "INF106-1",
+          "priority": 1
+        },
+        {
+          "class_id": "INF101-1",
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "id": "EST-010",
+      "name": "Estudiante 010",
+      "requests": [
+        {
+          "class_id": "INF107-1",
+          "priority": 1
+        },
+        {
+          "class_id": "INF105-1",
+          "priority": 2
+        },
+        {
+          "class_id": "INF104-1",
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "id": "EST-011",
+      "name": "Estudiante 011",
+      "requests": [
+        {
+          "class_id": "INF107-1",
+          "priority": 1
+        },
+        {
+          "class_id": "INF103-1",
+          "priority": 3
+        },
+        {
+          "class_id": "INF104-1",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-012",
+      "name": "Estudiante 012",
+      "requests": [
+        {
+          "class_id": "INF102-1",
+          "priority": 2
+        },
+        {
+          "class_id": "INF107-1",
+          "priority": 3
+        },
+        {
+          "class_id": "INF108-1",
+          "priority": 3
+        }
+      ]
+    },
+    {
+      "id": "EST-013",
+      "name": "Estudiante 013",
+      "requests": [
+        {
+          "class_id": "INF101-1",
+          "priority": 3
+        },
+        {
+          "class_id": "INF103-1",
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "id": "EST-014",
+      "name": "Estudiante 014",
+      "requests": [
+        {
+          "class_id": "INF105-1",
+          "priority": 1
+        },
+        {
+          "class_id": "INF106-1",
+          "priority": 1
+        },
+        {
+          "class_id": "INF108-1",
+          "priority": 3
+        },
+        {
+          "class_id": "INF102-1",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "id": "EST-015",
+      "name": "Estudiante 015",
+      "requests": [
+        {
+          "class_id": "INF103-1",
+          "priority": 2
+        },
+        {
+          "class_id": "INF107-1",
+          "priority": 1
+        },
+        {
+          "class_id": "INF108-1",
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "id": "EST-016",
+      "name": "Estudiante 016",
+      "requests": [
+        {
+          "class_id": "INF102-1",
+          "priority": 1
+        },
+        {
+          "class_id": "INF101-1",
+          "priority": 1
+        },
+        {
+          "class_id": "INF104-1",
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "id": "EST-017",
+      "name": "Estudiante 017",
+      "requests": [
+        {
+          "class_id": "INF102-1",
+          "priority": 2
+        },
+        {
+          "class_id": "INF106-1",
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "id": "EST-018",
+      "name": "Estudiante 018",
+      "requests": [
+        {
+          "class_id": "INF104-1",
+          "priority": 2
+        },
+        {
+          "class_id": "INF105-1",
+          "priority": 2
+        },
+        {
+          "class_id": "INF108-1",
+          "priority": 2
+        },
+        {
+          "class_id": "INF106-1",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "id": "EST-019",
+      "name": "Estudiante 019",
+      "requests": [
+        {
+          "class_id": "INF107-1",
+          "priority": 2
+        },
+        {
+          "class_id": "INF103-1",
+          "priority": 2
+        },
+        {
+          "class_id": "INF105-1",
+          "priority": 3
+        },
+        {
+          "class_id": "INF104-1",
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "id": "EST-020",
+      "name": "Estudiante 020",
+      "requests": [
+        {
+          "class_id": "INF106-1",
+          "priority": 1
+        },
+        {
+          "class_id": "INF102-1",
+          "priority": 1
+        },
+        {
+          "class_id": "INF105-1",
+          "priority": 3
+        },
+        {
+          "class_id": "INF101-1",
+          "priority": 2
+        }
+      ]
+    }
+  ],
+  "expected": {
+    "description": "INF108-1 tiene 9 solicitudes y su cupo baja a 7. Sin otros conflictos, exactamente dos solicitudes de esa clase quedan pendientes por 'cupo agotado', y ninguna clase supera su cupo.",
+    "violations": 0,
+    "class_id": "INF108-1",
+    "demand": 9,
+    "capacity": 7,
+    "best_pending_for_capacity": 2
+  }
+}

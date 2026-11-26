@@ -1,187 +1,275 @@
-# Sistema de Programación Académica Universitaria (UCTP)
-### Grafo de Conflictos + Coloración DSATUR Ponderada + Red de Flujo de Costo Mínimo (MCMF)
+# Algoritmo de asignación de horarios estudiantiles
 
-Este proyecto implementa una solución completa, rigurosa y de alto rendimiento en **Python 3.12** (utilizando exclusivamente la biblioteca estándar) para el **Problema de Horarios de Cursos Universitarios (University Course Timetabling Problem - UCTP)** y la **Asignación Óptima de Matrícula Estudiantil**.
+Proyecto de Análisis de Algoritmos (Pontificia Universidad Javeriana, 2026-30).
 
-El sistema desacopla el problema combinatorial NP-Hard en dos fases secuenciales complementarias:
-1. **Fase 1: Programación Espacio-Temporal de Clases (Timetabling)** mediante un **Grafo No Dirigido Ponderado de Conflictos** resuelto con el algoritmo de coloración heurística **DSATUR** (Degree of Saturation, Brélaz 1979) adaptado a listas de pares factibles $(h, s)$ (horario, salón).
-2. **Fase 2: Asignación de Cupos Estudiantiles (Student Enrollment)** modelada como una **Red de Flujo de Costo Mínimo (Min-Cost Max-Flow - MCMF)** con búsqueda de caminos de costo mínimo (Successive Shortest Path / SPFA) y restricciones de compatibilidad temporal por estudiante ($O(1)$ mediante bitmasks).
+El sistema recibe estudiantes con sus solicitudes de clases (con prioridad de 1 a 3), clases con su
+profesor, duración, cupo y horas de inicio permitidas, profesores y salones con su disponibilidad, y
+produce:
 
----
+- la programación de cada clase (hora y salón) y las clases que no se pudieron programar,
+- el horario de cada estudiante y sus solicitudes pendientes,
+- un informe que permite verificar que no se incumple ninguna restricción obligatoria.
 
-## 1. Estructura Exacta del Proyecto
+Python 3.12, solo biblioteca estándar.
 
-El proyecto respeta estrictamente la siguiente distribución de archivos y directorios:
+## Estructura
 
 ```text
-proyecto_analisis_algoritmos/
-├── main.py                      # CLI, lectura/escritura JSON y ejecución principal
-├── requirements.txt             # Dependencias del proyecto (librería estándar de Python)
-├── README.md                    # Documentación de uso, arquitectura y análisis de complejidad
+main.py                     CLI: ejecutar, generar escenarios, benchmark
+src/
+├── config.py               reglas del problema (jornada, escala de prioridades, peso del objetivo)
+├── models/                 entidades y representación del tiempo con bitmasks (TimeGrid)
 ├── data/
-│   ├── scenarios/               # Archivos JSON de entrada (escenarios de prueba)
-│   └── outputs/                 # Archivos JSON de salida con programación e informe
-└── src/
-    ├── __init__.py
-    ├── models/
-    │   ├── __init__.py
-    │   ├── student.py           # Entidades Student y Request
-    │   ├── professor.py         # Entidad Professor
-    │   ├── course_class.py      # Entidad CourseClass
-    │   ├── room.py              # Entidad Room
-    │   └── time_mask.py         # Utilidades de bitmasks (8:00-18:00, duración 1-2h)
-    ├── graph/
-    │   ├── __init__.py
-    │   ├── conflict_graph.py    # Grafo no dirigido ponderado de conflictos entre clases
-    │   ├── dsatur_coloring.py   # Fase 1: Coloración DSATUR ponderada con listas (h, s)
-    │   ├── min_cost_flow.py     # Fase 2: Red de flujo de costo mínimo para inscripciones
-    │   └── report.py            # Hashmaps de salida, horarios individuales e informe de métricas
-    └── solver/
-        ├── __init__.py
-        └── orchestrator.py      # Orquestador único que coordina Fase 1 + Fase 2 + reporte
+│   ├── scenario.py         lectura y validación de escenarios JSON
+│   └── generator.py        generador con semilla: conjunto base, escenarios B-F, escalabilidad
+├── graph/conflict_graph.py  grafo de conflictos entre clases
+├── phase1/                 fase 1: ubicar clases en (hora, salón)
+│   ├── cost.py             costo de una programación (lo que se minimiza)
+│   ├── dsatur.py           heurística DSATUR
+│   ├── backtracking.py     búsqueda exacta: backtracking con ramificación y poda
+│   ├── brute_force.py      fuerza bruta (solo instancias diminutas)
+│   └── scheduler.py        elige la estrategia y aplica el resultado
+├── phase2/
+│   ├── interval_dp.py      programación dinámica por estudiante (intervalos ponderados)
+│   └── enrollment.py       fase 2: reparto de cupos entre estudiantes
+├── report/report.py        solución, horarios por clase/salón/profesor/estudiante, motivos y métricas
+├── verify/
+│   ├── verifier.py         verificador independiente de R1-R10
+│   └── expectations.py     compara el resultado con lo esperado de cada escenario
+├── analysis/experiments.py escalabilidad, podas y aproximación
+├── ui/                     interfaz web local (servidor con http.server, traza y página HTML/JS)
+└── solver/orchestrator.py  coordina carga, fase 1, fase 2, reporte y verificación
+tests/                      pruebas unitarias (python -m unittest discover -s tests -t .)
+data/scenarios/             escenario inicial, escenario pequeño y escenarios A-F
 ```
 
----
+## Representación del tiempo
 
-## 2. Modelado Matemático y Representación Temporal por Bitmasks
+La jornada (por defecto un día de 8:00 a 18:00) se divide en bloques de una hora, y cada bloque es un
+bit de un entero. Una clase de dos horas que inicia a las 10:00 ocupa los bits de 10:00 y 11:00:
 
-### 2.1 Representación de Horarios mediante Bitmasks de 50 bits
-La semana académica consta de 5 días lectivos ($d \in [0, 4]$, Lunes a Viernes) y 10 slots horarios diarios ($h \in [8, 17]$):
-$$\text{Slot Index} = d \times 10 + (h - 8), \quad \text{donde } 0 \le \text{Slot Index} < 50$$
-
-Cada estado temporal se representa con un entero sin signo de 64 bits (`int` en Python):
-- **Duración 1h**: Máscara con 1 bit activo: $M = 1 \ll \text{slot}$.
-- **Duración 2h**: Máscara con 2 bits contiguos: $M = (1 \ll \text{slot}) \mid (1 \ll (\text{slot} + 1))$, con la restricción $h \le 16$ para no cruzar el fin de jornada lectiva.
-- **Detección de Colisión Temporal en $O(1)$**:
-  $$\text{Overlap}(M_1, M_2) \iff (M_1 \ \& \ M_2) \ne 0$$
-- **Verificación de Disponibilidad en $O(1)$**:
-  $$\text{IsAvailable}(M_{\text{agenda}}, M_{\text{clase}}) \iff (M_{\text{agenda}} \ \& \ M_{\text{clase}}) == M_{\text{clase}}$$
-
----
-
-## 3. Arquitectura y Fases Algorítmicas
-
-```mermaid
-flowchart TD
-    JSON["Entrada JSON (Escenario)"] --> ORCH["TimetableOrchestrator"]
-    ORCH --> G_CONF["Construcción de Grafo de Conflictos (conflict_graph.py)"]
-    G_CONF --> FASE1["Fase 1: DSATUR Ponderado con Listas (h, s) (dsatur_coloring.py)"]
-    FASE1 --> VAL1["Validación de Invariantes Duras (Cero choques docente/aula)"]
-    VAL1 --> FASE2["Fase 2: Red Min-Cost Max-Flow (min_cost_flow.py)"]
-    FASE2 --> VAL2["Validación de Asignaciones (Capacidades y Cero choques de alumno)"]
-    VAL2 --> REP["Generador de Hashmaps y Reportes (report.py)"]
-    REP --> JSON_OUT["data/outputs/schedule.json"]
-    REP --> CLI["Consola CLI"]
+```text
+se_cruzan(a, b)  <=>  (a & b) != 0          O(1)
+cabe_en(disp, a) <=>  (disp & a) == a       O(1)
 ```
 
-### 3.1 Grafo de Conflictos (`conflict_graph.py`)
-Sea $V = \{C_1, C_2, \dots, C_M\}$ el conjunto de clases a programar. El grafo $G = (V, E, w)$ contiene dos tipos de aristas:
-1. **Conflictos Duros ($is\_hard = \text{True}, w = 10^6$)**:
-   - Mismo docente: $C_i.\text{prof\_id} == C_j.\text{prof\_id}$.
-   - Secciones de la misma materia: $C_i.\text{course\_id} == C_j.\text{course\_id}$ (permite diversificar horarios).
-2. **Conflictos Blandos ($is\_hard = \text{False}, w > 0$)**:
-   - Demanda compartida por estudiantes: Si un estudiante $s$ solicita el curso $A$ y el curso $B$, las secciones de $A$ y $B$ reciben una arista ponderada por:
-     $$w_s(A, B) = \text{prioridad}(s) \times \frac{10}{\text{prio}(r_A) + \text{prio}(r_B)}$$
-     El peso total de la arista es la suma acumulada sobre todos los estudiantes interesados.
+Una clase que termina a las 10:00 y otra que inicia a las 10:00 no comparten bits, así que no se cruzan.
+El número de días es un parámetro del escenario (`parameters.num_days`).
 
-### 3.2 Fase 1: Coloración DSATUR Ponderada (`dsatur_coloring.py`)
-El algoritmo de Brélaz selecciona iterativamente la clase no programada $u$ más restringida:
-1. **Grado de Saturación**: $\rho(u) = |\{ \text{slot}(v) : v \in \text{vecinos}(u) \text{ ya programados} \}|$.
-2. **Desempate**: Mayor grado ponderado $\sum_{v} w(u, v) \to$ Mayor duración ($2h > 1h$) $\to$ Mayor capacidad.
-3. **Selección del par $(h, s)$**:
-   Para la clase $u^*$, se evalúan todos los pares de horario $h$ y aula $s$ que cumplan:
-   - Aula libre y con capacidad suficiente ($s.\text{cap} \ge u^*.\text{cap}$) y tipo coincidente (teoría vs laboratorio).
-   - Docente libre en el horario $h$ y dentro de su cuota de horas semanales.
-   - Cero solapamiento con vecinos con conflicto duro.
-   - **Minimización de costo**:
-     $$\min_{(h, s)} \left[ \sum_{v \in \text{vecinos}(u^*), \text{solapan}(h, v)} w(u^*, v) + 0.01 \times (s.\text{capacity} - u^*.\text{capacity}) \right]$$
+## El algoritmo
 
-### 3.3 Fase 2: Red de Flujo de Costo Mínimo (MCMF) (`min_cost_flow.py`)
-Una vez fijados los horarios y aulas en la Fase 1, la asignación de estudiantes a secciones se formula como una red de flujo dirigida residual:
+El problema se resuelve en dos fases. El grafo de conflictos se usa en las dos, de forma distinta:
 
-- **Estructura de la Red**:
-  - Nodo Fuente ($\text{SRC}$) y Sumidero ($\text{SNK}$).
-  - Nodos Estudiante $\text{STU}_s$, Nodos Solicitud $\text{REQ}_{s, c}$, Nodos Clase $\text{CLS}_k$.
-- **Aristas y Capacidades**:
-  - $\text{SRC} \to \text{STU}_s$: $\text{Capacidad} = |\text{requests}(s)|$, Costo = 0.
-  - $\text{STU}_s \to \text{REQ}_{s, c}$: $\text{Capacidad} = 1$, Costo = 0 (máximo 1 sección por curso).
-  - $\text{REQ}_{s, c} \to \text{CLS}_k$: $\text{Capacidad} = 1$,
-    $$\text{Costo} = 100 + 30 \times (\text{prio}(req) - 1) - 15 \times (\text{gpa} - 1.0) - (20 \text{ si docente preferido else } 0)$$
-  - $\text{CLS}_k \to \text{SNK}$: $\text{Capacidad} = \text{capacidad}(k)$, Costo = 0.
-- **Control de Conflictos de Horario**:
-  Mediante **Successive Shortest Path (SPFA)**, cada aumento de 1 unidad de flujo verifica que la clase candidata $k$ no solape la agenda acumulada del estudiante:
-  $$(\text{schedule\_mask}_s \ \& \ \text{time\_mask}_k) == 0$$
-  Esto garantiza que el 100% de los estudiantes queden matriculados sin choques de horario.
+```text
+Escenario ─► Grafo de conflictos ─► Fase 1: ubicar clases ─► Fase 2: inscribir estudiantes ─► Verificador ─► Informe
+             (clases = vértices)     (colorear el grafo:      (en el subgrafo de cada estudiante,
+                                      horas = colores)         DP sobre intervalos)
+```
 
----
+**Fase 1** decide la hora y el salón de cada clase. Ubicar las clases sin cruces equivale a colorear el
+grafo de conflictos usando las horas como colores; por eso esta fase es la parte difícil del problema.
+Se minimiza un costo que estima la prioridad que se perdería:
 
-## 4. Análisis Asintótico de Complejidad
+```text
+costo = BASE · (clases sin programar) + prioridad de las no programadas + Σ cruces entre clases pedidas por un mismo estudiante
+```
 
-Sean:
-- $M$: Número de clases / secciones ($M \approx 10 - 70$).
-- $S$: Número de estudiantes ($S \approx 25 - 200$).
-- $R$: Número promedio de solicitudes por estudiante ($R \approx 3 - 5$).
-- $H$: Número de slots temporales candidatos ($H \le 50$).
-- $A$: Número de salones disponibles ($A \approx 5 - 20$).
-- $F$: Unidades de flujo total asignado ($F \le S \times R$).
+Hay cuatro estrategias (`--modo`):
 
-| Componente | Complejidad Temporal | Complejidad Espacial | Justificación |
+| Estrategia | Qué hace | Costo |
+|---|---|---|
+| `heuristica` | DSATUR: programa primero la clase con menos horas disponibles y le da la hora y el salón más baratos. No retrocede. | O(M²·H + M·H·(d + A)) |
+| `backtracking` | Recorre el árbol de decisiones (hora de cada clase, o sin programar) y descarta una rama apenas incumple una restricción. | O(Π (H_i + 1)) en el peor caso |
+| `exacto` | Lo anterior más ramificación y poda: cota inferior de lo que falta y la solución de DSATUR como mejor conocida. Da el óptimo. | igual en el peor caso, mucho menos en la práctica |
+| `fuerza_bruta` | Prueba todas las combinaciones (hora, salón) de todas las clases. Solo para instancias diminutas. | Π (H_i · A + 1) hojas |
+
+`auto` (por defecto) usa `exacto` hasta 12 clases y `heuristica` con más. Los salones no cambian el costo,
+solo si algo cabe: el árbol ramifica por horas y a cada clase se le da el salón más pequeño que le sirve;
+si ninguno queda libre, se reacomodan los salones de las clases ya ubicadas antes de descartar esa hora.
+
+```bash
+python main.py --comparar -i data/scenarios/pequeno.json
+```
+
+```text
+Estrategia    | Nodos/hojas  | Podas | Costo F1 | Clases | Solicitudes | Óptimo
+heuristica    | -            | -     | 75.0     | 5/6    | 14/21       | -
+backtracking  | 189          | 0     | 75.0     | 5/6    | 14/21       | sí
+exacto        | 3            | 2     | 75.0     | 5/6    | 14/21       | sí
+fuerza_bruta  | 17920        | -     | 75.0     | 5/6    | 14/21       | sí
+```
+
+**Fase 2** inscribe a los estudiantes cuando las horas ya están fijas. Para un estudiante, sus clases
+pedidas son intervalos en la línea del tiempo; dos se cruzan si se solapan. Ese subgrafo del grafo de
+conflictos es un *grafo de intervalos*, y en él escoger el conjunto de clases sin cruces de mayor peso
+(conjunto independiente de peso máximo, NP-difícil en un grafo cualquiera) se resuelve exacto con
+programación dinámica:
+
+```text
+ordenar por hora de fin                      Θ(n log n)    T(n) = 2T(n/2) + Θ(n)
+p(j) = clases que terminan antes de que j empiece, por búsqueda binaria
+                                             Θ(log n) c/u  T(n) = T(n/2) + Θ(1)
+OPT[j] = max(OPT[j-1], w_j + OPT[p(j)])      Θ(n)
+```
+
+El peso de cada solicitud es `w = prioridad · (N + 1) + 1` (N = total de solicitudes), así que la DP
+maximiza la suma de prioridades y, a igual suma, el número de clases.
+
+Cuando una clase recibe más estudiantes que su cupo real `min(cupo, capacidad del salón)`, se queda con
+los de mayor prioridad (a igual prioridad, el primero de la entrada); los demás vuelven a correr su DP
+sin esa clase, hasta que nadie exceda cupos. Al final, los cupos que quedaron libres se ofrecen de nuevo
+a quien mejore con ellos. El horario de cada estudiante es óptimo para las clases que tuvo disponibles;
+el reparto de cupos entre estudiantes es una heurística.
+
+## Formato de un escenario
+
+```json
+{
+  "parameters": {"num_days": 1, "start_hour": 8, "end_hour": 18},
+  "rooms":      [{"id": "AULA-01", "capacity": 30, "availability": [8, 9, 10], "room_type": "laboratorio"}],
+  "professors": [{"id": "PROF-01", "name": "...", "availability": [8, 9, 10, 11]}],
+  "classes":    [{"id": "ALG", "professor_id": "PROF-01", "capacity": 25,
+                  "duration_hours": 2, "allowed_starts": [8, 10]}],
+  "students":   [{"id": "E1", "requests": [{"class_id": "ALG", "priority": 3}]}]
+}
+```
+
+- `availability` y `allowed_starts` son horas de inicio de bloques. Una lista aplica a todos los días;
+  con varios días también se acepta `{"Lunes": [8, 9], "Martes": [14]}`. Si se omiten, se asume toda la jornada.
+- La prioridad va de 1 a 3, y **3 es la más alta**.
+- Los estudiantes de cada clase no se escriben en la entrada: se deducen de las solicitudes.
+- `room_type`, `required_room_type` y `max_hours` son opcionales.
+- Al cargar, el escenario se valida (identificadores repetidos, clases o profesores inexistentes,
+  prioridades fuera de escala, horas que terminan fuera de la jornada) con mensajes claros.
+
+## Datos de prueba
+
+`python main.py --generate` escribe, con una semilla fija:
+
+| Escenario | Qué prueba |
+|---|---|
+| `A_factible` | Conjunto base (20 estudiantes, 5 profesores, 8 clases, 10 salones). Se construye ubicando primero las clases sin conflictos y generando después las solicitudes desde esa programación, así que todas se pueden atender. Trae la solución de referencia. |
+| `B_salones` | Tres clases solo pueden iniciar a la misma hora y solo quedan dos salones libres. |
+| `C_profesor` | Un profesor tiene una sola hora disponible para dos de sus clases. |
+| `D_estudiantes` | Estudiantes que piden dos clases que forzosamente se cruzan, con prioridades distintas. |
+| `E_capacidad` | Una clase con dos cupos menos que solicitudes. |
+| `F_imposible` | Un profesor con seis clases de dos horas en una jornada de diez horas. |
+
+Cada archivo trae en `expected` la descripción del caso y lo que debe cumplir la salida;
+[`src/verify/expectations.py`](src/verify/expectations.py) lo comprueba sobre el resultado, y las pruebas
+lo exigen para la semilla publicada y para otras 15 semillas.
+`data/scenarios/inicial.json` es el escenario inicial del documento (20 estudiantes, 5 profesores,
+8 clases, 10 salones), escrito a mano para la demostración: tiene un cupo agotado, un cruce entre clases,
+un profesor con una sola hora para dos clases y una clase que exige laboratorio. Es el que se carga por
+defecto. `data/scenarios/pequeno.json` tiene los mismos casos con 6 clases y 3 salones, para poder
+compararlo con la fuerza bruta (en el inicial tendría más de 4 mil millones de combinaciones).
+
+`python main.py --scale 20 50 100 200 --seeds 1 2 3` genera escenarios de escalabilidad (el conjunto
+base con estudiantes, clases, profesores y salones en proporción) en `data/scenarios/escala/`.
+
+## Salida e informe
+
+El JSON de salida tiene:
+
+- `solution`: la programación en un formato simple (clase, día, hora de inicio y fin, salón, estudiantes)
+  y la lista de clases sin programar. Es lo único que lee el verificador.
+- `student_schedule`: por estudiante, las clases que logró cursar y cada solicitud pendiente con su
+  motivo: `clase no programada`, `fuera de la disponibilidad del estudiante`, `cruce con X (prioridad p)`
+  o `cupo agotado`.
+- `metrics`: solicitudes recibidas, atendidas y pendientes, cobertura, satisfacción de prioridades
+  (suma atendida / suma recibida) global y por nivel, pendientes por motivo, incumplimientos de R1-R10,
+  uso de salones y profesores, y tiempos.
+- `verification`: el detalle de cada incumplimiento encontrado.
+
+## Verificador independiente
+
+[`src/verify/verifier.py`](src/verify/verifier.py) revisa R1-R10 leyendo solo el escenario y la sección
+`solution`: recalcula cada horario desde la hora de inicio y fin, sin usar nada del algoritmo. Sirve
+para revisar cualquier solución, incluso una escrita a mano:
+
+```bash
+python main.py --verify data/scenarios/inicial.json data/outputs/output_inicial.json
+```
+
+Revisar una solución cuesta O(M² + S·K²) (pares de clases y pares de clases de cada estudiante), es
+decir, tiempo polinomial.
+
+## Resultados
+
+`python main.py --experimentos` corre los tres experimentos y guarda CSV y JSON en
+`data/outputs/experimentos/`. Valores medidos en un portátil con Python 3.12.
+
+**Escalabilidad** (escenario A en proporción, promedio de 3 semillas, 0 incumplimientos en todos):
+
+| Modo | Estudiantes | Clases | Cobertura | Fase 1 | Fase 2 | Total |
+|---|---|---|---|---|---|---|
+| heurística | 20 | 8 | 99.3 % | 0.9 ms | 1.1 ms | 2.1 ms |
+| heurística | 50 | 20 | 97.7 % | 3.8 ms | 2.6 ms | 6.8 ms |
+| heurística | 100 | 40 | 99.9 % | 14.3 ms | 6.0 ms | 21.4 ms |
+| heurística | 200 | 80 | 99.3 % | 59.4 ms | 15.3 ms | 76.6 ms |
+| exacto | 20 | 8 | 100 % | 3.2 ms | 1.6 ms | 5.0 ms |
+| exacto | 50 | 20 | 100 % | 22.0 ms | 3.5 ms | 26.1 ms |
+| exacto | 100 | 40 | 100 % | 41.3 ms | 7.3 ms | 49.7 ms |
+| exacto | 200 | 80 | 100 % | 2630 ms | 20.1 ms | 2653 ms |
+
+Exponente empírico del tiempo (pendiente en escala log-log, t ≈ c·n^k): heurística, fase 1 k ≈ 1.8
+(DSATUR es O(M²·H)) y fase 2 k ≈ 1.2 (O(S·R log R)); con el exacto la fase 1 sube a k ≈ 2.7 y se dispara
+en el tamaño más grande, como se espera de una búsqueda exponencial.
+
+**Podas** (trabajo de cada estrategia de la fase 1 para el mismo óptimo):
+
+| Escenario | Fuerza bruta (hojas) | Backtracking (nodos) | Ramificación y poda (nodos) |
 |---|---|---|---|
-| **Máscaras Bitmask** | $O(1)$ | $O(1)$ | Operaciones a nivel de bit (`&`, `\|`, `~`) en registros de 64 bits. |
-| **Construcción Grafo Conflictos** | $O(M^2 + S \cdot R^2)$ | $O(M^2)$ | Parejas de materias por estudiante y evaluación cuadrática de clases. |
-| **Fase 1: DSATUR Ponderado** | $O(M^2 \cdot (H \cdot A))$ | $O(M^2 + H \cdot A)$ | $M$ selecciones de clase, cada una evaluando a lo sumo $H \cdot A$ pares $(h, s)$. |
-| **Fase 2: Red MCMF (SPFA)** | $O(F \cdot \|V_F\| \cdot \|E_F\|)$ | $O(\|V_F\| + \|E_F\|)$ | Red con $\|V_F\| \approx 2 + S + S \cdot R + M$, $\|E_F\| \approx S + S \cdot R + S \cdot R \cdot \frac{M}{\text{cursos}} + M$. |
-| **Generación de Reportes** | $O(M + S \cdot R + A)$ | $O(M + S + A)$ | Recorrido lineal de hashmaps y serialización JSON. |
+| pequeno | 1.8·10⁴ | 189 | 3 |
+| inicial | 4.2·10⁹ | 1 629 | 3 |
+| A_factible | 6.1·10¹¹ | 2 437 | 1 |
+| C_profesor | 8.1·10¹¹ | 1 267 | 25 |
+| F_imposible | 7.2·10¹⁴ | 107 439 | 437 |
 
-### Escalabilidad hacia 200 estudiantes:
-Para un escenario de 200 estudiantes ($S = 200$, $M = 52$, $A = 16$):
-- Nodos en la red: $\|V_F\| \approx 1060$.
-- Aristas en la red: $\|E_F\| \approx 2600$.
-- El algoritmo ejecuta en **~1.6 segundos** en CPU estándar, confirmando su idoneidad para entornos universitarios reales.
+**Aproximación** (escenarios con conflictos inevitables, 20 y 50 estudiantes, 5 semillas cada uno):
+la heurística atiende en promedio el 98.9 % de la prioridad que atiende el óptimo, 94.8 % en el peor caso,
+y llega al óptimo en el 60 % de las instancias. La coloración de grafos no admite una garantía de
+aproximación de factor constante, por eso la calidad de la heurística se mide empíricamente.
 
----
+## Interfaz
 
-## 5. Instrucciones de Uso y CLI
-
-El sistema no requiere bibliotecas externas (`pip install` no es necesario). Requiere **Python 3.12+**.
-
-### 5.1 Ejecutar el Escenario por Defecto
 ```bash
-python main.py
+python main.py --ui            # abre http://127.0.0.1:8000 en el navegador
 ```
 
-### 5.2 Procesar un Escenario Específico con Detalle Verbose
+Funciona solo con la biblioteca estándar (no hay que instalar nada) y solo escucha en `127.0.0.1`.
+La barra lateral tiene el escenario, la estrategia de la fase 1, el botón *Ejecutar* y las cinco
+secciones del algoritmo (cada una con su dirección, `#/datos`, `#/grafo`…); en pantallas angostas pasa
+a un cajón. Muestra el algoritmo paso a paso:
+
+1. **Datos**: tablas editables de salones, profesores, clases y estudiantes (horas como `8-11, 14`,
+   solicitudes como `ALG:3, BD:1`). Al pulsar *Ejecutar* se recalcula todo; un dato inválido muestra
+   el error del validador.
+2. **Grafo**: el grafo de conflictos coloreado con la hora que recibió cada clase.
+3. **Ubicar clases**: DSATUR paso a paso (clase elegida, horas evaluadas, costo de cruces, salón) con el
+   horario llenándose, y el árbol de ramificación y poda con el costo, la cota y las ramas podadas.
+4. **Inscribir**: la tabla `OPT[j]` de cada estudiante con `p(j)` y el cálculo de cada fila, el horario
+   resultante, los motivos de las pendientes y los cupos negados.
+5. **Resultados**: cobertura, prioridades por nivel, cada restricción obligatoria (cumple / no cumple)
+   y qué algoritmo se usó en cada paso con su complejidad y lo medido en ese escenario.
+
+El diseño sale de un sistema de tokens en dos capas (`src/ui/static/estilos/tokens.css`): la paleta
+(los únicos colores, en azules) y los usos (texto, acento, bordes, estados). Las vistas solo usan los
+usos y las clases de `componentes.css` (panel, campo, botón, tabla, insignia, aviso, cifra), así que
+cambiar la paleta es cambiar la primera capa. `tests/test_contraste.py` comprueba que cada par de
+texto y fondo cumpla WCAG AA.
+
+## Uso
+
 ```bash
-python main.py --input data/scenarios/scenario_small.json --output data/outputs/schedule_small.json -v
+python main.py                                       # escenario inicial del documento
+python main.py -i data/scenarios/C_profesor.json -v  # un escenario, con la programación de cada clase
+python main.py --generate                            # escenarios A-F
+python main.py --benchmark                           # inicial, pequeño y A-F en una tabla
+python main.py --verify ESCENARIO SALIDA             # verifica una solución exportada
+python main.py -i ESCENARIO --modo exacto            # elige la estrategia de la fase 1
+python main.py --comparar -i ESCENARIO               # compara las estrategias de la fase 1
+python main.py --experimentos [escalabilidad podas aproximacion]
+python main.py --ui [--port 8000]                    # interfaz paso a paso
+python -m unittest discover -s tests -t .            # pruebas
 ```
-
-### 5.3 Generar los Escenarios de Prueba Estándar
-```bash
-python main.py --generate
-```
-Genera de manera determinista:
-- `data/scenarios/scenario_small.json` (25 estudiantes, 10 clases, 4 salones)
-- `data/scenarios/scenario_medium.json` (80 estudiantes, 25 clases, 8 salones)
-- `data/scenarios/scenario_large.json` (200 estudiantes, 52 clases, 16 salones)
-
-### 5.4 Ejecutar Benchmark de Rendimiento Comparativo
-```bash
-python main.py --benchmark
-```
-
----
-
-## 6. Resultados de Benchmark y Validación de Invariantes
-
-Resultados obtenidos en ejecución real sobre Python 3.12.3:
-
-| Escenario | Estudiantes | Clases Prog. | Tasa Satisfacción | Conflictos Duros | Choques Alumnos | DSATUR (ms) | MCMF (ms) | Tiempo Total |
-|---|---|---|---|---|---|---|---|---|
-| **scenario_small** | 25 | 10 / 10 (100%) | 100.0% (62/62) | **0** | **0** | 2.91 ms | 11.09 ms | **14.79 ms** |
-| **scenario_medium** | 80 | 25 / 25 (100%) | 100.0% (276/276) | **0** | **0** | 5.03 ms | 183.86 ms | **190.94 ms** |
-| **scenario_large** | 200 | 52 / 52 (100%) | 100.0% (786/786) | **0** | **0** | 22.37 ms | 1615.53 ms | **1.64 s** |
-
-### Invariantes Garantizadas:
-1. **Docentes**: Ningún docente tiene dos clases en horarios que compartan bits temporales. Carga dentro de `max_hours`.
-2. **Aulas**: Ningún salón alberga más de una clase simultáneamente. Capacidad física y tipo (teoría/laboratorio) estrictamente respetados.
-3. **Estudiantes**: Ningún estudiante posee dos materias con solapamiento temporal (`schedule_mask & time_mask == 0`). A lo sumo 1 sección matriculada por curso solicitado.

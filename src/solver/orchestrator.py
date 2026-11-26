@@ -1,69 +1,69 @@
-"""Orquestador único que coordina la carga de datos, Fase 1 (DSATUR), Fase 2 (MCMF) y reportes."""
+"""Orquestador: carga el escenario y ejecuta fase 1, fase 2, verificación y reporte."""
 
 import json
 import time
 from pathlib import Path
 from typing import Any
 
-from ..models.room import Room
-from ..models.professor import Professor
-from ..models.course_class import CourseClass
-from ..models.student import Student, Request
-from ..models.time_mask import masks_overlap
+from ..data.scenario import Scenario, load_scenario_dict, load_scenario_file
 from ..graph.conflict_graph import build_conflict_graph
-from ..graph.dsatur_coloring import DSATURColoringSolver
-from ..graph.min_cost_flow import StudentEnrollmentMCMF
-from ..graph.report import TimetableReport
+from .. import config
+from ..phase1.scheduler import schedule_classes
+from ..phase2.enrollment import EnrollmentSolver
+from ..report.complexity import algorithms_used
+from ..report.report import TimetableReport
+from ..verify.verifier import verify_solution
 
 
 class TimetableOrchestrator:
     """Orquestador central del sistema de programación académica y asignación de cursos."""
 
     def __init__(self) -> None:
-        self.rooms: list[Room] = []
-        self.professors: list[Professor] = []
-        self.classes: list[CourseClass] = []
-        self.students: list[Student] = []
-
+        self.scenario: Scenario | None = None
         self.phase1_results: dict[str, Any] = {}
         self.phase2_results: dict[str, Any] = {}
         self.timings: dict[str, float] = {}
         self.report: TimetableReport | None = None
+        self.enrollment_solver: EnrollmentSolver | None = None
+        self.conflict_graph = None
+        self.result: dict[str, Any] | None = None
+
+    # Accesos directos a las entidades del escenario cargado
+    @property
+    def grid(self):
+        return self._require_scenario().grid
+
+    @property
+    def rooms(self):
+        return self._require_scenario().rooms
+
+    @property
+    def professors(self):
+        return self._require_scenario().professors
+
+    @property
+    def classes(self):
+        return self._require_scenario().classes
+
+    @property
+    def students(self):
+        return self._require_scenario().students
+
+    def _require_scenario(self) -> Scenario:
+        if self.scenario is None:
+            raise RuntimeError("Primero se debe cargar un escenario.")
+        return self.scenario
 
     def load_scenario_dict(self, data: dict[str, Any]) -> None:
-        """Carga las entidades a partir de un diccionario estructurado."""
-        self.rooms = [Room.from_dict(r) for r in data.get("rooms", [])]
-        self.professors = [Professor.from_dict(p) for p in data.get("professors", [])]
-
-        # Lectura de clases (pueden venir en lista 'classes' o dentro de 'courses')
-        self.classes = []
-        if "classes" in data:
-            self.classes = [CourseClass.from_dict(c) for c in data["classes"]]
-        elif "courses" in data:
-            for course in data["courses"]:
-                c_id = str(course["id"])
-                c_name = str(course.get("name", c_id))
-                for sec in course.get("sections", []):
-                    sec_data = dict(sec)
-                    sec_data.setdefault("course_id", c_id)
-                    sec_data.setdefault("course_name", c_name)
-                    self.classes.append(CourseClass.from_dict(sec_data))
-
-        self.students = [Student.from_dict(s) for s in data.get("students", [])]
+        """Carga y valida un escenario a partir de un diccionario."""
+        self.scenario = load_scenario_dict(data)
 
     def load_scenario_file(self, file_path: str | Path) -> None:
-        """Carga un archivo de escenario JSON validando su existencia y formato."""
-        path = Path(file_path).resolve()
-        if not path.is_file():
-            raise FileNotFoundError(f"Archivo de escenario no encontrado: {path}")
+        """Carga y valida un archivo de escenario JSON."""
+        self.scenario = load_scenario_file(file_path)
 
-        with open(path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-
-        self.load_scenario_dict(data)
-
-    def run(self) -> dict[str, Any]:
-        """Ejecuta secuencialmente la Fase 1, Fase 2 y la validación de integridad.
+    def run(self, phase1_mode: str = config.DEFAULT_PHASE1_MODE) -> dict[str, Any]:
+        """Ejecuta la fase 1, la fase 2, el reporte y la verificación independiente.
 
         Returns:
             Diccionario estructurado con el resultado global y todas las asignaciones.
@@ -75,39 +75,39 @@ class TimetableOrchestrator:
         # -------------------------------------------------------------
         t0_graph = time.perf_counter()
         conflict_graph = build_conflict_graph(self.classes, self.students)
+        self.conflict_graph = conflict_graph
         t1_graph = time.perf_counter()
         self.timings["conflict_graph_ms"] = round((t1_graph - t0_graph) * 1000.0, 3)
 
         # -------------------------------------------------------------
-        # 2. Fase 1: Coloración DSATUR Ponderada con Listas (h, s)
+        # 2. Fase 1: ubicar clases en (hora, salón) con DSATUR y, si aplica, backtracking
         # -------------------------------------------------------------
         t0_p1 = time.perf_counter()
-        dsatur_solver = DSATURColoringSolver(
-            conflict_graph=conflict_graph,
+        self.phase1_results = schedule_classes(
+            classes=self.classes,
             rooms=self.rooms,
-            professors=self.professors
+            professors=self.professors,
+            students=self.students,
+            grid=self.grid,
+            graph=conflict_graph,
+            mode=phase1_mode,
         )
-        self.phase1_results = dsatur_solver.solve()
         t1_p1 = time.perf_counter()
-        self.timings["phase1_dsatur_ms"] = round((t1_p1 - t0_p1) * 1000.0, 3)
-
-        # Validación de invariantes de Fase 1
-        self._validate_phase1()
+        self.timings["phase1_ms"] = round((t1_p1 - t0_p1) * 1000.0, 3)
 
         # -------------------------------------------------------------
-        # 3. Fase 2: Red de Flujo de Costo Mínimo (MCMF)
+        # 3. Fase 2: inscripción (DP por estudiante + reparto de cupos)
         # -------------------------------------------------------------
         t0_p2 = time.perf_counter()
-        mcmf_solver = StudentEnrollmentMCMF(
+        self.enrollment_solver = EnrollmentSolver(
             classes=self.classes,
-            students=self.students
+            students=self.students,
+            rooms=self.rooms,
+            total_requests=self.scenario.total_requests,
         )
-        self.phase2_results = mcmf_solver.solve()
+        self.phase2_results = self.enrollment_solver.solve()
         t1_p2 = time.perf_counter()
-        self.timings["phase2_mcmf_ms"] = round((t1_p2 - t0_p2) * 1000.0, 3)
-
-        # Validación de invariantes de Fase 2
-        self._validate_phase2()
+        self.timings["phase2_ms"] = round((t1_p2 - t0_p2) * 1000.0, 3)
 
         # -------------------------------------------------------------
         # 4. Generación de Reporte y Métricas
@@ -120,64 +120,22 @@ class TimetableOrchestrator:
             rooms=self.rooms,
             professors=self.professors,
             students=self.students,
+            grid=self.grid,
             phase1_metrics=self.phase1_results,
             phase2_metrics=self.phase2_results,
-            timings=self.timings
+            timings=self.timings,
+            scenario_name=str(self.scenario.metadata.get("name", "")),
         )
 
-        return self.report.to_full_dict()
+        # -------------------------------------------------------------
+        # 5. Verificación independiente de R1-R10 sobre la solución final
+        # -------------------------------------------------------------
+        self.report.verification = verify_solution(self.scenario, self.report.build_solution())
+        self.report.algorithms = algorithms_used(self.scenario, self.phase1_results, self.phase2_results,
+                                                 self.timings, conflict_graph.get_statistics())
 
-    def _validate_phase1(self) -> None:
-        """Verifica que las asignaciones de Fase 1 cumplan estrictamente todas las restricciones duras."""
-        scheduled = [c for c in self.classes if c.is_scheduled]
-        n = len(scheduled)
-
-        for i in range(n):
-            c1 = scheduled[i]
-            for j in range(i + 1, n):
-                c2 = scheduled[j]
-                if masks_overlap(c1.time_mask, c2.time_mask):
-                    if c1.assigned_room_id == c2.assigned_room_id:
-                        raise ValueError(
-                            f"Violación de Salón: Las clases {c1.id} y {c2.id} "
-                            f"comparten el aula {c1.assigned_room_id} en el mismo horario."
-                        )
-                    if c1.professor_id == c2.professor_id:
-                        raise ValueError(
-                            f"Violación Docente: El profesor {c1.professor_id} tiene asignadas "
-                            f"simultáneamente las clases {c1.id} y {c2.id}."
-                        )
-
-    def _validate_phase2(self) -> None:
-        """Verifica que la asignación de estudiantes cumpla capacidades y no contenga traslapes."""
-        for c in self.classes:
-            if len(c.enrolled_students) > c.capacity:
-                raise ValueError(
-                    f"Violación de Capacidad: La clase {c.id} tiene {len(c.enrolled_students)} "
-                    f"estudiantes, superando su límite de {c.capacity}."
-                )
-
-        classes_by_id = {c.id: c for c in self.classes}
-        for s in self.students:
-            s_classes = [classes_by_id[c_id] for c_id in s.assigned_classes if c_id in classes_by_id]
-            # Validar que no haya dos secciones del mismo curso
-            seen_courses = set()
-            for c in s_classes:
-                if c.course_id in seen_courses:
-                    raise ValueError(
-                        f"Violación Estudiante: El alumno {s.id} está inscrito en múltiples secciones "
-                        f"del curso {c.course_id}."
-                    )
-                seen_courses.add(c.course_id)
-
-            # Validar que no haya solapamiento horario
-            for i in range(len(s_classes)):
-                for j in range(i + 1, len(s_classes)):
-                    if masks_overlap(s_classes[i].time_mask, s_classes[j].time_mask):
-                        raise ValueError(
-                            f"Violación Estudiante: El alumno {s.id} tiene choque de horario entre "
-                            f"{s_classes[i].id} y {s_classes[j].id}."
-                        )
+        self.result = self.report.to_full_dict()
+        return self.result
 
     def export_solution(self, output_path: str | Path) -> None:
         """Guarda la solución completa en un archivo JSON."""
@@ -187,9 +145,8 @@ class TimetableOrchestrator:
         path = Path(output_path).resolve()
         path.parent.mkdir(parents=True, exist_ok=True)
 
-        full_data = self.report.to_full_dict()
         with open(path, "w", encoding="utf-8") as f:
-            json.dump(full_data, f, indent=2, ensure_ascii=False)
+            json.dump(self.result, f, indent=2, ensure_ascii=False)
 
     def get_summary_text(self) -> str:
         """Retorna el informe legible para consola."""

@@ -221,3 +221,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Salidas y escenarios de escalabilidad (se regeneran con main.py)
+data/outputs/
+data/scenarios/escala/

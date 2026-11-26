@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Horarios · Pontificia Universidad Javeriana</title>
+  <link rel="icon" type="image/png" href="/static/img/javeriana.png">
+  <link rel="stylesheet" href="/static/estilos/tokens.css">
+  <link rel="stylesheet" href="/static/estilos/base.css">
+  <link rel="stylesheet" href="/static/estilos/componentes.css">
+  <link rel="stylesheet" href="/static/estilos/app.css">
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+
+  <div class="marco" id="marco">
+    <header class="barra-superior">
+      <button id="boton-menu" class="boton fantasma icono" type="button" aria-controls="menu-lateral"
+              aria-expanded="false" aria-label="Abrir el menú"></button>
+      <span class="titulo-barra" id="titulo-barra">Horarios</span>
+    </header>
+
+    <div class="fondo-cajon" id="fondo-cajon" hidden></div>
+
+    <nav id="menu-lateral" class="lateral" aria-label="Menú principal">
+      <div class="cabeza-lateral">
+        <h1 class="marca">
+          <img src="/static/img/javeriana.png" alt="Pontificia Universidad Javeriana" width="52" height="51">
+          <span class="nombre-marca">
+            <strong>Horarios</strong>
+            <span>Asignación de horarios estudiantiles</span>
+          </span>
+        </h1>
+        <button id="boton-cerrar-menu" class="boton fantasma icono boton-cerrar-menu" type="button"
+                aria-label="Cerrar el menú"></button>
+      </div>
+
+      <div class="grupo-lateral" role="group" aria-labelledby="grupo-escenario">
+        <p class="titulo-grupo" id="grupo-escenario">Escenario</p>
+        <div class="campo">
+          <label for="scenario-select">Datos</label>
+          <select id="scenario-select"></select>
+        </div>
+        <div class="campo">
+          <label for="mode-select">Estrategia para ubicar clases</label>
+          <select id="mode-select"></select>
+        </div>
+      </div>
+
+      <div class="grupo-lateral" role="group" aria-labelledby="grupo-algoritmo">
+        <p class="titulo-grupo" id="grupo-algoritmo">Algoritmo</p>
+        <ul class="menu" id="menu-secciones"></ul>
+      </div>
+
+      <div class="pie-lateral">
+        <button id="run-button" class="boton ancho" type="button">Ejecutar</button>
+        <p class="ayuda" id="resumen-lateral"></p>
+      </div>
+    </nav>
+
+    <main id="contenido" tabindex="-1">
+      <div id="estado-ejecucion" role="status" aria-live="polite"></div>
+      <section id="vista-datos" class="vista"></section>
+      <section id="vista-grafo" class="vista" hidden></section>
+      <section id="vista-fase1" class="vista" hidden></section>
+      <section id="vista-fase2" class="vista" hidden></section>
+      <section id="vista-resultados" class="vista" hidden></section>
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

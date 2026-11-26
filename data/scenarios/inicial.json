@@ -1,0 +1,65 @@
+{
+  "metadata": {
+    "name": "inicial",
+    "description": "Escenario inicial del documento: 20 estudiantes, 5 profesores, 8 clases y 10 salones, jornada de 8:00 a 18:00. Incluye un cupo agotado, un cruce entre clases, un profesor con una sola hora para dos clases y clases que exigen laboratorio."
+  },
+  "parameters": {"num_days": 1, "start_hour": 8, "end_hour": 18},
+  "rooms": [
+    {"id": "AULA-01", "name": "Salón 01", "capacity": 40, "availability": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]},
+    {"id": "AULA-02", "name": "Salón 02", "capacity": 35, "availability": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]},
+    {"id": "AULA-03", "name": "Salón 03", "capacity": 30, "availability": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]},
+    {"id": "AULA-04", "name": "Salón 04", "capacity": 30, "availability": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]},
+    {"id": "AULA-05", "name": "Salón 05", "capacity": 25, "availability": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]},
+    {"id": "AULA-06", "name": "Salón 06", "capacity": 25, "availability": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]},
+    {"id": "AULA-07", "name": "Salón 07", "capacity": 20, "availability": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]},
+    {"id": "AULA-08", "name": "Salón 08", "capacity": 20, "availability": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]},
+    {"id": "LAB-01", "name": "Laboratorio 01", "capacity": 15, "room_type": "laboratorio", "availability": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]},
+    {"id": "LAB-02", "name": "Laboratorio 02", "capacity": 15, "room_type": "laboratorio", "availability": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]}
+  ],
+  "professors": [
+    {"id": "PROF-01", "name": "Dra. Ada Lovelace", "availability": [8, 9, 10, 11]},
+    {"id": "PROF-02", "name": "Dr. Alan Turing", "availability": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]},
+    {"id": "PROF-03", "name": "Dra. Grace Hopper", "availability": [14]},
+    {"id": "PROF-04", "name": "Dr. Edsger Dijkstra", "availability": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]},
+    {"id": "PROF-05", "name": "Dr. Donald Knuth", "availability": [10, 11, 12, 13, 14]}
+  ],
+  "classes": [
+    {"id": "ALG", "course_name": "Algoritmos", "professor_id": "PROF-01", "capacity": 5, "duration_hours": 2, "allowed_starts": [8]},
+    {"id": "BD", "course_name": "Bases de Datos", "professor_id": "PROF-02", "capacity": 20, "duration_hours": 2, "allowed_starts": [8]},
+    {"id": "MAT", "course_name": "Matemáticas Discretas", "professor_id": "PROF-01", "capacity": 20, "duration_hours": 1, "allowed_starts": [9, 10, 11]},
+    {"id": "RED", "course_name": "Laboratorio de Redes", "professor_id": "PROF-02", "capacity": 15, "duration_hours": 1, "allowed_starts": [10, 14], "required_room_type": "laboratorio"},
+    {"id": "ETI", "course_name": "Ética", "professor_id": "PROF-03", "capacity": 20, "duration_hours": 1, "allowed_starts": [14]},
+    {"id": "COM", "course_name": "Comunicación", "professor_id": "PROF-03", "capacity": 20, "duration_hours": 1, "allowed_starts": [14]},
+    {"id": "IA", "course_name": "Inteligencia Artificial", "professor_id": "PROF-04", "capacity": 20, "duration_hours": 2, "allowed_starts": [12, 14]},
+    {"id": "SO", "course_name": "Sistemas Operativos", "professor_id": "PROF-05", "capacity": 20, "duration_hours": 2, "allowed_starts": [10, 12]}
+  ],
+  "students": [
+    {"id": "E01", "name": "Estudiante 01", "requests": [{"class_id": "ALG", "priority": 3}, {"class_id": "MAT", "priority": 2}, {"class_id": "IA", "priority": 1}]},
+    {"id": "E02", "name": "Estudiante 02", "requests": [{"class_id": "ALG", "priority": 3}, {"class_id": "SO", "priority": 2}]},
+    {"id": "E03", "name": "Estudiante 03", "requests": [{"class_id": "ALG", "priority": 2}, {"class_id": "BD", "priority": 3}]},
+    {"id": "E04", "name": "Estudiante 04", "requests": [{"class_id": "ALG", "priority": 3}, {"class_id": "BD", "priority": 1}, {"class_id": "ETI", "priority": 2}]},
+    {"id": "E05", "name": "Estudiante 05", "requests": [{"class_id": "ALG", "priority": 1}, {"class_id": "MAT", "priority": 3}, {"class_id": "ETI", "priority": 3}]},
+    {"id": "E06", "name": "Estudiante 06", "requests": [{"class_id": "ALG", "priority": 2}, {"class_id": "RED", "priority": 3}, {"class_id": "COM", "priority": 1}]},
+    {"id": "E07", "name": "Estudiante 07", "requests": [{"class_id": "ALG", "priority": 3}, {"class_id": "IA", "priority": 2}]},
+    {"id": "E08", "name": "Estudiante 08", "requests": [{"class_id": "ALG", "priority": 2}, {"class_id": "SO", "priority": 1}, {"class_id": "COM", "priority": 2}]},
+    {"id": "E09", "name": "Estudiante 09", "requests": [{"class_id": "ALG", "priority": 1}, {"class_id": "BD", "priority": 2}]},
+    {"id": "E10", "name": "Estudiante 10", "requests": [{"class_id": "ALG", "priority": 3}, {"class_id": "ETI", "priority": 1}]},
+    {"id": "E11", "name": "Estudiante 11", "requests": [{"class_id": "BD", "priority": 3}, {"class_id": "RED", "priority": 2}, {"class_id": "IA", "priority": 1}]},
+    {"id": "E12", "name": "Estudiante 12", "requests": [{"class_id": "BD", "priority": 2}, {"class_id": "SO", "priority": 3}]},
+    {"id": "E13", "name": "Estudiante 13", "requests": [{"class_id": "MAT", "priority": 2}, {"class_id": "RED", "priority": 1}, {"class_id": "ETI", "priority": 1}]},
+    {"id": "E14", "name": "Estudiante 14", "requests": [{"class_id": "MAT", "priority": 3}, {"class_id": "SO", "priority": 2}]},
+    {"id": "E15", "name": "Estudiante 15", "requests": [{"class_id": "IA", "priority": 3}, {"class_id": "ETI", "priority": 2}]},
+    {"id": "E16", "name": "Estudiante 16", "requests": [{"class_id": "IA", "priority": 2}, {"class_id": "COM", "priority": 3}]},
+    {"id": "E17", "name": "Estudiante 17", "requests": [{"class_id": "SO", "priority": 2}, {"class_id": "RED", "priority": 2}]},
+    {"id": "E18", "name": "Estudiante 18", "requests": [{"class_id": "ETI", "priority": 3}, {"class_id": "MAT", "priority": 1}]},
+    {"id": "E19", "name": "Estudiante 19", "requests": [{"class_id": "COM", "priority": 2}, {"class_id": "BD", "priority": 1}]},
+    {"id": "E20", "name": "Estudiante 20", "requests": [{"class_id": "RED", "priority": 3}, {"class_id": "ETI", "priority": 1}, {"class_id": "ALG", "priority": 1}]}
+  ],
+  "expected": {
+    "description": "ALG y BD solo pueden iniciar a las 8:00, así que se cruzan: E03 y E09 se quedan con BD y E04 con ALG (gana la de mayor prioridad). ALG tiene 9 interesados sin cruce y cupo 5: se queda con los 5 de prioridad 3 y 4 quedan pendientes por cupo. PROF-03 solo puede de 14:00 a 15:00: ETI (suma de prioridades 13) se programa y COM (suma 8) queda sin programar. RED solo cabe en un laboratorio.",
+    "violations": 0,
+    "scheduled_classes": 7,
+    "unscheduled_classes": ["COM"],
+    "pending_for_capacity": {"ALG": 4}
+  }
+}
