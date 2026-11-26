@@ -38,6 +38,83 @@ const ICONS = {
   ejecutar: ["M5 3v18l15-9Z"],
 };
 
+// Pseudocódigo de cada algoritmo, tal como lo hace el código en Python.
+const PSEUDO_DSATUR = `mientras haya clases sin decidir:
+    c ← la clase con menos horas disponibles          # la más restringida
+    para cada hora h permitida para c:
+        si el profesor de c está libre en h:
+            costo(h) ← Σ pesos de las clases vecinas ya ubicadas que se cruzan con h
+    si no hay ninguna (hora, salón) válida:
+        c queda sin programar
+    si no:
+        ubicar c en la hora de menor costo y en el salón que mejor le sirve`;
+
+const PSEUDO_BB = `mejor ← solución de DSATUR                           # cota inicial
+buscar(nivel = 0, costo = 0)
+
+buscar(nivel, costo):
+    si costo + cota_inferior(clases que faltan) ≥ costo(mejor):
+        podar                                          # esta rama no puede mejorar
+    si nivel = M:
+        mejor ← solución actual;  volver
+    c ← clases[nivel]                                  # las más restringidas primero
+    para cada hora h válida para c, de la más barata a la más cara:
+        ubicar c en h con un salón libre
+        buscar(nivel + 1, costo + cruces(c, h))
+        quitar c                                       # retroceder
+    buscar(nivel + 1, costo + costo_sin_programar(c))  # última opción`;
+
+const PSEUDO_BT = `mejor ← solución de DSATUR
+buscar(nivel = 0, costo = 0)
+
+buscar(nivel, costo):
+    si nivel = M:
+        si costo < costo(mejor): mejor ← solución actual
+        volver
+    c ← clases[nivel]
+    para cada hora h válida para c:                    # poda solo por reglas:
+        ubicar c en h con un salón libre               # profesor libre y salón posible
+        buscar(nivel + 1, costo + cruces(c, h))
+        quitar c                                       # retroceder
+    buscar(nivel + 1, costo + costo_sin_programar(c))`;
+
+const PSEUDO_FB = `mejor ← ninguna
+para cada combinación de (hora, salón) o "sin programar" de todas las clases:
+    si la combinación cumple todas las reglas:
+        si costo(combinación) < costo(mejor):
+            mejor ← combinación`;
+
+const PSEUDO_DP = `ordenar las clases del estudiante por hora de fin        # Θ(n log n)
+para j = 1..n:
+    p(j) ← búsqueda binaria: cuántas terminan antes
+           de que j empiece                              # Θ(log n)
+OPT[0] ← 0
+para j = 1..n:
+    OPT[j] ← max( OPT[j−1],  w_j + OPT[p(j)] )
+j ← n                                                    # reconstruir
+mientras j > 0:
+    si w_j + OPT[p(j)] ≥ OPT[j−1]:  tomar j;  j ← p(j)
+    si no:  j ← j − 1`;
+
+const PSEUDO_REPARTO = `cada estudiante arma su horario con la DP
+repetir:
+    para cada clase con más inscritos que su cupo:
+        se queda con los de mayor prioridad
+        (a igual prioridad, el primero de la lista)
+        a los demás se les niega esa clase
+    los rechazados vuelven a correr su DP sin esa clase
+hasta que ninguna clase supere su cupo
+ofrecer los cupos libres a quien mejore con ellos`;
+
+const PSEUDO_VERIF = `para cada clase programada:
+    revisar duración, jornada, horas permitidas,
+    salón disponible y profesor disponible
+para cada par de clases que se cruzan:
+    mismo salón → incumple;  mismo profesor → incumple
+para cada estudiante:
+    solo clases que pidió, sin cruces y dentro de cupo
+contar incumplimientos                       # O(M² + S·K²)`;
+
 // ---------------------------------------------------------------------------
 // Utilidades
 // ---------------------------------------------------------------------------
@@ -87,6 +164,10 @@ function pageHeader(sectionId, title, description, ...extra) {
       h("p", { className: "migas" }, `Paso ${index + 1} de ${SECTIONS.length} · ${state.scenario?.metadata?.name || "escenario"}`),
       h("h2", {}, title, ...extra),
       description ? h("p", {}, description) : null));
+}
+
+function pseudocode(text) {
+  return h("figure", { className: "pseudocodigo" }, h("figcaption", {}, "Pseudocódigo"), h("pre", {}, text));
 }
 
 function panel(title, ...children) {
@@ -257,26 +338,28 @@ function markDirty() {
 // ---------------------------------------------------------------------------
 // 1. Datos (tablas editables)
 // ---------------------------------------------------------------------------
+const HOURS_HINT = "ej. 8-11, 14 · vacío = toda la jornada";
+
 const TABLES = [
   { key: "rooms", title: "Salones", help: "Capacidad, tipo y horas en que se puede usar cada salón.",
-    blank: () => ({ id: "AULA-NUEVA", name: "Salón nuevo", capacity: 30 }), cols: [
-    { key: "id", label: "Id" }, { key: "name", label: "Nombre" }, { key: "capacity", label: "Capacidad", type: "int" },
-    { key: "room_type", label: "Tipo" }, { key: "availability", label: "Disponibilidad (horas)", type: "hours" }] },
+    blank: () => ({ id: "AULA-NUEVA", capacity: 30 }), cols: [
+    { key: "id", label: "Id" }, { key: "capacity", label: "Capacidad", type: "int" },
+    { key: "room_type", label: "Tipo", hint: "ej. laboratorio · vacío = aula" },
+    { key: "availability", label: "Disponibilidad (horas)", type: "hours", hint: HOURS_HINT }] },
   { key: "professors", title: "Profesores", help: "Horas en que cada profesor puede dictar clase.",
     blank: () => ({ id: "PROF-NUEVO", name: "Profesor nuevo" }), cols: [
     { key: "id", label: "Id" }, { key: "name", label: "Nombre" },
-    { key: "availability", label: "Disponibilidad (horas)", type: "hours" }, { key: "max_hours", label: "Máx. horas", type: "int" }] },
+    { key: "availability", label: "Disponibilidad (horas)", type: "hours", hint: HOURS_HINT }] },
   { key: "classes", title: "Clases", help: "Profesor, cupo, duración y horas de inicio permitidas de cada clase.",
     blank: () => ({ id: "NUEVA", professor_id: "", capacity: 20, duration_hours: 1 }), cols: [
     { key: "id", label: "Id" }, { key: "course_name", label: "Nombre" }, { key: "professor_id", label: "Profesor" },
     { key: "capacity", label: "Cupo", type: "int" }, { key: "duration_hours", label: "Horas", type: "int" },
-    { key: "allowed_starts", label: "Horas de inicio permitidas", type: "hours" },
-    { key: "required_room_type", label: "Tipo de salón" }] },
+    { key: "allowed_starts", label: "Horas de inicio permitidas", type: "hours", hint: HOURS_HINT },
+    { key: "required_room_type", label: "Tipo de salón", hint: "ej. laboratorio · vacío = cualquiera" }] },
   { key: "students", title: "Estudiantes", help: "Solicitudes de cada estudiante con su prioridad (3 = más alta).",
     blank: () => ({ id: "EST-NUEVO", name: "Estudiante nuevo", requests: [] }), cols: [
     { key: "id", label: "Id" }, { key: "name", label: "Nombre" },
-    { key: "requests", label: "Solicitudes (CLASE:prioridad, 3 = más alta)", type: "requests" },
-    { key: "availability", label: "Disponibilidad (horas)", type: "hours" }] },
+    { key: "requests", label: "Solicitudes", type: "requests", hint: "CLASE:prioridad, ej. ALG:3, BD:1 · 3 = más alta" }] },
 ];
 
 function renderData() {
@@ -284,9 +367,7 @@ function renderData() {
   view.replaceChildren();
   const sc = state.scenario;
 
-  view.append(pageHeader("datos", "Datos", "Entradas del problema: jornada, salones, profesores, clases y estudiantes. " +
-    "Cambie lo que necesite y pulse Ejecutar. Horas como \"8-11, 14\" (vacío = toda la jornada); solicitudes como " +
-    "\"ALG:3, BD:1\" (prioridad 1 a 3, 3 la más alta)."));
+  view.append(pageHeader("datos", "Datos", "Entradas del problema: jornada, salones, profesores, clases y estudiantes."));
 
   const blocks = h("div", { className: "pila" });
 
@@ -302,14 +383,6 @@ function renderData() {
 
   for (const t of TABLES) blocks.append(renderEditableTable(t));
 
-  const textarea = h("textarea", { className: "control", "aria-label": "Escenario en JSON" }, JSON.stringify(sc, null, 2));
-  blocks.append(h("section", { className: "panel" },
-    h("details", {}, h("summary", {}, h("strong", {}, "Editar el escenario como JSON")),
-      h("div", { className: "pila", style: "margin-top:var(--esp-3)" }, textarea,
-        h("div", {}, h("button", { className: "boton secundario", type: "button", onclick: () => {
-          try { state.scenario = JSON.parse(textarea.value); renderData(); markDirty(); }
-          catch (err) { setStatus(`JSON no válido: ${err.message}`, "error"); }
-        } }, "Aplicar JSON"))))));
   view.append(blocks);
 
   state.saveBar = h("div", { className: "barra-guardado", hidden: !state.dirty },
@@ -357,7 +430,8 @@ function renderEditableTable(t) {
         onclick: () => { rows.push(t.blank()); renderData(); markDirty(); } }, icon("mas"), "Agregar")),
     h("div", { className: "tabla-contenedor sin-marco", "data-densidad": "compacta", style: "margin-top:var(--esp-3)" },
       h("table", { className: "tabla" },
-        h("thead", {}, h("tr", {}, ...t.cols.map(c => h("th", {}, c.label)), h("th", {}, h("span", { className: "solo-lectores" }, "Acciones")))),
+        h("thead", {}, h("tr", {}, ...t.cols.map(c => h("th", {}, c.label, c.hint ? h("span", { className: "pista-columna" }, c.hint) : null)),
+          h("th", {}, h("span", { className: "solo-lectores" }, "Acciones")))),
         body)));
 }
 
@@ -403,23 +477,24 @@ function renderGraph() {
   view.append(
     pageHeader("grafo", "Grafo de conflictos", "Qué clases no se pueden o no conviene ubicar a la misma hora."),
     h("div", { className: "rejilla lateral-derecha" },
-      panel("Grafo coloreado con las horas",
+      panel("Grafo",
         h("div", { className: "lienzo-grafo" }, canvas)),
       h("div", { className: "pila" },
-        panel("Cómo leer el grafo",
+        panel(null,
           h("div", { className: "texto-tarjeta" },
-            h("p", {}, "Cada vértice es una clase. Su color es la hora que recibió y debajo aparecen la hora y el salón; " +
-              "un vértice blanco punteado es una clase que quedó sin programar."),
-            h("p", {}, "Una arista roja une dos clases del mismo profesor: no pueden ir a la misma hora. Una arista gris " +
-              "une dos clases que algún estudiante pidió juntas; entre más gruesa, más prioridad se pierde si se cruzan."),
-            h("p", {}, "Ubicar las clases sin cruces equivale a colorear este grafo usando las horas como colores. " +
-              "Por eso el problema es NP-difícil: se reduce desde la k-coloración de grafos."))),
+            h("p", {}, "Cada círculo es una clase. Su color y el texto de abajo dicen a qué hora y en qué salón quedó; " +
+              "si está en blanco y punteado, no se pudo programar."),
+            h("p", {}, "Una línea roja une dos clases del mismo profesor. No es un choque: es una regla que dice que esas " +
+              "dos clases no pueden ir a la misma hora. Si los dos círculos tienen colores distintos, la regla se cumplió."),
+            h("p", {}, "Una línea gris une dos clases que algún estudiante pidió juntas. Conviene que queden a horas " +
+              "distintas; entre más gruesa, más prioridad se perdería si se cruzan."),
+            h("p", {}, "Ubicar las clases es colorear este grafo usando las horas como colores. Por eso el problema es " +
+              "NP-difícil: se reduce desde la k-coloración de grafos."))),
         panel("Estadísticas", h("dl", { className: "datos" },
-          h("dt", {}, "Vértices"), h("dd", {}, stats.vertices),
-          h("dt", {}, "Aristas"), h("dd", {}, stats.total_edges),
-          h("dt", {}, "Duras"), h("dd", {}, stats.hard_edges),
-          h("dt", {}, "Blandas"), h("dd", {}, stats.soft_edges),
-          h("dt", {}, "Densidad"), h("dd", {}, stats.density))),
+          h("dt", {}, "Clases (vértices)"), h("dd", {}, stats.vertices),
+          h("dt", {}, "Líneas (aristas)"), h("dd", {}, stats.total_edges),
+          h("dt", {}, "Rojas (mismo profesor)"), h("dd", {}, stats.hard_edges),
+          h("dt", {}, "Grises (estudiantes)"), h("dd", {}, stats.soft_edges))),
         panel("Clase seleccionada", info))));
 }
 
@@ -490,7 +565,12 @@ function renderPhase1() {
     p1.optimal === true ? badge("óptimo probado", "ok") : null,
     p1.optimal === false ? badge("mejor hallado (límite de nodos)", "warn") : null));
 
-  const figures = [figure("Costo con DSATUR", p1.heuristic_cost.total), figure("Costo final", p1.cost.total)];
+  // Los puntos de costo solo se muestran cuando la búsqueda mejoró a DSATUR.
+  const improved = p1.mode !== "heuristica" && p1.heuristic_cost.total !== p1.cost.total;
+  const figures = improved
+    ? [figure("Costo con DSATUR", `${p1.heuristic_cost.total} pts`, "menos es mejor"),
+       figure("Costo final", `${p1.cost.total} pts`, "la búsqueda lo mejoró")]
+    : [];
   if (search.nodes !== undefined) {
     figures.push(figure("Nodos visitados", search.nodes.toLocaleString("es"),
       `${search.improvements} mejoras · ${search.room_reassignments} reacomodos de salones`));
@@ -501,9 +581,11 @@ function renderPhase1() {
   }
 
   const blocks = h("div", { className: "pila" },
-    h("div", { className: "aviso" }, "Costo que se minimiza: ", h("span", { className: "formula" },
-      "BASE · clases sin programar + prioridad de las no programadas + Σ pesos de cruces")),
-    h("div", { className: "cifras" }, ...figures));
+    h("div", { className: "aviso" }, "Se busca la ubicación con menor costo, medido en puntos (menos es mejor): ",
+      h("span", { className: "formula" }, "BASE · clases sin programar + prioridad de las no programadas + Σ pesos de cruces"),
+      p1.mode !== "heuristica" && !improved ? h("p", {}, "En este escenario DSATUR ya había encontrado la mejor " +
+        "ubicación; la búsqueda solo lo confirmó.") : null),
+    figures.length ? h("div", { className: "cifras" }, ...figures) : null);
 
   // DSATUR paso a paso
   const steps = p1.dsatur_steps;
@@ -518,7 +600,8 @@ function renderPhase1() {
   blocks.append(h("section", { className: "panel" },
     h("h3", {}, "DSATUR paso a paso"),
     h("p", { className: "ayuda", style: "margin-bottom:var(--esp-3)" }, "En cada paso se toma la clase con menos horas " +
-      "disponibles (la más restringida) y se le da la hora con menos cruces y el salón más pequeño que le sirve. No retrocede."),
+      "disponibles (la más restringida) y se le da la hora con menos cruces y el salón que mejor le sirve. No retrocede."),
+    pseudocode(PSEUDO_DSATUR),
     h("div", { className: "pasos" },
       stepButton("Inicio", "inicio", 0), stepButton("Anterior", "izquierda", k - 1),
       stepButton("Siguiente", "derecha", k + 1), stepButton("Final", "fin", steps.length),
@@ -534,11 +617,18 @@ function renderPhase1() {
     h("h4", { style: "margin:var(--esp-5) 0 var(--esp-2)" }, "Horario después de este paso"),
     renderTimetable(placed, current?.class_id)));
 
-  // Búsqueda exacta
-  if (p1.search_trace && p1.search_trace.length) {
-    const tones = { "podada": "warn", "mejor solución": "ok", "hoja": "muted", "explorada": "info" };
+  // Búsqueda (exacta, backtracking o fuerza bruta)
+  if (p1.mode === "fuerza_bruta") {
     blocks.append(h("section", { className: "panel" },
-      h("h3", {}, "Árbol de búsqueda (ramificación y poda)"),
+      h("h3", {}, "Fuerza bruta"),
+      h("p", { className: "ayuda" }, "Prueba todas las combinaciones posibles y se queda con la de menor costo."),
+      pseudocode(PSEUDO_FB)));
+  } else if (p1.search_trace && p1.search_trace.length) {
+    const tones = { "podada": "warn", "mejor solución": "ok", "hoja": "muted", "explorada": "info" };
+    const exact = p1.mode === "exacto";
+    blocks.append(h("section", { className: "panel" },
+      h("h3", {}, exact ? "Árbol de búsqueda (ramificación y poda)" : "Árbol de búsqueda (backtracking sin cota)"),
+      pseudocode(exact ? PSEUDO_BB : PSEUDO_BT),
       h("p", { className: "ayuda" }, `Orden de las clases (un nivel por clase): ${p1.search_order.join(" → ")}. ` +
         "Cada línea es un nodo: la decisión tomada, el costo acumulado y la cota (costo + mínimo de lo que falta). " +
         "Si la cota alcanza a la mejor solución conocida, la rama se poda."),
@@ -601,6 +691,9 @@ function renderPhase2() {
         "p(j) con búsqueda binaria (Θ(log n)) y se llena la tabla ", h("span", { className: "formula" }, "OPT[j] = max( OPT[j−1] , w_j + OPT[p(j)] )")),
       h("p", {}, `Peso de cada solicitud: ${p2.weight_rule}, con N = ${N}. Así la DP maximiza la suma de prioridades ` +
         "y, a igual suma, el número de clases.")),
+    h("div", { className: "rejilla dos" },
+      panel("Programación dinámica (cada estudiante)", pseudocode(PSEUDO_DP)),
+      panel("Reparto de cupos (todos los estudiantes)", pseudocode(PSEUDO_REPARTO))),
     h("div", { className: "cifras" },
       figure("Rondas de reparto", p2.stats.rounds),
       figure("Cupos negados", p2.stats.rejections),
@@ -700,7 +793,9 @@ function renderResults() {
         table(["Restricción", "Estado"], Object.entries(v.by_rule).map(([rule, count]) => h("tr", {},
           h("td", {}, state.trace.rules[rule] || rule),
           h("td", {}, count ? badge("no cumple", "bad") : badge("cumple", "ok"))))),
-        ...v.violations.map(x => h("div", { className: "aviso error", style: "margin-top:var(--esp-2)" }, `${x.rule}: ${x.message}`)))));
+        ...v.violations.map(x => h("div", { className: "aviso error", style: "margin-top:var(--esp-2)" }, `${x.rule}: ${x.message}`)),
+        h("h4", { style: "margin:var(--esp-4) 0 var(--esp-2)" }, "Cómo se verifica"),
+        pseudocode(PSEUDO_VERIF))));
 
   blocks.append(panel("Algoritmos usados y complejidad",
     h("p", { className: "ayuda", style: "margin-bottom:var(--esp-3)" }, "M clases, S estudiantes, R solicitudes por estudiante, " +

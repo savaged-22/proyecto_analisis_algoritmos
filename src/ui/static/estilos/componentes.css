@@ -434,29 +434,29 @@ select.control {
 /* Una tarjeta por cifra: la etiqueta arriba, la cifra protagonista y una nota debajo. Sin fondos de color. */
 .cifras {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-  gap: var(--esp-3);
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: var(--esp-2);
 }
 
+/* Compacta: muestra el dato sin competir con el contenido de la vista. */
 .cifra {
   display: grid;
-  gap: var(--esp-1);
+  gap: 2px;
   align-content: start;
-  padding: var(--esp-4);
+  padding: var(--esp-2) var(--esp-3);
   background: var(--superficie);
   border: 1px solid var(--borde);
-  border-radius: var(--radio-lg);
-  box-shadow: var(--sombra-1);
+  border-radius: var(--radio);
 }
 
 .cifra .nombre {
   color: var(--texto-tenue);
-  font-size: var(--texto-sm);
+  font-size: var(--texto-xs);
   font-weight: var(--peso-medio);
 }
 
 .cifra .valor {
-  font-size: var(--texto-cifra);
+  font-size: var(--texto-lg);
   font-weight: var(--peso-semi);
   line-height: var(--interlineado-ajustado);
   font-variant-numeric: tabular-nums;
